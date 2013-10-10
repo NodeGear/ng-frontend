@@ -11,5 +11,11 @@ mixin appsNav()
 				for a in apps
 					li(class= a == app ? "active" : null)
 						a(href="/app/"+a._id)= a.name
-							span.pull-right.label(class= a.isInstalled ? "label-success" : "label-danger") &nbsp; #{a.installedOn}
-							span.pull-right.label(class= a.isRunning ? "label-success" : "label-warning") &nbsp;
+							.pull-right
+								span.label(class= a.isInstalled ? "label-success" : "label-danger")
+									if a.isInstalled
+										= a.installedOn
+									else
+										&nbsp;
+								| &nbsp;
+								span.label(class= a.isRunning ? "label-success" : "label-warning") &nbsp;
