@@ -2,12 +2,18 @@ var mongoose = require('mongoose')
 	, models = require('../models')
 	, fs = require('fs')
 	, config = require('../config')
+	, drone = require('./drone')
 
 exports.router = function (app) {
 	app.get('/app/add', addApp)
 		.post('/app/add', doAddApp)
-		.get('/app/:id', getApps, viewApp)
 		.get('/apps', getApps, viewApps)
+		.get('/app/:id', getApps, viewApp)
+		.get('/app/:id/install', getApps, drone.install)
+		.get('/app/:id/start', getApps, drone.start)
+		.get('/app/:id/stop', getApps, drone.stop)
+		.get('/app/:id/restart', getApps, drone.restart)
+		.get('/app/:id/delete', getApps, drone.delete)
 }
 
 function getApps (req, res, next) {

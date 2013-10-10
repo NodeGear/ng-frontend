@@ -12,7 +12,20 @@ block content
 			.col-lg-8.col-sm-8.col-md-8
 				.panel.panel-default
 					.panel-heading
-						h1.panel-title= app.name
+						.row
+							.col-sm-6.col-md-6.col-lg-6
+								h1.panel-title= app.name
+							.col-sm-6.col-md-6.col-lg-6
+								.pull-right
+									a.btn.btn-info.btn-xs(href="/app/"+app._id+"/install") Install
+									| &nbsp;
+									a.btn.btn-default.btn-xs(href="/app/"+app._id+"/start") Start
+									| &nbsp;
+									a.btn.btn-default.btn-xs(href="/app/"+app._id+"/stop") Stop
+									| &nbsp;
+									a.btn.btn-default.btn-xs(href="/app/"+app._id+"/restart") Restart
+									| &nbsp;
+									a.btn.btn-danger.btn-xs(href="/app/"+app._id+"/delete") Delete
 					.panel-body
 						p <strong>Name:</strong> 
 							= app.name

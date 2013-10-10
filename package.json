@@ -21,6 +21,6 @@
 	"bugsnag": "latest",
 	"passport": "latest",
 	"passport-local": "latest",
-	"node-validator": "latest"
+	"validator": "latest"
   }
 }
