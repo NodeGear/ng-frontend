@@ -1,0 +1,27 @@
+mixin navbar(active)
+	header
+		nav.navbar.navbar-default
+			.container
+				.navbar-header
+					button.navbar-toggle(type="button", data-toggle="collapse", data-target=".nodecloud-navbar-collapse")
+						span.sr-only Toggle Navigation
+						span.icon-bar
+						span.icon-bar
+						span.icon-bar
+					a.navbar-brand(href="#") NodeCloud
+				.collapse.navbar-collapse.nodecloud-navbar-collapse
+					ul.nav.navbar-nav
+						if loggedIn
+							li(class= active == 0 ? "active" : null)
+								a(href="/") Apps
+							li(class= active == 1 ? "active" : null)
+								a(href="/app/add") Add Application
+						else
+							li(class= active == -1 ? "active" : null)
+								a(href="/") Login / Register
+					
+					if loggedIn
+						ul.nav.navbar-nav.navbar-right
+							li
+								a(href="/logout") Logout
+						p.navbar-text.pull-right Welcome #{ user.getName() }

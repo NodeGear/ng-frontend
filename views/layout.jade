@@ -1,0 +1,38 @@
+!!! 5
+html
+	head
+		meta(http-equiv="Content-Type", content="text/html; charset=utf-8;")
+		meta(name="_csrf", content="#{token}")
+		meta (name="viewport" content="width=device-width, initial-scale=1.0")
+		block meta
+		title NodeCloud - #{title}
+		link(href="/favicon.ico", type="image/x-icon", rel="icon")
+		link(href="/favicon.ico", type="image/x-icon", rel="shortcut icon")
+		
+		//- all css goes here
+		block css
+			link(rel="stylesheet", href="/css/bootstrap.min.css")
+			link(rel="stylesheet", href="/css/bootstrap-theme.css")
+			
+			//- Temporary hack until BS3.0.1 comes out.. 
+			style.
+				.modal-open, .modal-open .navbar-fixed-top {
+					margin-right: auto !important;
+				}
+
+	body(ng-app="nodecloud")
+		include inc/navbar
+		block content
+		
+		.container
+			.row-fluid
+				footer
+					.text-muted.text-center NodeCloud
+		
+		block js
+			script(src="/js/jquery.min.js", defer="true")
+			script(src="/js/bootstrap.min.js", defer="true")
+			script(src="/js/angular.min.js", defer="defer")
+			
+		//- page-specific js
+		block addonjs

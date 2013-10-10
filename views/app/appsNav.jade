@@ -1,0 +1,9 @@
+mixin appsNav()
+	.panel
+		.panel-heading
+			h1.panel-title Apps
+		.panel-body
+			ul.nav.nav-pills.nav-stacked
+				for app in apps
+					li
+						a(href="/app/"+app._id)= app.name
