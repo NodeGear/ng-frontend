@@ -48,7 +48,8 @@ function doAddApp (req, res) {
 	var name = req.body.name;
 	var drone = new models.Drone({
 		name: name,
-		isInstalled: false
+		isInstalled: false,
+		user: req.user._id
 	})
 	
 	// Tar
@@ -62,7 +63,7 @@ function doAddApp (req, res) {
 			
 			drone.location = path;
 			drone.save();
-			res.redirect('/apps')
+			res.redirect('/apps');
 		});
 	})
 }
