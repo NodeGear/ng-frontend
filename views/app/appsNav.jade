@@ -1,9 +1,14 @@
 mixin appsNav()
 	.panel
 		.panel-heading
-			h1.panel-title Apps
+			.row
+				.col-sm-6.col-md-6.col-lg-6
+					h1.panel-title Apps
+				.col-sm-6.col-md-6.col-lg-6
+					a.pull-right.btn.btn-success.btn-xs(href="/app/add") &nbsp;+ Add App
 		.panel-body
 			ul.nav.nav-pills.nav-stacked
-				for app in apps
-					li
-						a(href="/app/"+app._id)= app.name
+				for a in apps
+					li(class= a == app ? "active" : null)
+						a(href="/app/"+a._id)= a.name
+							span.pull-right.label(class= app.running ? "label-success" : "label-danger") &nbsp;

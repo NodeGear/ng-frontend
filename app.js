@@ -8,24 +8,7 @@ var express = require('express')
 	, mailer = require('nodemailer')
 	, passport = require('passport')
 	, auth = require('./auth')
-
-//var bugsnag = require("bugsnag");
-//bugsnag.register("6c73b59b8d37503c8e8a70d67613d067", {
-//	releaseStage: process.env.NODE_ENV == "production" ? "production" : "development",
-//	notifyReleaseStages: ['production'],
-//	appVersion: '0.2.0'
-//})
-
-// Create SMTP transport method
-//var transport = mailer.createTransport("sendgrid", {
-//	auth: {
-//		user: "matej",
-//		pass: "Ye1aeph9eex2eghein3ve4foh6aih5"
-//	}
-//})
-//exports.getTransport = function() {
-//	return transport;
-//}
+	, config = require('./config')
 
 var app = exports.app = express();
 
@@ -42,7 +25,7 @@ if (process.env.NODE_ENV == 'production') {
 	}
 	
 	console.log("Production, mode "+mode);
-	var db = "mongodb://nodecloud:Jei4hucu5fohNgiengohgh8Pagh4fuacahQuiwee@127.0.0.1/nodecloud"+mode;
+	var db = config.db;
 	mongoose.connect(db, {auto_reconnect: true, native_parser: true});
 	sessionStore = new MongoStore({
 		url: db
@@ -50,7 +33,7 @@ if (process.env.NODE_ENV == 'production') {
 } else {
 	// development mode
 	console.log("Development");
-	var db = "mongodb://127.0.0.1/nodecloud";
+	var db = config.db;
 	mongoose.connect(db, {auto_reconnect: true, native_parser: true});
 	sessionStore = new MongoStore({
 		url: db
@@ -70,6 +53,7 @@ app.use(express.logger('dev')); // Pretty log
 app.use(express.limit('25mb')); // File upload limit
 app.use("/", express.static(path.join(__dirname, 'public'))); // serve static files
 app.use(express.bodyParser()); // Parse the request body
+app.use(express.multipart());
 app.use(express.cookieParser()); // Parse cookies from header
 app.use(express.methodOverride());
 app.use(express.session({ // Session store

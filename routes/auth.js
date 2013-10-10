@@ -8,6 +8,8 @@ exports.router = function (app) {
 		failureRedirect: '/'
 	}))
 		.post('/auth/register', doRegister)
+		
+		.get('/logout', doLogout)
 }
 
 function doRegister (req, res) {
@@ -44,4 +46,9 @@ function doRegister (req, res) {
 		req.session.flash = errs;
 		res.redirect('/');
 	}
+}
+
+function doLogout (req, res) {
+	req.logout();
+	res.redirect('/')
 }

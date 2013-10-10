@@ -10,7 +10,7 @@ block content
 					.panel-heading
 						h1.panel-title Login
 					.panel-body
-						form.form-horizontal(action="/auth/password", method="POST", autocomplete="off")
+						form.form-horizontal(action="/auth/password", method="POST")
 							input(type="hidden", name="_csrf", value=token)
 							input(type="hidden", name="auth", value="login")
 							.form-group
@@ -30,7 +30,7 @@ block content
 					.panel-heading
 						h1.panel-title Register
 					.panel-body
-						form.form-horizontal(action="/auth/register", method="POST", autocomplete="off")
+						form.form-horizontal(action="/auth/register", method="POST")
 							input(type="hidden", name="_csrf", value=token)
 							input(type="hidden", name="auth", value="login")
 							.form-group

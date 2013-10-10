@@ -12,9 +12,15 @@ block content
 			.col-lg-8.col-sm-8.col-md-8
 				.panel.panel-default
 					.panel-heading
-						.col-sm-6.col-md-6.col-lg-6
-							h1.panel-title= app.name
-						.col-sm-6.col-md-6.col-lg-6
-							a.pull-right.btn.btn-success.btn-xs &nbsp;+ Add App
+						h1.panel-title= app.name
 					.panel-body
-						h1 Hello world
+						p <strong>Name:</strong> 
+							= app.name
+						p <strong>PKG:</strong> 
+							= app.pkg
+						p <strong>Location:</strong> 
+							= app.location
+						p <strong>Running:</strong> 
+							= app.isRunning
+						p <strong>Installed:</strong> 
+							= app.isInstalled

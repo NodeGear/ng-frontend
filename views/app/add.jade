@@ -15,7 +15,7 @@ block content
 					.panel-heading
 						h1.panel-title Add app
 					.panel-body
-						form.form-horizontal(action="/app/add", method="POST", autocomplete="off")
+						form.form-horizontal(action="/app/add", method="POST", autocomplete="off", enctype="multipart/form-data")
 							input(type="hidden", name="_csrf", value=token)
 							input(type="hidden", name="auth", value="login")
 							.form-group

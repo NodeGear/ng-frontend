@@ -14,4 +14,8 @@ var droneSchema = schema({
 	isInstalled: { type: Boolean, default: false }
 })
 
+droneSchema.statics.handleTar = function (files) {
+	
+}
+
 module.exports = mongoose.model("Drone", droneSchema);
