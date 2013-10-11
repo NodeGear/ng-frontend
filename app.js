@@ -78,10 +78,12 @@ app.use(function(req, res, next) {
 	if (req.session.flash) {
 		res.locals.flash = req.session.flash;
 	} else {
-		res.locals.flash = [];
+		req.session.flash = res.locals.flash = [];
 	}
 	
-	req.session.flash = [];
+	res.locals.emptyFlash = function () {
+		req.session.flash = []
+	}
 	
 	// TODO maybe put req.user into res.locals.user
 	res.locals.user = req.user;

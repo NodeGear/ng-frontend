@@ -11,22 +11,3 @@ passport.deserializeUser(function(id, done) {
 		done(err, user)
 	})
 })
-
-passport.use(new LocalStrategy({
-	usernameField: 'email',
-	passwordField: 'password'
-},
-function (email, password, cb) {
-	models.User.findOne({ email: email }, function(err, user) {
-		if (err) {
-			return cb(err);
-		}
-		
-		// TODO hash
-		if (!user || user.password != password) {
-			return cb(null, false, 'Incorrect credentials');
-		}
-		
-		return cb(null, user);
-	})
-}))
