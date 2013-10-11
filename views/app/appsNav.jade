@@ -9,7 +9,7 @@ mixin appsNav()
 		.panel-body
 			ul.nav.nav-pills.nav-stacked
 				for a in apps
-					li(class= a == app ? "active" : null)
+					li(class= a._id.equals(app._id) ? "active" : null)
 						a(href="/app/"+a._id)= a.name
 							.pull-right
 								span.label(class= a.isInstalled ? "label-success" : "label-danger")

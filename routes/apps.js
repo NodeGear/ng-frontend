@@ -18,18 +18,28 @@ exports.router = function (app) {
 
 function getApps (req, res, next) {
 	var id = req.params.id;
-	var query = {
-	}
 	
 	if (id) {
-		query._id = mongoose.Types.ObjectId(id);
+		id = mongoose.Types.ObjectId(id);
 	}
 	
-	models.Drone.find(query, function(err, drones) {
+	models.Drone.find({
+		user: req.user._id
+	}, function(err, drones) {
 		if (err) throw err;
 		
 		res.locals.apps = drones;
 		res.locals.app = drones[0];
+		
+		if (id) {
+			for (var i = 0; i < drones.length; i++) {
+				if (drones[i]._id.equals(id)) {
+					console.log("Got it")
+					res.locals.app = drones[i];
+					break;
+				}
+			}
+		}
 		
 		if (drones.length == 0) {
 			res.redirect('/app/add');
