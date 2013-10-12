@@ -17,13 +17,13 @@ block content
 								h1.panel-title= app.name
 							.col-sm-6.col-md-6.col-lg-6
 								.pull-right
-									a.btn.btn-info.btn-xs(href="/app/"+app._id+"/install", disabled = app.isInstalled == false ? null : "disabled") Install
-									| &nbsp;
-									a.btn.btn-default.btn-xs(href="/app/"+app._id+"/start", disabled = !app.isRunning ? null : "disabled") Start
+									a.btn.btn-default.btn-xs(href="/app/"+app._id+"/start", disabled = !app.isRunning && app.isInstalled ? null : "disabled") Start
 									| &nbsp;
 									a.btn.btn-default.btn-xs(href="/app/"+app._id+"/stop", disabled = app.isRunning ? null : "disabled") Stop
 									| &nbsp;
-									a.btn.btn-default.btn-xs(href="/app/"+app._id+"/restart") Restart
+									a.btn.btn-default.btn-xs(href="/app/"+app._id+"/restart", disabled = app.isInstalled ? null : "disabled") Restart
+									| &nbsp;
+									a.btn.btn-info.btn-xs(href="/app/"+app._id+"/install", disabled = app.isInstalled == false ? null : "disabled") Install
 									| &nbsp;
 									a.btn.btn-danger.btn-xs(href="/app/"+app._id+"/delete", disabled = app.deleted ? "disabled" : null) Delete
 					.panel-body
