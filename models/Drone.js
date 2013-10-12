@@ -9,6 +9,7 @@ var droneSchema = schema({
 		type: ObjectId,
 		ref: "User"
 	},
+	deleted: { type: Boolean, default: false },
 	location: String,
 	isRunning: Boolean,
 	isInstalled: { type: Boolean, default: false },

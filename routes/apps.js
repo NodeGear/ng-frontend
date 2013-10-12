@@ -64,7 +64,6 @@ function doAddApp (req, res) {
 	
 	// Tar
 	var up = req.files.upload;
-	console.log(up)
 	
 	fs.readFile(up.path, function (err, data) {
 		var path = 'upload' + Date.now() + '.tar.gz';

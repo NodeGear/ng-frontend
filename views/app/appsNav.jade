@@ -3,7 +3,7 @@ mixin appsNav()
 		.panel-heading
 			.row
 				.col-sm-6.col-md-6.col-lg-6
-					h1.panel-title Apps
+					h1.panel-title Applications
 				.col-sm-6.col-md-6.col-lg-6
 					a.pull-right.btn.btn-success.btn-xs(href="/app/add") &nbsp;+ Add App
 		.panel-body
@@ -12,10 +12,18 @@ mixin appsNav()
 					li(class= a._id.equals(app._id) ? "active" : null)
 						a(href="/app/"+a._id)= a.name
 							.pull-right
+								if a.deleted
+									span.label.label-danger DELETED
+									| &nbsp;
 								span.label(class= a.isInstalled ? "label-success" : "label-danger")
 									if a.isInstalled
 										= a.installedOn
 									else
-										&nbsp;
+										| Not Installed
 								| &nbsp;
-								span.label(class= a.isRunning ? "label-success" : "label-warning") &nbsp;
+								span.label(class= a.isRunning ? "label-success" : "label-warning")
+									if a.isRunning
+										// how long?
+										| UP X Hours
+									else
+										| Down

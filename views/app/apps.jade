@@ -7,9 +7,9 @@ block content
 	
 	.container
 		.row
-			.col-lg-4.col-sm-4.col-md-4
+			.col-lg-5.col-sm-5.col-md-5
 				mixin appsNav()
-			.col-lg-8.col-sm-8.col-md-8
+			.col-lg-7.col-sm-7.col-md-7
 				.panel.panel-default
 					.panel-heading
 						.row
@@ -17,15 +17,15 @@ block content
 								h1.panel-title= app.name
 							.col-sm-6.col-md-6.col-lg-6
 								.pull-right
-									a.btn.btn-info.btn-xs(href="/app/"+app._id+"/install") Install
+									a.btn.btn-info.btn-xs(href="/app/"+app._id+"/install", disabled = app.isInstalled == false ? null : "disabled") Install
 									| &nbsp;
-									a.btn.btn-default.btn-xs(href="/app/"+app._id+"/start") Start
+									a.btn.btn-default.btn-xs(href="/app/"+app._id+"/start", disabled = !app.isRunning ? null : "disabled") Start
 									| &nbsp;
-									a.btn.btn-default.btn-xs(href="/app/"+app._id+"/stop") Stop
+									a.btn.btn-default.btn-xs(href="/app/"+app._id+"/stop", disabled = app.isRunning ? null : "disabled") Stop
 									| &nbsp;
 									a.btn.btn-default.btn-xs(href="/app/"+app._id+"/restart") Restart
 									| &nbsp;
-									a.btn.btn-danger.btn-xs(href="/app/"+app._id+"/delete") Delete
+									a.btn.btn-danger.btn-xs(href="/app/"+app._id+"/delete", disabled = app.deleted ? "disabled" : null) Delete
 					.panel-body
 						p <strong>Name:</strong> 
 							= app.name
