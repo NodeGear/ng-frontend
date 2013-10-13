@@ -7,11 +7,18 @@ exports.router = function (app) {
 function calculateAverage(data) {
 	var total = 0;
 	var count = 0;
+	var totalSize = 0;
+	
 	for (; count < data.length; count++) {
 		var diff = data[count].end - data[count].start;
 		total += diff;
+		
+		totalSize += data[count].resSize;
 	}
-	return total / count
+	return {
+		averageRequests: total / count,
+		totalSize: totalSize
+	}
 }
 
 function showAnalytics (req, res) {
@@ -20,11 +27,21 @@ function showAnalytics (req, res) {
 		if (err) throw err;
 		res.locals.analytics = analytics;
 		
-		res.locals.average = calculateAverage(analytics)
+		var results = calculateAverage(analytics);
+		res.locals.average = results.averageRequests
+		res.locals.size = results.totalSize
+		if (res.locals.size > 0) {
+			res.locals.size = res.locals.size / 1024 / 1024;
+		}
 		
 		models.Analytic.find({}, function(err, all) {
 			res.locals.allTotal = all.length;
-			res.locals.allAverage = calculateAverage(all);
+			var results = calculateAverage(all);
+			res.locals.allAverage = results.averageRequests
+			res.locals.allSize = results.totalSize
+			if (res.locals.allSize > 0) {
+				res.locals.allSize = res.locals.allSize / 1024 / 1024;
+			}
 			
 			res.render('analytics/show')
 		})

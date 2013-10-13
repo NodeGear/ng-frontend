@@ -50,7 +50,7 @@ app.set('app version', '0.0.1'); // App version
 app.locals.pretty = process.env.NODE_ENV != 'production' // Pretty HTML outside production mode
 
 app.use(express.logger('dev')); // Pretty log
-app.use(express.limit('25mb')); // File upload limit
+app.use(express.limit('30mb')); // File upload limit
 app.use("/", express.static(path.join(__dirname, 'public'))); // serve static files
 app.use(express.bodyParser()); // Parse the request body
 app.use(express.multipart());
