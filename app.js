@@ -85,7 +85,6 @@ app.use(function(req, res, next) {
 		req.session.flash = []
 	}
 	
-	// TODO maybe put req.user into res.locals.user
 	res.locals.user = req.user;
 	res.locals.loggedIn = res.locals.user != null;
 	

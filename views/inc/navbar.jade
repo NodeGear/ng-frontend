@@ -16,6 +16,8 @@ mixin navbar(active)
 								a(href="/") Apps
 							li(class= active == 1 ? "active" : null)
 								a(href="/app/add") Add Application
+							li(class= active == 2 ? "active" : null)
+								a(href="/analytics") Analytics
 						else
 							li(class= active == -1 ? "active" : null)
 								a(href="/") Login / Register
