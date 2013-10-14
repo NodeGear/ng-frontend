@@ -26,19 +26,18 @@ block content
 			table.table
 				thead
 					tr
+						th IP
 						th Start
 						th Time
 						th Down
 						th Up
 						th Hostname
 						th Request
-						th URL
-						th Status
 						th Drone
-						th 404?
 				tbody
 					for row in analytics
 						tr
+							td= row.ip
 							td
 								= row.start.getDate()
 								| /
@@ -63,19 +62,23 @@ block content
 										= size.toFixed(2)
 										| kb
 									else
+										- size = size / 1024
 										= size.toFixed(2)
 										| mb
 							td= row.reqSize
 								| b
 							td= row.hostname
 							td= row.request
-							td= row.url
-							td= row.statusCode
+								|  
+								= row.statusCode
+								|  
+								if row.url.length > 10
+									= row.url.substr(0,10-1)
+									| &hellip;
+								else
+									= row.url
 							td
 								if row.drone
 									a(href="/app/"+row.drone._id)= row.drone.name
-							td
-								if row.found
-									| Nah
-								else
-									| YES
+								unless row.found
+									code 404
