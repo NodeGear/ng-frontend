@@ -21,6 +21,7 @@
 	"bugsnag": "latest",
 	"passport": "latest",
 	"passport-local": "latest",
-	"validator": "latest"
+	"validator": "latest",
+	"ansi-to-html": "latest"
   }
 }

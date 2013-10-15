@@ -12,6 +12,8 @@ block content
 			.col-lg-5.col-sm-5.col-md-5
 				mixin appsNav()
 				.panel.panel-default
+					.panel-heading
+						h1.panel-title App Information
 					.panel-body
 						p <strong>Name:</strong> 
 							= app.name
@@ -40,10 +42,15 @@ block content
 											| .nodecloud.net
 									else if key == 'domains'
 										for domain in arr[key]
-											a(href=domain)= domain
+											a(href="http://"+domain)= domain
 									else
 										= arr[key]
 						mixin loop(app.pkg)
+				.panel.panel-default
+					.panel-heading
+						h1.panel-title Log file
+					.panel-body
+						!= app.logs
 			.col-lg-7.col-sm-7.col-md-7
 				.panel.panel-default
 					.panel-heading
@@ -62,8 +69,6 @@ block content
 									a.btn.btn-info.btn-xs(href="/app/"+app._id+"/install", disabled = app.isInstalled == false ? null : "disabled") Install
 									| &nbsp;
 									a.btn.btn-danger.btn-xs(href="/app/"+app._id+"/delete", disabled = app.deleted || app.isRunning ? "disabled" : null) Delete
-					.panel-body
-						
 					table.table
 						thead
 							tr
