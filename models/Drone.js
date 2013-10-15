@@ -13,7 +13,8 @@ var droneSchema = schema({
 	location: String,
 	isRunning: Boolean,
 	isInstalled: { type: Boolean, default: false },
-	installedOn: String // label of the nodecloud instance looking after this drone
+	installedOn: String, // label of the nodecloud instance looking after this drone
+	pid: Number
 })
 
 module.exports = mongoose.model("Drone", droneSchema);

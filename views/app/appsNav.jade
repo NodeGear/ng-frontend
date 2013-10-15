@@ -1,12 +1,10 @@
 mixin appsNav()
-	.panel
-		.panel-heading
-			.row
-				.col-sm-6.col-md-6.col-lg-6
-					h1.panel-title Applications
-				.col-sm-6.col-md-6.col-lg-6
-					a.pull-right.btn.btn-success.btn-xs(href="/app/add") &nbsp;+ Add App
-		.panel-body
+	.row
+		.col-sm-11.col-md-11.col-lg-11.col-sm-offset-1.col-md-offset-1.col-lg-offset-1
+			h1.panel-title Applications
+	br
+	.row
+		.col-sm-12.col-md-12.col-lg-12
 			ul.nav.nav-pills.nav-stacked
 				for a in apps
 					li(class= a._id.equals(app._id) ? "active" : null)
@@ -27,3 +25,4 @@ mixin appsNav()
 										| UP X Hours
 									else
 										| Down
+	br

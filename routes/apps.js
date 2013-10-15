@@ -34,7 +34,6 @@ function getApps (req, res, next) {
 		if (id) {
 			for (var i = 0; i < drones.length; i++) {
 				if (drones[i]._id.equals(id)) {
-					console.log("Got it")
 					res.locals.app = drones[i];
 					break;
 				}
@@ -46,7 +45,21 @@ function getApps (req, res, next) {
 			return;
 		}
 		
-		next();
+		if (res.locals.app != null) {
+			models.Usage.find({
+				drone: res.locals.app._id
+			}).sort('-time').limit(20).exec(function(err, usage) {
+				if (err) throw err;
+				
+				res.locals.usage = usage;
+				
+				next();
+			})
+		} else {
+			res.locals.usage = [];
+			
+			next();
+		}
 	})
 }
 

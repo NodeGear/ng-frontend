@@ -6,9 +6,44 @@ block content
 	mixin navbar(0)
 	
 	.container
+		mixin flash()
+		
 		.row
 			.col-lg-5.col-sm-5.col-md-5
 				mixin appsNav()
+				.panel.panel-default
+					.panel-body
+						p <strong>Name:</strong> 
+							= app.name
+						p <strong>User:</strong> 
+							= app.user
+						p <strong>Deleted:</strong> 
+							= app.deleted
+						p <strong>Location:</strong> 
+							= app.location
+						p <strong>Running:</strong> 
+							= app.isRunning
+						p <strong>Installed:</strong> 
+							= app.isInstalled
+						p <strong>Installed on:</strong> 
+							= app.installedOn
+						p <strong>Process ID:</strong> 
+							= app.pid
+						hr
+						mixin loop(arr)
+							- for(var key in arr)
+								p
+									strong= key
+									| : 
+									if key == 'subdomain'
+										a(href="http://"+arr[key]+".nodecloud.net")= arr[key]
+											| .nodecloud.net
+									else if key == 'domains'
+										for domain in arr[key]
+											a(href=domain)= domain
+									else
+										= arr[key]
+						mixin loop(app.pkg)
 			.col-lg-7.col-sm-7.col-md-7
 				.panel.panel-default
 					.panel-heading
@@ -17,23 +52,32 @@ block content
 								h1.panel-title= app.name
 							.col-sm-6.col-md-6.col-lg-6
 								.pull-right
-									a.btn.btn-default.btn-xs(href="/app/"+app._id+"/start", disabled = !app.isRunning && app.isInstalled ? null : "disabled") Start
-									| &nbsp;
-									a.btn.btn-default.btn-xs(href="/app/"+app._id+"/stop", disabled = app.isRunning ? null : "disabled") Stop
-									| &nbsp;
-									a.btn.btn-default.btn-xs(href="/app/"+app._id+"/restart", disabled = app.isInstalled ? null : "disabled") Restart
-									| &nbsp;
+									if app.isInstalled
+										a.btn.btn-xs(href="/app/"+app._id+"/start", disabled = !app.isRunning && app.isInstalled ? null : "disabled", class= app.isRunning ? "btn-default" : "btn-success") Start
+										| &nbsp;
+										a.btn.btn-xs(href="/app/"+app._id+"/stop", disabled = app.isRunning ? null : "disabled", class= app.isRunning ? "btn-danger" : "btn-default") Stop
+										| &nbsp;
+										a.btn.btn-default.btn-xs(href="/app/"+app._id+"/restart", disabled = app.isInstalled && app.isRunning ? null : "disabled") Restart
+										| &nbsp;
 									a.btn.btn-info.btn-xs(href="/app/"+app._id+"/install", disabled = app.isInstalled == false ? null : "disabled") Install
 									| &nbsp;
-									a.btn.btn-danger.btn-xs(href="/app/"+app._id+"/delete", disabled = app.deleted ? "disabled" : null) Delete
+									a.btn.btn-danger.btn-xs(href="/app/"+app._id+"/delete", disabled = app.deleted || app.isRunning ? "disabled" : null) Delete
 					.panel-body
-						p <strong>Name:</strong> 
-							= app.name
-						p <strong>PKG:</strong> 
-							= app.pkg
-						p <strong>Location:</strong> 
-							= app.location
-						p <strong>Running:</strong> 
-							= app.isRunning
-						p <strong>Installed:</strong> 
-							= app.isInstalled
+						
+					table.table
+						thead
+							tr
+								th Time
+								th CPU Usage %
+								th RAM Usage MB
+						tbody
+							for use in usage
+								tr
+									td
+										= use.time.getHours()
+										| :
+										= use.time.getMinutes()
+									td
+										= use.cpu
+									td
+										= (use.memory / 1024 / 1024).toFixed(2)
