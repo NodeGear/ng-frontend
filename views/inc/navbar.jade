@@ -1,7 +1,10 @@
 mixin navbar(active)
+	- if(typeof active !== 'number')
+		- active = -99
+	
 	header
 		nav.navbar.navbar-default
-			.container
+			div(class= typeof app === "undefined" ? "container" : "full-width-container")
 				.navbar-header
 					button.navbar-toggle(type="button", data-toggle="collapse", data-target=".nodecloud-navbar-collapse")
 						span.sr-only Toggle Navigation
@@ -21,7 +24,7 @@ mixin navbar(active)
 						else
 							li(class= active == -1 ? "active" : null)
 								a(href="/") Login / Register
-					
+				
 					if loggedIn
 						ul.nav.navbar-nav.navbar-right
 							li

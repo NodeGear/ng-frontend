@@ -40,6 +40,12 @@ if (process.env.NODE_ENV == 'production') {
 	});
 }
 
+var db = mongoose.connection
+db.on('error', console.error.bind(console, 'Mongodb Connection Error:'));
+db.once('open', function callback () {
+	console.log("Mongodb connection established")
+});
+
 // all environments
 app.enable('trust proxy');
 app.set('port', process.env.PORT || 3000); // Port

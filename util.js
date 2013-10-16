@@ -1,10 +1,14 @@
 exports.authorized = function (req, res, next) {
-	if (req.loggedIn) {
+	if (res.locals.loggedIn) {
 		next()
 	} else {
 		res.format({
 			html: function() {
-				req.session.flash = ["You are not logged in"];
+				req.session.flash = [exports.buildFlash(
+					["You must be logged in to access the page.."], {
+						class: "info",
+						title: "Please Log In!"
+					})];
 				res.redirect('/')
 			},
 			json: function() {

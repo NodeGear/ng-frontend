@@ -1,6 +1,6 @@
 var util = require('../util')
 	, auth = require('./auth')
-	, apps = require('./apps')
+	, apps = require('./app/apps')
 	, analytics = require('./analytics')
 
 exports.router = function(app) {

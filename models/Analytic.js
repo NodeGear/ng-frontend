@@ -16,4 +16,32 @@ var analyticsSchema = schema({
 	ip: String
 })
 
+analyticsSchema.statics.getAnalyticsForDrone = function(drone, limit, sort, cb) {
+	if (typeof limit === 'function') {
+		cb = limit;
+		limit = 100;
+	}
+	if (typeof limit === 'undefined') {
+		limit = 100;
+	}
+	if (typeof sort === 'function') {
+		cb = sort;
+		sort = '-end'
+	}
+	if (typeof sort === 'undefined') {
+		sort = '-end'
+	}
+	if (typeof cb !== 'function') {
+		return;
+	}
+	
+	module.exports.find({
+		drone: drone._id
+	}).sort(sort).limit(limit).exec(function(err, analytics) {
+		if (err) throw err;
+		
+		cb(analytics)
+	})
+}
+
 module.exports = mongoose.model("Analytic", analyticsSchema);

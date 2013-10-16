@@ -1,13 +1,11 @@
 mixin appsNav()
-	.row
-		.col-sm-11.col-md-11.col-lg-11.col-sm-offset-1.col-md-offset-1.col-lg-offset-1
+	.panel.panel-default
+		.panel-heading
 			h1.panel-title Applications
-	br
-	.row
-		.col-sm-12.col-md-12.col-lg-12
-			ul.nav.nav-pills.nav-stacked
-				for a in apps
-					li(class= a._id.equals(app._id) ? "active" : null)
+		table.table
+			for a in apps
+				tr
+					td
 						a(href="/app/"+a._id)= a.name
 							.pull-right
 								if a.deleted
@@ -25,4 +23,3 @@ mixin appsNav()
 										| UP X Hours
 									else
 										| Down
-	br

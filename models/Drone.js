@@ -33,15 +33,6 @@ droneSchema.methods.pullDroneDetails = function (cb) {
 			Usage.getUsageForDrone(self._id, function(usage) {
 				done(null, usage)
 			})
-		},
-		log: function(done) {
-			if (self.logs.length > 0) {
-				self.getLog(self.logs[self.logs.length-1], function(log) {
-					done(null, log);
-				});
-			} else {
-				done(null, "");
-			}
 		}
 	}, function(err, results) {
 		if (err) throw err;
@@ -50,16 +41,21 @@ droneSchema.methods.pullDroneDetails = function (cb) {
 	})
 }
 
-droneSchema.methods.getLog = function (log, length, cb) {
+droneSchema.methods.getLog = function (log, length, parse, cb) {
 	if (typeof length === "function") {
 		cb = length;
 		length = 100;
-	} else if (typeof cb !== "function") {
+	}
+	if (typeof parse === "function") {
+		cb = parse;
+		parse = true;
+	}
+	if (typeof cb !== "function") {
 		return;
 	}
 	
 	if (!log || !log.location) {
-		cb("");
+		cb(log);
 		return;
 	}
 	
@@ -67,29 +63,42 @@ droneSchema.methods.getLog = function (log, length, cb) {
 		if (logExists) {
 			fs.readFile(log.location, function(err, data) {
 				if (err) {
-					cb("");
+					cb(log);
 					return;
 				}
 				
-				// Parse logs
-				// Do some parsing..
-				log = "";
-				var lines = data.toString().split('\n');
-				for (var i = lines.length-1; i >= 0; i--) {
-					var line = lines[i]
-					
-					log += line + "<br/>";
-					
-					// have max length
-					if (i + length < lines.length) break;
-				}
+				if (parse) {
+					// Parse logs
+					// Do some parsing..
+					log.content = "";
+					var lines = data.toString().split('\n');
+					for (var i = lines.length-1; i >= 0; i--) {
+						var line = lines[i]
+						
+						// removes the newline at the end of files
+						if (i == lines.length-1 && line.length == 0) {
+							continue;
+						}
+						
+						log.content += line + "<br/>";
+						
+						// have max length
+						if (length > 0) {
+							if (i + length < lines.length) {
+								break;
+							}
+						}
+					}
 				
-				log = ansi2html.toHtml(log)
+					log.content = ansi2html.toHtml(log.content)
+				} else {
+					log.content = data;
+				}
 				
 				cb(log);
 			})
 		} else {
-			cb("");
+			cb(log);
 		}
 	})
 }
@@ -104,8 +113,17 @@ droneSchema.statics.getDronesByUserId = function (userID, cb) {
 		user: userID
 	}, function(err, drones) {
 		if (err) throw err;
-		console.log("DS" + drones)
+		
 		cb(drones);
+	})
+}
+
+droneSchema.statics.getDroneById = function (id, cb) {
+	module.exports.findById(id)
+		.exec(function(err, drone) {
+		if (err) throw err;
+		
+		cb(drone);
 	})
 }
 
