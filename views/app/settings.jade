@@ -1,0 +1,40 @@
+extends ../layout
+
+include appWrapper
+
+block content
+	+navbar()
+	
+	+appWrapper(4)
+		.panel.panel-default
+			.panel-heading
+				h1.panel-title= app.name
+					|  Settings
+			.panel-body
+				form.form-horizontal(action="/app/"+app._id+"/settings", method="POST", autocomplete="off", enctype="multipart/form-data")
+					input(type="hidden", name="_csrf", value=token)
+					.form-group
+						label.col-md-3.col-lg-3.col-sm-3.control-label(for="name") Name
+						.col-lg-9.col-md-9.col-sm-9
+							input#name.form-control(type="text", name="name", placeholder="What's your app called", value=app.name, ng-model="name")
+					hr
+					.form-group
+						label.col-md-3.col-lg-3.col-sm-3.control-label Environment variables
+						.col-lg-4.col-md-4.col-sm-4
+							input.form-control(type="text", placeholder="NODE_ENV")
+						.col-lg-5.col-md-5.col-sm-5
+							input.form-control(type="text", placeholder="production")
+					.form-group
+						.col-md-offset-3.col-lg-offset-3.col-sm-offset-3.col-lg-4.col-md-4.col-sm-4
+							input.form-control(type="text", placeholder="variable_name")
+						.col-lg-5.col-md-5.col-sm-5
+							input.form-control(type="text", placeholder="variable_value")
+					
+					.form-group
+						label.col-md-3.col-lg-3.col-sm-3.control-label(for="pubKey") Public SSH Key
+						.col-lg-9.col-md-9.col-sm-9
+							textarea#pubKey.form-control(name="name", placeholder="Copy and paste your public SSH Key for git access (coming soon)")
+					
+					.form-group
+						.col-lg-9.col-md-9.col-sm-9.col-lg-offset-3.col-md-offset-3.col-sm-offset-3
+							input.btn.btn-success(type="submit", value="Save")

@@ -7,10 +7,11 @@ var mongoose = require('mongoose')
 	, log = require('./log')
 	, analytics = require('./analytics')
 	, usage = require('./usage')
+	, settings = require('./settings')
 	
 exports.router = function (app) {
-	app.get('/app/:id', util.authorized, getApp)
-		.get('/app/:id/*', util.authorized, getApp)
+	app.all('/app/:id', util.authorized, getApp)
+		.all('/app/:id/*', util.authorized, getApp)
 	
 		.get('/app/:id', viewApp)
 		.get('/app/:id/install', drone.install)
@@ -22,6 +23,7 @@ exports.router = function (app) {
 	log.router(app)
 	analytics.router(app)
 	usage.router(app)
+	settings.router(app)
 }
 
 function getApp (req, res, next) {
