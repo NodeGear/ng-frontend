@@ -51,7 +51,8 @@ block content
 						h1.panel-title Log file
 					.panel-body
 						for l in app.logs
-							a(href="/app/"+app._id+"/log/"+l._id) Created #{l.created}
+							a(href="/app/"+app._id+"/log/"+l._id) #{l.created}
+							br
 						!= log
 			.col-lg-7.col-sm-7.col-md-7
 				.panel.panel-default
