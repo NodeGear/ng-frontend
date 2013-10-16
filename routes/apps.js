@@ -3,7 +3,6 @@ var mongoose = require('mongoose')
 	, fs = require('fs')
 	, config = require('../config')
 	, drone = require('./drone')
-	, ansi2html = new (require('ansi-to-html'))
 
 exports.router = function (app) {
 	app.get('/app/add', addApp)
@@ -17,7 +16,6 @@ exports.router = function (app) {
 		.get('/app/:id/delete', getApps, drone.delete)
 }
 
-// TODO clean this up
 function getApps (req, res, next) {
 	var self = this;
 	var id = req.params.id;
@@ -26,13 +24,11 @@ function getApps (req, res, next) {
 		id = mongoose.Types.ObjectId(id);
 	}
 	
-	models.Drone.find({
-		user: req.user._id
-	}, function(err, drones) {
-		if (err) throw err;
-		
+	models.Drone.getDronesByUserId(req.user._id, function(drones) {
 		res.locals.apps = drones;
 		res.locals.app = drones[0];
+		
+		console.log(drones)
 		
 		if (id) {
 			for (var i = 0; i < drones.length; i++) {
@@ -49,38 +45,11 @@ function getApps (req, res, next) {
 		}
 		
 		if (res.locals.app != null) {
-			models.Usage.find({
-				drone: res.locals.app._id
-			}).sort('-time').limit(20).exec(function(err, usage) {
-				if (err) throw err;
-				
-				res.locals.usage = usage;
-				
-				var logFile = config.droneLocation + res.locals.app._id + ".log"
-				fs.exists(logFile, function(logExists) {
-					if (logExists) {
-						fs.readFile(logFile, function(err, data) {
-							if (err) {
-								res.locals.app.logs = "";
-							} else {
-								// Do some parsing..
-								res.locals.app.logs = "";
-								var lines = data.toString().split('\n');
-								for (var i = lines.length-1; i >= 0; i--) {
-									res.locals.app.logs += lines[i] + "<br/>";
-								}
-						
-								res.locals.app.logs = ansi2html.toHtml(res.locals.app.logs)
-								
-								next();
-							}
-						})
-					} else {
-						res.locals.app.logs = "";
-						next()
-					}
-				})
-				
+			// get drone details
+			res.locals.app.pullDroneDetails(function(details) {
+				res.locals.usage = details.usage
+				res.locals.log = details.log
+				next()
 			})
 		} else {
 			res.locals.usage = [];

@@ -50,7 +50,9 @@ block content
 					.panel-heading
 						h1.panel-title Log file
 					.panel-body
-						!= app.logs
+						for l in app.logs
+							a(href="/app/"+app._id+"/log/"+l._id) Created #{l.created}
+						!= log
 			.col-lg-7.col-sm-7.col-md-7
 				.panel.panel-default
 					.panel-heading
