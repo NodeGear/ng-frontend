@@ -27,6 +27,12 @@ mixin navbar(active)
 				
 					if loggedIn
 						ul.nav.navbar-nav.navbar-right
-							li
-								a(href="/logout") Logout
-						p.navbar-text.pull-right Welcome #{ user.getName() }
+							li.dropdown(class= active == -1 ? "active" : null)
+								a.dropdown-toggle(href="#", data-toggle="dropdown")= user.getName()
+									b.caret
+								ul.dropdown-menu
+									li
+										a(href="/profile") Profile
+									li.divider
+									li
+										a(href="/logout") Logout

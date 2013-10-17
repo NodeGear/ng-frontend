@@ -4,6 +4,8 @@ var schema = mongoose.Schema;
 var ObjectId = schema.ObjectId;
 var crypto = require('crypto')
 
+var PublicKey = require('./PublicKey')
+
 var userSchema = schema({
 	username: String,
 	name: String,
@@ -50,6 +52,17 @@ userSchema.methods.generateToken = function (cb) {
 			cb(self.authToken)
 		})
 	});
+}
+
+userSchema.methods.getPublicKey = function (cb) {
+	var self = this
+	PublicKey.findOne({
+		user: self._id
+	}, function(err, key) {
+		if (err) throw err;
+		
+		cb(key);
+	})
 }
 
 userSchema.methods.getName = function () {
