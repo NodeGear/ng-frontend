@@ -22,6 +22,11 @@ var droneSchema = schema({
 	logs: [{
 		created: Date,
 		location: String
+	}],
+	env: [{
+		name: String,
+		value: String,
+		created: { type: Date, default: Date.now() },
 	}]
 })
 

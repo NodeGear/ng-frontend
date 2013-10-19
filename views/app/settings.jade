@@ -18,17 +18,20 @@ block content
 						.col-lg-9.col-md-9.col-sm-9
 							input#name.form-control(type="text", name="name", placeholder="What's your app called", value=app.name, ng-model="name")
 					hr
+					for env in app.env
+						.form-group
+							input.col-md-3.col-lg-3.col-sm-3.control-label(type="text", value=env.name, name="env[#{env._id}]['name']")
+							.col-lg-9.col-md-9.col-sm-9
+								input.form-control(type="text", value=env.value, name="env[#{env._id}]['value']")
+					
 					.form-group
-						label.col-md-3.col-lg-3.col-sm-3.control-label Environment variables
-						.col-lg-4.col-md-4.col-sm-4
-							input.form-control(type="text", placeholder="NODE_ENV")
-						.col-lg-5.col-md-5.col-sm-5
-							input.form-control(type="text", placeholder="production")
+						input.col-md-3.col-lg-3.col-sm-3(type="text", name="env[]['name']")
+						.col-lg-9.col-md-9.col-sm-9
+							input.form-control(type="text", name="env[]['value']")
+					
 					.form-group
-						.col-md-offset-3.col-lg-offset-3.col-sm-offset-3.col-lg-4.col-md-4.col-sm-4
-							input.form-control(type="text", placeholder="variable_name")
-						.col-lg-5.col-md-5.col-sm-5
-							input.form-control(type="text", placeholder="variable_value")
+						.col-lg-9.col-md-9.col-sm-9.col-lg-offset-3.col-md-offset-3.col-sm-offset-3
+							button.btn.btn-info(type="button") + Add Environment Variable
 					
 					.form-group
 						.col-lg-9.col-md-9.col-sm-9.col-lg-offset-3.col-md-offset-3.col-sm-offset-3
