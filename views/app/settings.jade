@@ -1,38 +1,30 @@
-extends ../layout
-
-include appWrapper
-
-block content
-	+navbar()
-	
-	+appWrapper(4)
-		.panel.panel-default
-			.panel-heading
-				h1.panel-title= app.name
-					|  Settings
-			.panel-body
-				form.form-horizontal(action="/app/"+app._id+"/settings", method="POST", autocomplete="off", enctype="multipart/form-data")
-					input(type="hidden", name="_csrf", value=token)
-					.form-group
-						label.col-md-3.col-lg-3.col-sm-3.control-label(for="name") Name
-						.col-lg-9.col-md-9.col-sm-9
-							input#name.form-control(type="text", name="name", placeholder="What's your app called", value=app.name, ng-model="name")
-					hr
-					for env in app.env
-						.form-group
-							input.col-md-3.col-lg-3.col-sm-3.control-label(type="text", value=env.name, name="env[#{env._id}]['name']")
-							.col-lg-9.col-md-9.col-sm-9
-								input.form-control(type="text", value=env.value, name="env[#{env._id}]['value']")
-					
-					.form-group
-						input.col-md-3.col-lg-3.col-sm-3(type="text", name="env[]['name']")
-						.col-lg-9.col-md-9.col-sm-9
-							input.form-control(type="text", name="env[]['value']")
-					
-					.form-group
-						.col-lg-9.col-md-9.col-sm-9.col-lg-offset-3.col-md-offset-3.col-sm-offset-3
-							button.btn.btn-info(type="button") + Add Environment Variable
-					
-					.form-group
-						.col-lg-9.col-md-9.col-sm-9.col-lg-offset-3.col-md-offset-3.col-sm-offset-3
-							input.btn.btn-success(type="submit", value="Save")
+.panel.panel-default
+	.panel-heading
+		h1.panel-title= app.name
+			|  Settings
+	.panel-body
+		form.form-horizontal(action="/app/"+app._id+"/settings", method="POST", autocomplete="off", enctype="multipart/form-data")
+			input(type="hidden", name="_csrf", value=token)
+			.form-group
+				label.col-md-3.col-lg-3.col-sm-3.control-label(for="name") Name
+				.col-lg-9.col-md-9.col-sm-9
+					input#name.form-control(type="text", name="name", placeholder="What's your app called", value=app.name, ng-model="name")
+			hr
+			for env in app.env
+				.form-group
+					input.col-md-3.col-lg-3.col-sm-3.control-label(type="text", value=env.name, name="env[#{env._id}]['name']")
+					.col-lg-9.col-md-9.col-sm-9
+						input.form-control(type="text", value=env.value, name="env[#{env._id}]['value']")
+			
+			.form-group
+				input.col-md-3.col-lg-3.col-sm-3(type="text", name="env[]['name']")
+				.col-lg-9.col-md-9.col-sm-9
+					input.form-control(type="text", name="env[]['value']")
+			
+			.form-group
+				.col-lg-9.col-md-9.col-sm-9.col-lg-offset-3.col-md-offset-3.col-sm-offset-3
+					button.btn.btn-info(type="button") + Add Environment Variable
+			
+			.form-group
+				.col-lg-9.col-md-9.col-sm-9.col-lg-offset-3.col-md-offset-3.col-sm-offset-3
+					input.btn.btn-success(type="submit", value="Save")

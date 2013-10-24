@@ -6,9 +6,9 @@ var mongoose = require('mongoose')
 	, util = require('../../util')
 
 exports.router = function (app) {
-	app.get('/app/:id/logs', getLog)
+	app.get('/app/:id/log', viewLogs)
 		.get('/app/:id/log/:lid', getLog)
-		.get('/app/:id/logs', viewLogs)
+		.get('/app/:id/log/:lid/*', getLog)
 		.get('/app/:id/log/:lid', viewLog)
 		.get('/app/:id/log/:lid/download', downloadLog)
 }
@@ -18,7 +18,7 @@ function getLog (req, res, next) {
 	var lid = req.params.lid;
 	
 	var log;
-	if (!lid) {
+	if (!lid || lid == 'latest') {
 		log = app.logs[0]
 	} else {
 		try {
@@ -41,10 +41,7 @@ function getLog (req, res, next) {
 }
 
 function viewLogs (req, res) {
-	res.locals.app.getLog(res.locals.log, -1, function(log) {
-		res.locals.log = log;
-		res.render('app/log')
-	});
+	res.render('app/logs')
 }
 
 function viewLog (req, res) {
@@ -55,10 +52,12 @@ function viewLog (req, res) {
 }
 
 function downloadLog (req, res) {
+	console.log(res.locals.log)
 	res.locals.app.getLog(res.locals.log, -1, false, function(log) {
+		console.log(log)
 		res.set({
 			'Content-Type': 'application/octet-stream',
-			'Content-Disposition': 'attachment; filename="'+res.locals.app.name+' - '+log.created+'"'
+			'Content-Disposition': 'attachment; filename="'+res.locals.app.name+' - '+log.created+'".log'
 		})
 		res.send(log.content)
 	});

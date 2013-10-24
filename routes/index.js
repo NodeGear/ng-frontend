@@ -6,6 +6,13 @@ var util = require('../util')
 
 exports.router = function(app) {
 	app.get('/', login, viewApps);
+	app.get('*', function(req, res, next) {
+		if (req.query.partial) {
+			next()
+		} else {
+			res.render('layout')
+		}
+	})
 	
 	auth.router(app)
 	apps.router(app)

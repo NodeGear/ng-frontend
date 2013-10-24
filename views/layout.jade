@@ -1,5 +1,5 @@
 !!! 5
-html
+html(ng-app="nodecloud")
 	head
 		meta(http-equiv="Content-Type", content="text/html; charset=utf-8;")
 		meta(name="_csrf", content="#{token}")
@@ -26,6 +26,8 @@ html
 		include inc/flash
 		
 		block content
+			+navbar(0)
+		ui-view
 		
 		.full-width-container
 			.row
@@ -41,6 +43,9 @@ html
 			script(src="/js/jquery.min.js", defer="true")
 			script(src="/js/bootstrap.min.js", defer="true")
 			script(src="/js/angular.min.js", defer="defer")
-			
+			script(src="/js/angular-ui-router.min.js", defer="defer")
+			if loggedIn
+				script(src="/js/angular-nodecloud.js", defer="defer")
+				
 		//- page-specific js
 		block addonjs

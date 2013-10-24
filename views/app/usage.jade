@@ -1,43 +1,35 @@
-extends ../layout
-
-include appWrapper
-
-block content
-	+navbar()
-	
-	+appWrapper(3)
-		.panel.panel-default
-			.panel-heading
-				.row
-					.col-sm-6.col-md-6.col-lg-6
-						h1.panel-title= app.name
-							|  Resource Usage
-					.col-sm-6.col-md-6.col-lg-6
-						.pull-right
-							if app.isInstalled
-								a.btn.btn-xs(href="/app/"+app._id+"/start", disabled = !app.isRunning && app.isInstalled ? null : "disabled", class= app.isRunning ? "btn-default" : "btn-success") Start
-								| &nbsp;
-								a.btn.btn-xs(href="/app/"+app._id+"/stop", disabled = app.isRunning ? null : "disabled", class= app.isRunning ? "btn-danger" : "btn-default") Stop
-								| &nbsp;
-								a.btn.btn-default.btn-xs(href="/app/"+app._id+"/restart", disabled = app.isInstalled && app.isRunning ? null : "disabled") Restart
-								| &nbsp;
-							a.btn.btn-info.btn-xs(href="/app/"+app._id+"/install", disabled = app.isInstalled == false ? null : "disabled") Install
-							| &nbsp;
-							a.btn.btn-danger.btn-xs(href="/app/"+app._id+"/delete", disabled = app.deleted || app.isRunning ? "disabled" : null) Delete
-			table.table
-				thead
-					tr
-						th Time
-						th CPU Usage %
-						th RAM Usage MB
-				tbody
-					for use in usage
-						tr
-							td
-								= use.time.getHours()
-								| :
-								= use.time.getMinutes()
-							td
-								= use.cpu
-							td
-								= (use.memory / 1024 / 1024).toFixed(2)
+.panel.panel-default
+	.panel-heading
+		.row
+			.col-sm-6.col-md-6.col-lg-6
+				h1.panel-title= app.name
+					|  Resource Usage
+			.col-sm-6.col-md-6.col-lg-6
+				.pull-right
+					if app.isInstalled
+						a.btn.btn-xs(href="/app/"+app._id+"/start", disabled = !app.isRunning && app.isInstalled ? null : "disabled", class= app.isRunning ? "btn-default" : "btn-success") Start
+						| &nbsp;
+						a.btn.btn-xs(href="/app/"+app._id+"/stop", disabled = app.isRunning ? null : "disabled", class= app.isRunning ? "btn-danger" : "btn-default") Stop
+						| &nbsp;
+						a.btn.btn-default.btn-xs(href="/app/"+app._id+"/restart", disabled = app.isInstalled && app.isRunning ? null : "disabled") Restart
+						| &nbsp;
+					a.btn.btn-info.btn-xs(href="/app/"+app._id+"/install", disabled = app.isInstalled == false ? null : "disabled") Install
+					| &nbsp;
+					a.btn.btn-danger.btn-xs(href="/app/"+app._id+"/delete", disabled = app.deleted || app.isRunning ? "disabled" : null) Delete
+	table.table
+		thead
+			tr
+				th Time
+				th CPU Usage %
+				th RAM Usage MB
+		tbody
+			for use in usage
+				tr
+					td
+						= use.time.getHours()
+						| :
+						= use.time.getMinutes()
+					td
+						= use.cpu
+					td
+						= (use.memory / 1024 / 1024).toFixed(2)

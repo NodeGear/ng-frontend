@@ -1,25 +1,17 @@
-extends ../layout
-
-include wrapper
-
-block content
-	+navbar(-1)
-	
-	+wrapper(1)
-		.panel.panel-default
-			.panel-heading
-				h1.panel-title SSH Public Key
-			.panel-body
-				p
-					strong Push to your repositories to 
-					code nodecloud@nodecloud.net:#{user.email}/{repo-name}.git
-				br
-				form.form-horizontal(action="/profile/ssh", method="POST", autocomplete="off", enctype="multipart/form-data")
-					input(type="hidden", name="_csrf", value=token)
-					.form-group
-						label.col-md-3.col-lg-3.col-sm-3.control-label(for="pubKey") Key
-						.col-lg-9.col-md-9.col-sm-9
-							textarea#pubKey.form-control(name="key", placeholder="Copy and paste your public SSH Key for git access (coming soon)", rows="12")= key == null ? null : key.key
-					.form-group
-						.col-lg-9.col-md-9.col-sm-9.col-lg-offset-3.col-md-offset-3.col-sm-offset-3
-							input.btn.btn-success(type="submit", value="Save")
+.panel.panel-default
+	.panel-heading
+		h1.panel-title SSH Public Key
+	.panel-body
+		p
+			strong Push to your repositories to 
+			code nodecloud@nodecloud.net:#{user.email}/{repo-name}.git
+		br
+		form.form-horizontal(action="/profile/ssh", method="POST", autocomplete="off", enctype="multipart/form-data")
+			input(type="hidden", name="_csrf", value=token)
+			.form-group
+				label.col-md-3.col-lg-3.col-sm-3.control-label(for="pubKey") Key
+				.col-lg-9.col-md-9.col-sm-9
+					textarea#pubKey.form-control(name="key", placeholder="Copy and paste your public SSH Key for git access (coming soon)", rows="12")= key == null ? null : key.key
+			.form-group
+				.col-lg-9.col-md-9.col-sm-9.col-lg-offset-3.col-md-offset-3.col-sm-offset-3
+					input.btn.btn-success(type="submit", value="Save")

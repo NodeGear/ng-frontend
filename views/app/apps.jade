@@ -1,11 +1,7 @@
-extends ../layout
-
 include appsNav
+include ../inc/flash
 
-block content
-	+navbar(0)
+.full-width-container
+	+flash()
 	
-	.full-width-container
-		+flash()
-		
-		+appsNav()
+	+appsNav()

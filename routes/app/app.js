@@ -14,6 +14,7 @@ exports.router = function (app) {
 		.all('/app/:id/*', util.authorized, getApp)
 	
 		.get('/app/:id', viewApp)
+		.get('/app/:id/dashboard', viewDashboard)
 		.get('/app/:id/install', drone.install)
 		.get('/app/:id/start', drone.start)
 		.get('/app/:id/stop', drone.stop)
@@ -53,4 +54,8 @@ function getApp (req, res, next) {
 
 function viewApp (req, res) {
 	res.render('app/app')
+}
+
+function viewDashboard (req, res) {
+	res.render('app/dashboard')
 }

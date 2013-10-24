@@ -1,13 +1,13 @@
-extends ../layout
+include ../inc/flash
 
-include wrapper
-
-block content
-	+navbar(-1)
-	
-	+wrapper(0)
-		.panel.panel-default
-			.panel-heading
-				h1.panel-title Profile
-			.panel-body
-				p.lead This is your profile...
+.full-width-container
+	+flash()
+	.row
+		.col-sm-4.col-md-4.col-lg-3
+			ul.nav.nav-pills.nav-stacked
+				li(ng-class="{ active: $state.includes('profile.profile') }")
+					a(ui-sref="profile.profile") Profile
+				li(ng-class="{ active: $state.includes('profile.ssh') }")
+					a(ui-sref="profile.ssh") SSH Public Key
+		.col-sm-8.col-md-8.col-lg-9
+			ui-view

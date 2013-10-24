@@ -6,7 +6,7 @@ var mongoose = require('mongoose')
 	, util = require('../../util')
 
 exports.router = function (app) {
-	app.get('/app/:id/analytics', getAnalytics, viewAnalytics)
+	app.get('/app/:id/traffic', getAnalytics, viewAnalytics)
 }
 
 function getAnalytics (req, res, next) {
