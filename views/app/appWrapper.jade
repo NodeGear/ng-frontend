@@ -1,0 +1,58 @@
+mixin appWrapper(active)
+	- if (active == null)
+		- active = -1
+	.full-width-container
+		+flash()
+		.row
+			.col-lg-2.col-sm-3.col-md-3
+				- var base = "/app/"+app._id;
+				ul.nav.nav-pills.nav-stacked
+					li(class= active == 0 ? "active" : null)
+						a(href=base) Dashboard
+					li(class= active == 1 ? "active" : null)
+						a(href=base+"/logs") Logs
+					li(class= active == 2 ? "active" : null)
+						a(href=base+"/analytics") Traffic
+					li(class= active == 3 ? "active" : null)
+						a(href=base+"/usage") Usage
+					li(class= active == 4 ? "active" : null)
+						a(href=base+"/settings") Settings
+				br
+				.panel
+					.panel-heading
+						h1.panel-title= app.name
+					.panel-body
+						p <strong>Name:</strong> 
+							= app.name
+						p <strong>User:</strong> 
+							= app.user
+						p <strong>Deleted:</strong> 
+							= app.deleted
+						p <strong>Location:</strong> 
+							= app.location
+						p <strong>Running:</strong> 
+							= app.isRunning
+						p <strong>Installed:</strong> 
+							= app.isInstalled
+						p <strong>Installed on:</strong> 
+							= app.installedOn
+						p <strong>Process ID:</strong> 
+							= app.pid
+						hr
+						mixin loop(arr)
+							- for(var key in arr)
+								p
+									strong= key
+									| : 
+									if key == 'subdomain'
+										a(href="http://"+arr[key]+".nodecloud.net")= arr[key]
+											| .nodecloud.net
+									else if key == 'domains'
+										for domain in arr[key]
+											a(href="http://"+domain)= domain
+									else
+										= arr[key]
+						+loop(app.pkg)
+			.col-lg-10.col-sm-9.col-md-9
+				if block
+					block
