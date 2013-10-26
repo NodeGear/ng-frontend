@@ -31,4 +31,12 @@ module.exports = new (function() {
 			})
 		}
 	})
+	fs.exists(this.droneLocation, function(exists) {
+		if (!exists) {
+			console.log("Creating drone location dir")
+			fs.mkdir(self.droneLocation, function(err) {
+				if (err) throw err;
+			})
+		}
+	})
 })()

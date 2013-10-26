@@ -20,11 +20,6 @@ function getApps (req, res, next) {
 	models.Drone.getDronesByUserId(req.user._id, function(drones) {
 		res.locals.apps = drones;
 		
-		if (drones.length == 0) {
-			res.redirect('/app/add');
-			return;
-		}
-		
 		next();
 	})
 }
@@ -57,5 +52,9 @@ function doAddApp (req, res) {
 }
 
 function viewApps (req, res) {
-	res.render('app/apps')
+	if (req.query.partial)
+		res.render('app/apps')
+	else
+		res.send({ apps: res.locals.apps })
+	
 }

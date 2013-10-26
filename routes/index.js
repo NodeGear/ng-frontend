@@ -6,15 +6,23 @@ var util = require('../util')
 
 exports.router = function(app) {
 	app.get('/', login, viewApps);
+	auth.router(app)
+	
 	app.get('*', function(req, res, next) {
-		if (req.query.partial) {
-			next()
-		} else {
-			res.render('layout')
-		}
+		res.format({
+			json: function() {
+				next()
+			},
+			html: function() {
+				if (req.query.partial) {
+					next()
+				} else {
+					res.render('layout')
+				}
+			}
+		})
 	})
 	
-	auth.router(app)
 	apps.router(app)
 	analytics.router(app)
 	profile.router(app)

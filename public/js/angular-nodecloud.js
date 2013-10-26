@@ -8,7 +8,19 @@ nodecloud.config(function($stateProvider, $urlRouterProvider, $locationProvider)
 	$stateProvider
 	.state('apps', {
 		url: '/apps',
-		templateUrl: "/apps?partial=true"
+		resolve: {
+			getApps: function($q, $http) {
+				var deferred = $q.defer();
+				
+				$http.get('/apps').success(function(data, status) {
+					deferred.resolve(data)
+				})
+				
+				return deferred.promise;
+			}
+		},
+		templateUrl: "/apps?partial=true",
+		controller: "AppsController"
 	})
 	.state('add', {
 		url: '/app/add',
@@ -81,8 +93,19 @@ nodecloud.config(function($stateProvider, $urlRouterProvider, $locationProvider)
 			return "/app/"+$stateParams.id+"/settings?partial=true"
 		}
 	})
+	.state('logout', {
+		url: '/logout',
+		controller: function($scope, $route) {
+			$route.reload()
+		}
+	})
 })
 .run(function($rootScope, $state, $stateParams) {
 	$rootScope.$state = $state
 	$rootScope.$stateParams = $stateParams
+})
+
+.controller('AppsController', function ($scope, getApps) {
+	$scope.apps = getApps.apps;
+	$scope.app = null;
 })

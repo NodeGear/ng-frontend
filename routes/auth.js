@@ -44,7 +44,7 @@ function doLogin (req, res) {
 			req.login(user, function(err) {
 				if (err) throw err;
 				
-				req.session.flash.push(buildFlash(["Thank you for logging in with NodeCloud"], { title: "Success", class: "info" }));
+				//req.session.flash.push(buildFlash(["Thank you for logging in with NodeCloud"], { title: "Success", class: "info" }));
 				res.redirect('/apps');
 			})
 		})

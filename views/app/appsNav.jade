@@ -3,23 +3,16 @@ mixin appsNav()
 		.panel-heading
 			h1.panel-title Applications
 		table.table
-			for a in apps
-				tr
-					td
-						a(href="/app/"+a._id)= a.name
-							.pull-right
-								if a.deleted
-									span.label.label-danger DELETED
-									| &nbsp;
-								span.label(class= a.isInstalled ? "label-success" : "label-danger")
-									if a.isInstalled
-										= a.installedOn
-									else
-										| Not Installed
-								| &nbsp;
-								span.label(class= a.isRunning ? "label-success" : "label-warning")
-									if a.isRunning
-										// how long?
-										| UP X Hours
-									else
-										| Down
+			tr(ng-repeat="a in apps")
+				td
+					a(href="/app/{{a._id}}") {{a.name}}
+						.pull-right
+							span.label.label-danger(ng-show="a.deleted") DELETED
+							&nbsp;
+							span.label(ng-class="{ 'label-success': a.isInstalled, 'label-danger': !a.isInstalled }")
+								span(ng-hide="a.isInstalled") Not Installed
+								span(ng-show="a.isInstalled") {{ a.installedOn }}
+							&nbsp;
+							span.label(ng-class="{ 'label-success': a.isInstalled, 'label-warning': !a.isInstalled }")
+								span(ng-hide="a.isRunning") Down
+								span(ng-show="a.isRunning") Up
