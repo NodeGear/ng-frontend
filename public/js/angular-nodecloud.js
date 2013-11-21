@@ -9,7 +9,7 @@ nodecloud.config(function($stateProvider, $urlRouterProvider, $locationProvider)
 	.state('apps', {
 		url: '/apps',
 		resolve: {
-			getApps: function($q, $http) {
+			data: function($q, $http) {
 				var deferred = $q.defer();
 				
 				$http.get('/apps').success(function(data, status) {
@@ -21,10 +21,6 @@ nodecloud.config(function($stateProvider, $urlRouterProvider, $locationProvider)
 		},
 		templateUrl: "/apps?partial=true",
 		controller: "AppsController"
-	})
-	.state('add', {
-		url: '/app/add',
-		templateUrl: "/app/add?partial=true"
 	})
 	.state('analytics', {
 		url: '/analytics',
@@ -43,12 +39,33 @@ nodecloud.config(function($stateProvider, $urlRouterProvider, $locationProvider)
 		url: '/profile/ssh',
 		templateUrl: "/profile/ssh?partial=true"
 	})
+	
+	.state('add', {
+		url: '/app/add',
+		templateUrl: "/app/add?partial=true",
+		controller: "AppController",
+		resolve: {
+			data: function ($q) {
+				return {}
+			}
+		}
+	})
 	.state('app', {
 		url: '/app/:id',
 		abstract: true,
-		templateUrl: function($stateParams) {
-			return "/app/"+$stateParams.id+"?partial=true"
-		}
+		templateUrl: "/app?partial=true",
+		resolve: {
+			data: function($q, $http, $stateParams) {
+				var deferred = $q.defer();
+				
+				$http.get('/app/'+$stateParams.id).success(function(data, status) {
+					deferred.resolve(data)
+				})
+				
+				return deferred.promise;
+			}
+		},
+		controller: "AppController"
 	})
 	.state('app.dashboard', {
 		url: '',
@@ -58,21 +75,8 @@ nodecloud.config(function($stateProvider, $urlRouterProvider, $locationProvider)
 	})
 	.state('app.logs', {
 		url: '/log',
-		abstract: true,
 		templateUrl: function($stateParams) {
 			return "/app/"+$stateParams.id+"/log?partial=true"
-		}
-	})
-	.state('app.logs.latest', {
-		url: '',
-		templateUrl: function($stateParams) {
-			return "/app/"+$stateParams.id+"/log/latest?partial=true"
-		}
-	})
-	.state('app.logs.log', {
-		url: '/:lid',
-		templateUrl: function($stateParams) {
-			return "/app/"+$stateParams.id+"/log/"+$stateParams.lid+"?partial=true"
 		}
 	})
 	.state('app.traffic', {
@@ -103,9 +107,4 @@ nodecloud.config(function($stateProvider, $urlRouterProvider, $locationProvider)
 .run(function($rootScope, $state, $stateParams) {
 	$rootScope.$state = $state
 	$rootScope.$stateParams = $stateParams
-})
-
-.controller('AppsController', function ($scope, getApps) {
-	$scope.apps = getApps.apps;
-	$scope.app = null;
 })

@@ -46,8 +46,9 @@ function viewLogs (req, res) {
 
 function viewLog (req, res) {
 	res.locals.app.getLog(res.locals.log, -1, function(log) {
-		res.locals.log = log;
-		res.render('app/log')
+		res.send({
+			log: log
+		})
 	});
 }
 

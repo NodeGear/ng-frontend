@@ -7,23 +7,16 @@
 			input(type="hidden", name="_csrf", value=token)
 			.form-group
 				label.col-md-3.col-lg-3.col-sm-3.control-label(for="name") Name
-				.col-lg-9.col-md-9.col-sm-9
-					input#name.form-control(type="text", name="name", placeholder="What's your app called", value=app.name, ng-model="name")
+				.col-lg-6.col-md-6.col-sm-6
+					input#name.form-control(type="text", name="name", placeholder="What's your app called", ng-init= "name = app.name", ng-model="name")
 			hr
-			for env in app.env
-				.form-group
-					input.col-md-3.col-lg-3.col-sm-3.control-label(type="text", value=env.name, name="env[#{env._id}]['name']")
-					.col-lg-9.col-md-9.col-sm-9
-						input.form-control(type="text", value=env.value, name="env[#{env._id}]['value']")
-			
 			.form-group
-				input.col-md-3.col-lg-3.col-sm-3(type="text", name="env[]['name']")
-				.col-lg-9.col-md-9.col-sm-9
-					input.form-control(type="text", name="env[]['value']")
-			
-			.form-group
-				.col-lg-9.col-md-9.col-sm-9.col-lg-offset-3.col-md-offset-3.col-sm-offset-3
-					button.btn.btn-info(type="button") + Add Environment Variable
+				.col-md-2.col-lg-2.col-sm-2.col-md-offset-1.col-lg-offset-1.col-sm-offset-1
+					input.form-control(type="text", placeholder="Variable Name", style="text-align:right;")
+				.col-lg-6.col-md-6.col-sm-6
+					input.form-control(type="text", placeholder="Environment Variable Value")
+				.col-lg-1.col-md-1.col-sm-1
+					button.btn.btn-info(type="button") +
 			
 			.form-group
 				.col-lg-9.col-md-9.col-sm-9.col-lg-offset-3.col-md-offset-3.col-sm-offset-3

@@ -14,6 +14,7 @@ html(ng-app="nodecloud")
 			link(rel="stylesheet", href="/css/bootstrap.min.css")
 			link(rel="stylesheet", href="/css/bootstrap-theme.css")
 			link(rel="stylesheet", href="/css/bootstrap-nodecloud.css")
+			link(rel="stylesheet", href="/css/font-awesome.min.css")
 			
 			//- Temporary hack until BS3.0.1 comes out.. 
 			style.
@@ -42,12 +43,14 @@ html(ng-app="nodecloud")
 						br
 		
 		block js
-			script(src="/js/jquery.min.js", defer="true")
-			script(src="/js/bootstrap.min.js", defer="true")
-			script(src="/js/angular.min.js", defer="defer")
-			script(src="/js/angular-ui-router.min.js", defer="defer")
+			script(src="/js/jquery.min.js", defer)
+			script(src="/js/bootstrap.min.js", defer)
+			script(src="/js/angular.min.js", defer)
+			script(src="/js/angular-ui-router.min.js", defer)
 			if loggedIn
-				script(src="/js/angular-nodecloud.js", defer="defer")
+				script(src="/js/angular-nodecloud.js", defer)
+				script(src="/js/nc-apps.js", defer)
+				script(src="/js/nc-logs.js", defer)
 				
 		//- page-specific js
 		block addonjs

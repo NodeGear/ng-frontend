@@ -21,7 +21,8 @@ var droneSchema = schema({
 	pid: Number,
 	logs: [{
 		created: Date,
-		location: String
+		location: String,
+		content: String
 	}],
 	env: [{
 		name: String,
@@ -114,13 +115,13 @@ droneSchema.statics.getDronesByUserId = function (userID, cb) {
 		return;
 	}
 	
-	module.exports.find({
-		user: userID
-	}, function(err, drones) {
-		if (err) throw err;
+	var q = module.exports.find({ user: userID })
+	q.select('name isRunning isInstalled installedOn deleted')
+	q.exec(function(err, drones) {
+			if (err) throw err;
 		
-		cb(drones);
-	})
+			cb(drones);
+		})
 }
 
 droneSchema.statics.getDroneById = function (id, cb) {

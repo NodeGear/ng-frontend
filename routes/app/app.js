@@ -10,6 +10,7 @@ var mongoose = require('mongoose')
 	, settings = require('./settings')
 	
 exports.router = function (app) {
+	app.get('/app', util.authorized, viewApp)
 	app.all('/app/:id', util.authorized, getApp)
 		.all('/app/:id/*', util.authorized, getApp)
 	
@@ -53,7 +54,16 @@ function getApp (req, res, next) {
 }
 
 function viewApp (req, res) {
-	res.render('app/app')
+	if (req.query.partial) {
+		res.render('app/app')
+		return;
+	}
+	
+	res.send({
+		app: res.locals.app,
+		log: res.locals.log,
+		usage: res.locals.usage
+	})
 }
 
 function viewDashboard (req, res) {

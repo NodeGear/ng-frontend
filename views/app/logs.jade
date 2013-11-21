@@ -2,27 +2,25 @@
 	.panel-heading
 		.row
 			.col-sm-8.col-xs-8.col-md-8.col-lg-8
-				h1.panel-title Log 
-					if app.logs
-						//-= log.created
-					else
+				h1.panel-title Log
+					if !app.logs
 						| Unavailable
+					else
+						|  - {{ log.created }}
 			.col-sm-4.col-xs-4.col-md-4.col-lg-4
 				if app.logs
 					.btn-group.pull-right
-						a.btn.btn-success.btn-xs(target="_blank", href="/app/"+app._id+"/log/latest/download?partial=true") Download
+						a.btn.btn-success.btn-xs(ng-hide="log == null", target="_blank", href="/app/"+app._id+"/log/{{ log._id }}/download?partial=true") Download
 						button.btn.btn-info.btn-xs.dropdown-toggle(type="button", data-toggle="dropdown") Select Log 
 							span.caret
 						ul.dropdown-menu(role="menu")
-							li: a(href="/app/"+app._id+"/log") Latest
-							li.divider
-							for l in app.logs
-								li: a(href="/app/"+app._id+"/log/"+l._id)
-									//if l._id.equals(log._id)
-									//	| &#10003; 
-									= l.created
+							li(ng-repeat="l in app.logs")
+								a(href="", ng-click="selectLog(l)")
+									span(ng-show="l._id == log._id")
+										| &#10003; 
+									{{ l.created }}
 	.panel-body
 		if app.logs
-			ui-view
+			span(ng-bind-html-unsafe="log.content")
 		else
 			h4 Your app has no logs available..
