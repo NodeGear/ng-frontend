@@ -2,23 +2,20 @@
 	.panel-heading
 		.row
 			.col-sm-6.col-md-6.col-lg-6
-				h1.panel-title= app.name
-					|  Resource Usage
+				h1.panel-title {{ app.name }} Resource Usage
 			.col-sm-6.col-md-6.col-lg-6
-	table.table
+	.panel-body
+		.row
+			.col-sm-12.col-lg-12.col-md-12
+				#usageGraph(style="height:200px;")
+	table.table(ng-init="getUsage()")
 		thead
 			tr
 				th Time
 				th CPU Usage %
-				th RAM Usage MB
+				th RAM Usage Mb
 		tbody
-			for use in usage
-				tr
-					td
-						= use.time.getHours()
-						| :
-						= use.time.getMinutes()
-					td
-						= use.cpu
-					td
-						= (use.memory / 1024 / 1024).toFixed(2)
+			tr(ng-repeat="use in usage")
+				td {{ use.time.getHours() }}:{{ use.time.getMinutes() }}
+				td {{ use.cpu }}
+				td {{ use.memory }}
