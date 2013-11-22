@@ -10,6 +10,10 @@ angular.module('nodecloud')
 	$scope.log = null
 	$scope.usage = [];
 	
+	$scope.setCsrf = function (csrf) {
+		$scope.csrf = csrf;
+	}
+	
 	$scope.selectLog = function (log) {
 		$scope.log = log
 		
@@ -29,6 +33,28 @@ angular.module('nodecloud')
 			
 			$scope.plotGraphs()
 		})
+	}
+	
+	$scope.startApp = function () {
+		$scope.app.isRunning = true;
+		$http.get('/app/'+$scope.app._id+'/start')
+	}
+	$scope.stopApp = function () {
+		$scope.app.isRunning = false;
+		$http.get('/app/'+$scope.app._id+'/stop')
+	}
+	$scope.restartApp = function () {
+		$scope.app.isRunning = true;
+		$http.get('/app/'+$scope.app._id+'/restart')
+	}
+	$scope.installApp = function () {
+		$scope.app.isInstalled = true;
+		$scope.app.installedOn = "demo";
+		$http.get('/app/'+$scope.app._id+'/install')
+	}
+	$scope.deleteApp = function () {
+		$scope.app.deleted = true;
+		$http.get('/app/'+$scope.app._id+'/delete')
 	}
 	
 	$scope.plotGraphs = function () {
@@ -51,5 +77,46 @@ angular.module('nodecloud')
 	
 	if ($scope.app.logs && $scope.app.logs.length > 0) {
 		$scope.selectLog($scope.app.logs[0])
+	}
+})
+
+.directive('appStart', function(){
+	return {
+		restrict: 'A',
+		link: function(scope, element, attrs) {
+			element.bind('click', scope.startApp)
+		}
+	}
+})
+.directive('appStop', function(){
+	return {
+		restrict: 'A',
+		link: function(scope, element, attrs) {
+			element.bind('click', scope.stopApp)
+		}
+	}
+})
+.directive('appRestart', function(){
+	return {
+		restrict: 'A',
+		link: function(scope, element, attrs) {
+			element.bind('click', scope.restartApp)
+		}
+	}
+})
+.directive('appInstall', function(){
+	return {
+		restrict: 'A',
+		link: function(scope, element, attrs) {
+			element.bind('click', scope.installApp)
+		}
+	}
+})
+.directive('appDelete', function(){
+	return {
+		restrict: 'A',
+		link: function(scope, element, attrs) {
+			element.bind('click', scope.deleteApp)
+		}
 	}
 })

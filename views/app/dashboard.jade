@@ -3,17 +3,14 @@
 		h1.panel-title= app.name
 			|  Dashboard
 	.panel-body
-		p.lead Maybe a facebook-like wall of recent events here..
+		p.lead A log of events
 	table.table
 		tr
-			td
-				strong Yesterday 12pm:
-				|  Your app restarted
+			td.text-right.col-md-2.col-lg-2.col-sm-2: strong 24/11/2013 11:30
+			td.col-md-10.col-lg-10.col-sm-10 #{app.name} restarted
 		tr
-			td
-				strong 2 Days ago 3am:
-				|  App went down
+			td.text-right.col-md-2.col-lg-2.col-sm-2: strong 23/11/2013 12:31
+			td.col-md-10.col-lg-10.col-sm-10 #{app.name} went down
 		tr
-			td
-				strong Yesterday 2pm:
-				|  App was installed on <code>local</code>
+			td.text-right.col-md-2.col-lg-2.col-sm-2: strong 20/11/2013 11:09
+			td.col-md-10.col-lg-10.col-sm-10 #{app.name} was installed on <code>local</code>

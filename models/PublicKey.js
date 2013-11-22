@@ -7,6 +7,7 @@ var mongoose = require('mongoose')
 	, User = require('./User')
 	, async = require('async')
 	, exec = require('child_process').exec
+	, util = require('../util')
 	
 var s = schema({
 	key: String,
@@ -35,17 +36,26 @@ s.statics.updateConfig = function (cb) {
 \n";
 		}
 		
-		fs.writeFile(config.gitoliteConfig, base, function(err) {
-			if (err) throw err;
-			
+		if (util.isDemo) {
 			cb()
-		})
+		} else {
+			fs.writeFile(config.gitoliteConfig, base, function(err) {
+				if (err) throw err;
+			
+				cb()
+			})
+		}
 	})
 	
 }
 
 s.methods.updateFile = function (cb) {
 	var self = this;
+	
+	if (util.isDemo) {
+		cb()
+		return;
+	}
 	
 	var keyfile = config.gitoliteKeys+self.user+".pub"
 	

@@ -10,22 +10,24 @@ include ../inc/flash
 		
 		.text-center
 			.btn-group
-				a.btn.btn-xs.btn-success(ng-show="app.isInstalled", app-start, ng-disabled="app.isRunning", title="Start")
+				a.btn.btn-xs.btn-success(ng-show="app.isInstalled", app-start, ng-disabled="app.isRunning || app.deleted", title="Start")
 					i.fa.fa-play.fa-fw
-				a.btn.btn-xs.btn-warning(ng-show="app.isInstalled", app-stop, ng-disabled="!app.isRunning", title="Pause")
+				a.btn.btn-xs.btn-warning(ng-show="app.isInstalled", app-stop, ng-disabled="!app.isRunning || app.deleted", title="Pause")
 					i.fa.fa-pause.fa-fw
-				a.btn.btn-xs.btn-default(ng-show="app.isInstalled", app-restart, ng-disabled="app.isRunning")
+				a.btn.btn-xs.btn-default(ng-show="app.isInstalled", app-restart, ng-disabled="app.isRunning || app.deleted")
 					| Restart
-				a.btn.btn-info.btn-xs(ng-hide="app.isInstalled", app-install, ng-disabled="app.isInstalled == false") Install
-				a.btn.btn-danger.btn-xs(app-delete, ng-disabled="!app.deleted || !app.isRunning") Delete
+				a.btn.btn-info.btn-xs(ng-hide="app.isInstalled", app-install, ng-disabled="app.isInstalled == true") Install
+				a.btn.btn-danger.btn-xs(app-delete, ng-disabled="app.deleted || app.isRunning") Delete
 		.clearfix
 		br
 		.text-center
 			span(ng-show="app.deleted").label.label-warning Deleted
+			span(ng-show="app.deleted") &nbsp;
 			span(ng-show="app.isRunning").label.label-success Running on {{ app.installedOn }}
+			span(ng-show="app.isRunning") &nbsp;
 			span(ng-hide="app.isRunning").label.label-warning Stopped
 			| &nbsp;
-			span.label.label-default PID {{ app.pid }}
+			span(ng-show="app.pid").label.label-default PID {{ app.pid }}
 		hr
 		ul.nav.nav-pills.nav-stacked
 			li(ng-class="{ active: $state.includes('app.dashboard') }")

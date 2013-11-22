@@ -1,3 +1,5 @@
+exports.isDemo = typeof process.env.NODECLOUD_DEMO !== 'undefined' ? true : false;
+
 exports.authorized = function (req, res, next) {
 	if (res.locals.loggedIn) {
 		next()
