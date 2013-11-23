@@ -3,7 +3,7 @@ html(ng-app="nodecloud")
 	head
 		meta(http-equiv="Content-Type", content="text/html; charset=utf-8;")
 		meta(name="_csrf", content="#{token}")
-		meta (name="viewport" content="width=device-width, initial-scale=1.0")
+		meta(name="viewport" content="width=device-width, initial-scale=1.0")
 		block meta
 		title NodeCloud - #{title}
 		link(href="/favicon.ico", type="image/x-icon", rel="icon")
@@ -48,6 +48,7 @@ html(ng-app="nodecloud")
 			script(src="/js/angular.min.js", defer)
 			script(src="/js/angular-ui-router.min.js", defer)
 			if loggedIn
+				script(src="/js/jquery.flot.min.js", defer)
 				script(src="/js/angular-nodecloud.js", defer)
 				script(src="/js/nc-apps.js", defer)
 				script(src="/js/nc-logs.js", defer)

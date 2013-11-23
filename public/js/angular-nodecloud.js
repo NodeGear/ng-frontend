@@ -101,6 +101,7 @@ nodecloud.config(function($stateProvider, $urlRouterProvider, $locationProvider)
 		url: '/logout',
 		controller: function($scope, $route) {
 			$route.reload()
+			window.location = "/logout";
 		}
 	})
 })
