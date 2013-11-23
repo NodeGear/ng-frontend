@@ -2,6 +2,7 @@ var passport = require('passport')
 	, models = require('../models')
 	, Validator = require('validator').Validator
 	, buildFlash = require('../util').buildFlash
+	, util = require('../util')
 
 exports.router = function (app) {
 	app.post('/auth/password', doLogin)
@@ -17,11 +18,16 @@ function doLogin (req, res) {
 		errs.push(err)
 	}
 	
+	if (util.isDemo) {
+		req.body.email = "demo@nodecloud.co"
+		req.body.password = "demo"
+	}
+	
 	// validate email
 	v.check(req.body.email, 'Please enter a valid email address').isEmail();
 	
 	// validate password
-	v.check(req.body.password, 'Please enter a valid password').len(5)
+	v.check(req.body.password, 'Please enter a valid password').len(4)
 	
 	if (errs.length == 0) {
 		models.User.findOne({ email: req.body.email }, function(err, user) {
@@ -56,6 +62,13 @@ function doLogin (req, res) {
 }
 
 function doRegister (req, res) {
+	if (util.isDemo) {
+		var info = buildFlash(["This is a demonstration website, please log in using the demonstration account"], { title: "This is a demo..", class: "info" });
+		req.session.flash = [info]
+		res.redirect('/');
+		return;
+	}
+	
 	var v = new Validator()
 	var errs = [];
 	v.error = function (err) {

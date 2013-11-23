@@ -11,7 +11,7 @@ mixin navbar(active)
 					a.navbar-brand(href="/") NodeCloud
 				.collapse.navbar-collapse.nodecloud-navbar-collapse
 					ul.nav.navbar-nav
-						if loggedIn
+						if (loggedIn)
 							li(ng-class="{ active: $state.includes('apps') }")
 								a(ui-sref="apps") Apps
 							li(ng-class="{ active: $state.includes('add') }")
@@ -21,6 +21,8 @@ mixin navbar(active)
 						else
 							li(class= active == -1 ? "active" : null)
 								a(href="/") Login / Register
+							if (isDemo)
+								li: a(href="http://kickstarter.com/nodecloud") Kickstarter Campaign
 					
 					if loggedIn
 						ul.nav.navbar-nav.navbar-right

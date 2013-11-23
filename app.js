@@ -94,6 +94,8 @@ app.use(function(req, res, next) {
 	res.locals.user = req.user;
 	res.locals.loggedIn = res.locals.user != null;
 	
+	res.locals.isDemo = util.isDemo;
+	
 	// navigation bar
 	next();
 });

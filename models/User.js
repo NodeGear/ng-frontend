@@ -5,6 +5,7 @@ var ObjectId = schema.ObjectId;
 var crypto = require('crypto')
 
 var PublicKey = require('./PublicKey')
+var util = require('../util')
 
 var userSchema = schema({
 	username: String,
@@ -70,3 +71,23 @@ userSchema.methods.getName = function () {
 }
 
 module.exports = model = mongoose.model('User', userSchema);
+
+if (util.isDemo) {
+	module.exports.findOne({
+		email: "demo@nodecloud.co"
+	}, function(err, demo) {
+		if (err) throw err;
+		
+		if (demo == null) {
+			demo = new module.exports({
+				username: "demo",
+				name: "NodeCloud Demonstration Account",
+				email: "demo@nodecloud.co",
+				password: "demo"
+			})
+			demo.save()
+			
+			// Also make some test apps...
+		}
+	})
+}

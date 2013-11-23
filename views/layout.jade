@@ -1,5 +1,5 @@
 !!! 5
-html(ng-app="nodecloud")
+html(ng-app= loggedIn ? "nodecloud" : "")
 	head
 		meta(http-equiv="Content-Type", content="text/html; charset=utf-8;")
 		meta(name="_csrf", content="#{token}")
