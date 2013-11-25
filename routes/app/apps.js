@@ -29,6 +29,11 @@ function addApp (req, res) {
 }
 
 function doAddApp (req, res) {
+	if (util.isDemo) {
+		res.redirect('back')
+		return;
+	}
+	
 	var name = req.body.name;
 	var drone = new models.Drone({
 		name: name,
