@@ -18,6 +18,8 @@ mixin navbar(active)
 								a(ui-sref="add") Add Application
 							li(ng-class="{ active: $state.includes('analytics') }")
 								a(ui-sref="analytics") Analytics
+							if (isDemo)
+								li: a(href="http://kickstarter.com/nodecloud") Kickstarter Campaign
 						else
 							li(class= active == -1 ? "active" : null)
 								a(href="/") Login / Register
