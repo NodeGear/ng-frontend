@@ -20,7 +20,7 @@ function sendGet (to, cb) {
 }
 
 exports.install = function (req, res) {
-	if (util.isDemo) {
+	if (res.locals.app._id.toString() != "5293dfc8d2e0794750000003" && util.isDemo == true) {
 		res.locals.app.installedOn = "demo";
 		res.locals.app.isInstalled = true;
 		res.locals.app.save();
@@ -50,7 +50,7 @@ exports.install = function (req, res) {
 }
 
 exports.start = function (req, res) {
-	if (util.isDemo) {
+	if (res.locals.app._id.toString() != "5293dfc8d2e0794750000003" && util.isDemo == true) {
 		res.locals.app.isRunning = true;
 		res.locals.app.save();
 		res.format({
@@ -79,7 +79,7 @@ exports.start = function (req, res) {
 }
 
 exports.stop = function (req, res) {
-	if (util.isDemo) {
+	if (res.locals.app._id.toString() != "5293dfc8d2e0794750000003" && util.isDemo == true) {
 		res.locals.app.isRunning = false;
 		res.locals.app.save();
 		res.format({
@@ -108,7 +108,7 @@ exports.stop = function (req, res) {
 }
 
 exports.restart = function (req, res) {
-	if (util.isDemo) {
+	if (res.locals.app._id.toString() != "5293dfc8d2e0794750000003" && util.isDemo == true) {
 		res.locals.app.isRunning = true;
 		res.locals.app.save();
 		res.format({
@@ -137,7 +137,7 @@ exports.restart = function (req, res) {
 }
 
 exports.delete = function (req, res) {
-	if (util.isDemo) {
+	if (res.locals.app._id.toString() != "5293dfc8d2e0794750000003" && util.isDemo == true) {
 		res.locals.app.deleted = true;
 		res.locals.app.save();
 		res.format({
