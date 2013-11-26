@@ -4,7 +4,8 @@ include ../inc/flash
 	+flash()
 	.row
 	.col-lg-2.col-sm-3.col-md-3
-		h4.text-center {{ app.name }}
+		h4.text-center
+			a(href="http://{{ app.pkg.subdomain }}.nodecloud.net/") {{ app.name }}
 			| &nbsp;
 			small.text-center {{ app.pkg.version }}
 		
