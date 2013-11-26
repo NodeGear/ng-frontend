@@ -137,9 +137,7 @@ exports.restart = function (req, res) {
 }
 
 exports.delete = function (req, res) {
-	if (res.locals.app._id.toString() != "5293dfc8d2e0794750000003" && util.isDemo == true) {
-		res.locals.app.deleted = true;
-		res.locals.app.save();
+	if (util.isDemo == true) {
 		res.format({
 			html: function() {
 				res.redirect('/app/'+res.locals.app._id)
