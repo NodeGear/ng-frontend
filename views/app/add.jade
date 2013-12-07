@@ -40,6 +40,7 @@ include ../inc/flash
 										| Amsterdam
 						.form-group
 							.col-lg-9.col-md-9.col-xs-9.col-sm-9.col-lg-offset-3.col-md-offset-3.col-xs-offset-3.col-sm-offset-3
-								input#createButton.btn.btn-success(type="submit", value="Add", disabled="disabled")
-								| &nbsp;
-								span.text-help Adding Applications has been disabled in the demo
+								input#createButton.btn.btn-success(type="submit", value="Add", disabled= isDemo ? "disabled" : null)
+								if (isDemo)
+									| &nbsp;
+									span.text-help Adding Applications has been disabled in the demo

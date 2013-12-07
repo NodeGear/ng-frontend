@@ -17,11 +17,11 @@ block content
 							.form-group
 								label.col-md-3.col-xs-3.col-lg-3.col-sm-3.control-label(for="email") Email
 								.col-lg-9.col-md-9.col-xs-9.col-sm-9
-									input#email.form-control(type="email", name="email", placeholder="demo@nodecloud.co", ng-model="email", disabled="disabled")
+									input#email.form-control(type="email", name="email", placeholder="demo@nodecloud.co", ng-model="email", disabled= isDemo ? "disabled" : null)
 							.form-group
 								label.col-md-3.col-xs-3.col-lg-3.col-sm-3.control-label(for="password") Password
 								.col-lg-9.col-md-9.col-xs-9.col-sm-9
-									input#password.form-control(type="password", name="password", placeholder="demo", ng-model="password", disabled="disabled")
+									input#password.form-control(type="password", name="password", placeholder="demo", ng-model="password", disabled= isDemo ? "disabled" : null)
 							.form-group
 								.col-lg-9.col-md-9.col-xs-9.col-sm-9.col-lg-offset-3.col-md-offset-3.col-xs-offset-3.col-sm-offset-3
 									input.btn.btn-primary(type="submit", value="Log in")
@@ -38,15 +38,15 @@ block content
 							.form-group
 								label.col-md-3.col-xs-3.col-lg-3.col-sm-3.control-label(for="regName") Full Name
 								.col-lg-9.col-md-9.col-xs-9.col-sm-9
-									input#regName.form-control(type="text", name="name", placeholder="Your Full Name", ng-model="name", disabled="disabled")
+									input#regName.form-control(type="text", name="name", placeholder="Your Full Name", ng-model="name", disabled= isDemo ? "disabled" : null)
 							.form-group
 								label.col-md-3.col-xs-3.col-lg-3.col-sm-3.control-label(for="regEmail") Email
 								.col-lg-9.col-md-9.col-xs-9.col-sm-9
-									input#regEmail.form-control(type="email", name="email", placeholder="Email Address", ng-model="email", disabled="disabled")
+									input#regEmail.form-control(type="email", name="email", placeholder="Email Address", ng-model="email", disabled= isDemo ? "disabled" : null)
 							.form-group
 								label.col-md-3.col-xs-3.col-lg-3.col-sm-3.control-label(for="regPassword") Password
 								.col-lg-9.col-md-9.col-xs-9.col-sm-9
-									input#regPassword.form-control(type="password", name="password", placeholder="Password", ng-model="password", disabled="disabled")
+									input#regPassword.form-control(type="password", name="password", placeholder="Password", ng-model="password", disabled= isDemo ? "disabled" : null)
 							.form-group
 								.col-lg-9.col-md-9.col-xs-9.col-sm-9.col-lg-offset-3.col-md-offset-3.col-xs-offset-3.col-sm-offset-3
-									input.btn.btn-success(type="submit", value="Register", disabled="disabled")
+									input.btn.btn-success(type="submit", value="Register", disabled= isDemo ? "disabled" : null)
