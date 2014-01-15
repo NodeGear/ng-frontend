@@ -18,7 +18,7 @@
 								a(href="", ng-click="selectLog(l)")
 									span(ng-show="l._id == log._id")
 										| &#10003; 
-									{{ l.created }}
+									| {{ l.created }}
 	.panel-body
 		if app.logs
 			span(ng-bind-html-unsafe="log.content")
