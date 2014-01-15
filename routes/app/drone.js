@@ -1,23 +1,6 @@
 var http = require('http'),
-	util = require('../../util')
-
-function sendGet (to, cb) {
-	http.get({
-		host: '127.0.0.1',
-		port: 8017,
-		path: to
-	}, function (response) {
-		console.log('STATUS: ' + response.statusCode);
-		console.log('HEADERS: ' + JSON.stringify(response.headers));
-		response.setEncoding('utf8');
-		response.on('data', function (chunk) {
-			console.log('BODY: ' + chunk);
-			cb();
-		});
-	}).on('error', function(e) {
-		console.log(e);
-	})
-}
+	util = require('../../util'),
+	app = require('../../app')
 
 exports.install = function (req, res) {
 	if (res.locals.app._id.toString() != "5293dfc8d2e0794750000003" && util.isDemo == true) {
@@ -36,17 +19,19 @@ exports.install = function (req, res) {
 		return;
 	}
 	
-	sendGet('/assign/'+res.locals.app._id, function () {
-		res.format({
-			html: function() {
-				res.redirect('/app/'+res.locals.app._id)
-			},
-			json: function() {
-				res.send(200, {
-				})
-			}
-		})
+	app.backend.emit('assign', {
+		id: res.locals.app._id
 	});
+	
+	res.format({
+		html: function() {
+			res.redirect('/app/'+res.locals.app._id)
+		},
+		json: function() {
+			res.send(200, {
+			})
+		}
+	})
 }
 
 exports.start = function (req, res) {
@@ -65,16 +50,18 @@ exports.start = function (req, res) {
 		return;
 	}
 	
-	sendGet('/start/'+res.locals.app._id, function() {
-		res.format({
-			html: function() {
-				res.redirect('/app/'+res.locals.app._id)
-			},
-			json: function() {
-				res.send(200, {
-				})
-			}
-		})
+	app.backend.emit('start', {
+		id: res.locals.app._id
+	});
+	
+	res.format({
+		html: function() {
+			res.redirect('/app/'+res.locals.app._id)
+		},
+		json: function() {
+			res.send(200, {
+			})
+		}
 	})
 }
 
@@ -94,16 +81,18 @@ exports.stop = function (req, res) {
 		return;
 	}
 	
-	sendGet('/stop/'+res.locals.app._id, function() {
-		res.format({
-			html: function() {
-				res.redirect('/app/'+res.locals.app._id)
-			},
-			json: function() {
-				res.send(200, {
-				})
-			}
-		})
+	app.backend.emit('stop', {
+		id: res.locals.app._id
+	});
+	
+	res.format({
+		html: function() {
+			res.redirect('/app/'+res.locals.app._id)
+		},
+		json: function() {
+			res.send(200, {
+			})
+		}
 	})
 }
 
@@ -123,16 +112,18 @@ exports.restart = function (req, res) {
 		return;
 	}
 	
-	sendGet('/restart/'+res.locals.app._id, function() {
-		res.format({
-			html: function() {
-				res.redirect('/app/'+res.locals.app._id)
-			},
-			json: function() {
-				res.send(200, {
-				})
-			}
-		})
+	app.backend.emit('restart', {
+		id: res.locals.app._id
+	});
+	
+	res.format({
+		html: function() {
+			res.redirect('/app/'+res.locals.app._id)
+		},
+		json: function() {
+			res.send(200, {
+			})
+		}
 	})
 }
 

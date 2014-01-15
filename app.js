@@ -9,8 +9,15 @@ var express = require('express')
 	, passport = require('passport')
 	, auth = require('./auth')
 	, config = require('./config')
+	, socket = require('socket.io-client').connect('http://127.0.0.1:8017')
 
 var app = exports.app = express();
+
+exports.backend = socket;
+
+socket.on('connect', function() {
+	console.log("Backend Connected")
+})
 
 var sessionStore; // session stored in database
 if (process.env.NODE_ENV == 'production') {

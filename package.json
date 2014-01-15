@@ -1,5 +1,5 @@
 {
-  "name": "NodeCloud",
+  "name": "NodeGear",
   "version": "0.0.1",
   "private": true,
   "scripts": {
@@ -21,6 +21,8 @@
 		"bugsnag": "latest",
 		"passport": "latest",
 		"passport-local": "latest",
-		"ansi-to-html": "latest"
+		"ansi-to-html": "latest",
+		"socket.io": "latest",
+		"socket.io-client": "latest"
   }
 }
