@@ -7,11 +7,34 @@ angular.module('nodecloud')
 .controller('AppController', function ($scope, data, $http) {
 	$scope.app = data.app || {}
 	
+	$scope.newEnv = {};
+	
 	$scope.log = null
 	$scope.usage = [];
 	
 	$scope.setCsrf = function (csrf) {
 		$scope.csrf = csrf;
+	}
+	
+	$scope.addEnv = function () {
+		$scope.app.env.push({
+			name: $scope.newEnv.name,
+			value: $scope.newEnv.value,
+			created: Date.now()
+		});
+		$scope.newEnv = {};
+	}
+	
+	$scope.saveSettings = function () {
+		var payload = {
+			_csrf: $scope.csrf,
+			name: $scope.app.name,
+			env: $scope.app.env
+		};
+		console.log(payload)
+		$http.put("/app/"+$scope.app._id, payload).success(function(data, status) {
+			console.log(data);
+		})
 	}
 	
 	$scope.selectLog = function (log) {

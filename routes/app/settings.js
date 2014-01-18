@@ -7,7 +7,7 @@ var mongoose = require('mongoose')
 
 exports.router = function (app) {
 	app.get('/app/:id/settings', viewSettings)
-		.post('/app/:id/settings', saveSettings)
+		.put('/app/:id', saveSettings)
 }
 
 function viewSettings (req, res) {
@@ -16,16 +16,39 @@ function viewSettings (req, res) {
 
 function saveSettings (req, res) {
 	var name = req.body.name;
+	var env = req.body.env;
+	
+	var app = res.locals.app;
 	
 	if (name && name.length > 0) {
 		// Safe!
-		res.locals.app.name = name;
-		res.locals.app.save()
+		appname = name;
 		
 		req.session.flash = [util.buildFlash([], { class: "success", title: "Settings updated!" })];
 	} else {
 		req.session.flash = [util.buildFlash(["Incorrect name"], { class: "danger", title: "Cannot save app" })];
 	}
 	
-	res.redirect('/app/'+res.locals.app._id+'/settings')
+	app.env = [];
+	for (var i = 0; i < env.length; i++) {
+		app.env.push({
+			name: env[i].name,
+			value: env[i].value,
+			created: Date.now() // incorrect date (facepalm)
+		});
+	}
+	
+	app.save()
+	
+	res.format({
+		html: function() {
+			res.redirect('/app/'+res.locals.app._id+'/settings')
+		},
+		json: function() {
+			res.send({
+				status: 200,
+				message: "Saved"
+			})
+		}
+	})
 }

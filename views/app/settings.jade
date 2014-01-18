@@ -3,21 +3,27 @@
 		h1.panel-title= app.name
 			|  Settings
 	.panel-body
-		form.form-horizontal(action="/app/"+app._id+"/settings", method="POST", autocomplete="off", enctype="multipart/form-data")
-			input(type="hidden", name="_csrf", value=token)
+		form.form-horizontal(autocomplete="off" ng-init="setCsrf('#{token}')")
 			.form-group
 				label.col-md-3.col-lg-3.col-sm-3.control-label(for="name") Name
 				.col-lg-6.col-md-6.col-sm-6
 					input#name.form-control(type="text", name="name", placeholder="What's your app called", ng-init= "name = app.name", ng-model="name")
 			hr
+			.form-group(ng-repeat="env in app.env")
+				.col-md-2.col-lg-2.col-sm-2.col-md-offset-1.col-lg-offset-1.col-sm-offset-1
+					input.form-control(type="text" ng-model="env.name" placeholder="Variable Name", style="text-align:right;")
+				.col-lg-6.col-md-6.col-sm-6
+					input.form-control(type="text" ng-model="env.value" placeholder="Environment Variable Value")
+				.col-lg-1.col-md-1.col-sm-1
+					button.btn.btn-danger(type="button" ng-click="app.env.splice($index, 1)") -
 			.form-group
 				.col-md-2.col-lg-2.col-sm-2.col-md-offset-1.col-lg-offset-1.col-sm-offset-1
-					input.form-control(type="text", placeholder="Variable Name", style="text-align:right;")
+					input.form-control(type="text" ng-model="newEnv.name" placeholder="Variable Name", style="text-align:right;")
 				.col-lg-6.col-md-6.col-sm-6
-					input.form-control(type="text", placeholder="Environment Variable Value")
+					input.form-control(type="text" ng-model="newEnv.value" placeholder="Environment Variable Value")
 				.col-lg-1.col-md-1.col-sm-1
-					button.btn.btn-info(type="button") +
+					button.btn.btn-info(type="button" ng-click="addEnv()") +
 			
 			.form-group
 				.col-lg-9.col-md-9.col-sm-9.col-lg-offset-3.col-md-offset-3.col-sm-offset-3
-					input.btn.btn-success(type="submit", value="Save")
+					button.btn.btn-success(ng-click="saveSettings()") Save
