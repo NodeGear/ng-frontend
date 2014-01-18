@@ -1,8 +1,9 @@
 angular.module('nodecloud')
 
-.controller('AppsController', function ($scope, data) {
+.controller('AppsController', function ($scope, data, $rootScope) {
 	$scope.apps = data.apps;
 	$scope.app = null;
+	$rootScope.apps = data.apps;
 })
 .controller('AppController', function ($scope, data, $http) {
 	$scope.app = data.app || {}
@@ -85,17 +86,45 @@ angular.module('nodecloud')
 		
 		for (var i = 0; i < $scope.usage.length; i++) {
 			var u = $scope.usage[i];
-			mem.push([u.time.getHours()+""+u.time.getMinutes(), u.memory])
-			cpu.push([u.time.getHours()+""+u.time.getMinutes(), u.cpu])
+			mem.push([u.time.getTime(), u.memory])
+			cpu.push([u.time.getTime(), u.cpu])
 		}
 		
-		$.plot("#usageGraph", [{
-			data: cpu,
-			lines: { show: true }
-		}, {
-			data: mem,
-			lines: { show: true, fill: true }
-		}])
+		$('#usageGraph').highcharts({
+			title: {
+				text: ''
+			},
+			xAxis: {
+				type: 'datetime'
+			},
+			yAxis: [{
+				title: {
+					text: 'CPU %'
+				},
+            min: 0
+			}, {
+				title: {
+					text: 'RAM (MB)'
+				},
+				min: 0,
+				opposite: true,
+				allowDecimals: true
+			}],
+	      credits: {
+				enabled: false
+			},
+			series: [{
+				name: 'CPU %',
+				data: cpu,
+				yAxis: 0,
+				type: 'spline'
+			}, {
+				name: 'RAM (MB)',
+				data: mem,
+				yAxis: 1,
+				type: 'spline'
+			}]
+		})
 	}
 	
 	if ($scope.app.logs && $scope.app.logs.length > 0) {

@@ -7,7 +7,7 @@
 	.panel-body
 		.row
 			.col-sm-12.col-lg-12.col-md-12
-				#usageGraph(style="height:200px;")
+				#usageGraph
 	table.table(ng-init="getUsage()")
 		thead
 			tr
@@ -16,6 +16,7 @@
 				th RAM Usage Mb
 		tbody
 			tr(ng-repeat="use in usage")
-				td {{ use.time.getHours() }}:{{ use.time.getMinutes() }}
+				td {{ use.time.getDate() }}/{{ use.time.getMonth()+1 }}/{{ use.time.getFullYear() }}
+					| {{ use.time.getHours() }}:{{ use.time.getMinutes() }}
 				td {{ use.cpu }}
 				td {{ use.memory }}

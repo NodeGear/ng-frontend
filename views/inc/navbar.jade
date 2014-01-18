@@ -1,6 +1,6 @@
 mixin navbar(active)
 	header
-		nav.navbar.navbar-default
+		nav.navbar.navbar-default.navbar-static-top(style="margin-bottom: 0")
 			.full-width-container
 				.navbar-header
 					button.navbar-toggle(type="button", data-toggle="collapse", data-target=".nodecloud-navbar-collapse")
@@ -10,25 +10,12 @@ mixin navbar(active)
 						span.icon-bar
 					a.navbar-brand(href="/") NodeGear
 				.collapse.navbar-collapse.nodecloud-navbar-collapse
-					ul.nav.navbar-nav
-						if (loggedIn)
-							li(ng-class="{ active: $state.includes('apps') }")
-								a(ui-sref="apps") Apps
-							li(ng-class="{ active: $state.includes('add') }")
-								a(ui-sref="add") Add Application
-							li(ng-class="{ active: $state.includes('analytics') }")
-								a(ui-sref="analytics") Analytics
-						else
-							li(class= active == -1 ? "active" : null)
-								a(href="/") Login / Register
-						if (isDemo)
-							li: a(href="http://www.kickstarter.com/projects/echobob/nodecloud") Kickstarter Campaign
-					
 					if loggedIn
-						ul.nav.navbar-nav.navbar-right
+						ul.nav.navbar-right.navbar-top-links
 							li.dropdown(ng-class="{ active: $state.includes('profile') }")
-								a.dropdown-toggle(href="#", data-toggle="dropdown")= user.getName()
-									b.caret
+								a.dropdown-toggle(href="#", data-toggle="dropdown")
+									i.fa.fa-user.fa-fw
+									i.fa.fa-caret-down
 								ul.dropdown-menu
 									li
 										a(ui-sref="profile") Profile
