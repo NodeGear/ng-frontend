@@ -1,22 +1,18 @@
-.panel.panel-default
-	.panel-heading
-		.row
-			.col-sm-6.col-md-6.col-lg-6
-				h1.panel-title {{ app.name }} Resource Usage
-			.col-sm-6.col-md-6.col-lg-6
-	.panel-body
-		.row
-			.col-sm-12.col-lg-12.col-md-12
-				#usageGraph
-	table.table(ng-init="getUsage()")
-		thead
-			tr
-				th Time
-				th CPU Usage %
-				th RAM Usage Mb
-		tbody
-			tr(ng-repeat="use in usage")
-				td {{ use.time.getDate() }}/{{ use.time.getMonth()+1 }}/{{ use.time.getFullYear() }}
-					| {{ use.time.getHours() }}:{{ use.time.getMinutes() }}
-				td {{ use.cpu }}
-				td {{ use.memory }}
+h1.page-header Resource Usage
+
+.row
+	.col-sm-12.col-lg-12.col-md-12
+		#usageGraph
+
+table.table(ng-init="getUsage()")
+	thead
+		tr
+			th Time
+			th CPU Usage %
+			th RAM Usage Mb
+	tbody
+		tr(ng-repeat="use in usage")
+			td {{ use.time.getDate() }}/{{ use.time.getMonth()+1 }}/{{ use.time.getFullYear() }}
+				| {{ use.time.getHours() }}:{{ use.time.getMinutes() }}
+			td {{ use.cpu }}
+			td {{ use.memory }}

@@ -1,26 +1,24 @@
-.panel.panel-default
-	.panel-heading
-		.row
-			.col-sm-8.col-xs-8.col-md-8.col-lg-8
-				h1.panel-title Log
-					if !app.logs
-						| Unavailable
-					else
-						|  - {{ log.created }}
-			.col-sm-4.col-xs-4.col-md-4.col-lg-4
-				if app.logs
-					.btn-group.pull-right
-						a.btn.btn-success.btn-xs(ng-disabled="log == null", target="_blank", href="/app/"+app._id+"/log/{{ log._id }}/download?partial=true") Download
-						button.btn.btn-info.btn-xs.dropdown-toggle(type="button", data-toggle="dropdown") Select Log 
-							span.caret
-						ul.dropdown-menu(role="menu")
-							li(ng-repeat="l in app.logs")
-								a(href="", ng-click="selectLog(l)")
-									span(ng-show="l._id == log._id")
-										| &#10003; 
-									| {{ l.created }}
-	.panel-body
-		if app.logs
-			span(ng-bind-html-unsafe="log.content")
-		else
-			h4 Your app has no logs available..
+.row
+	.col-sm-12.col-xs-12.col-md-12.col-lg-12
+		h1.page-header Application Logs
+			.btn-group.pull-right
+				a.btn.btn-success.btn-md(ng-disabled="log == null", target="_blank", href="/app/"+app._id+"/log/{{ log._id }}/download?partial=true")
+					i.fa.fa-download.fa-fw
+					|  Download Selected
+				a.btn.btn-default.btn-md
+					i.fa.fa-cloud-download.fa-fw
+					|  Download All
+
+if app.logs
+	.row
+		.col-sm-9.col-xs-9.col-md-9.col-lg-9
+			pre(ng-bind-html-unsafe="log.content")
+		.col-sm-3.col-xs-3.col-md-3.col-lg-3
+			ul.list-unstyled
+				li(ng-repeat="l in app.logs")
+					a(href="", ng-click="selectLog(l)")
+						span(ng-show="l._id == log._id")
+							| &#10003; 
+						| {{ l.created }}
+else
+	h4 Your app has no logs available..

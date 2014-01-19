@@ -1,16 +1,11 @@
-.panel.panel-default
-	.panel-heading
-		h1.panel-title= app.name
-			|  Dashboard
-	.panel-body
-		p.lead A log of events
-	table.table
-		tr
-			td.text-right.col-md-2.col-lg-2.col-sm-2: strong 24/11/2013 11:30
-			td.col-md-10.col-lg-10.col-sm-10 #{app.name} restarted
-		tr
-			td.text-right.col-md-2.col-lg-2.col-sm-2: strong 23/11/2013 12:31
-			td.col-md-10.col-lg-10.col-sm-10 #{app.name} went down
-		tr
-			td.text-right.col-md-2.col-lg-2.col-sm-2: strong 20/11/2013 11:09
-			td.col-md-10.col-lg-10.col-sm-10 #{app.name} was installed on <code>local</code>
+h1.page-header {{app.name}} Dashboard
+table.table
+	tr
+		td.text-right.col-md-2.col-lg-2.col-sm-2: strong 24/11/2013 11:30
+		td.col-md-10.col-lg-10.col-sm-10 #{app.name} restarted
+	tr
+		td.text-right.col-md-2.col-lg-2.col-sm-2: strong 23/11/2013 12:31
+		td.col-md-10.col-lg-10.col-sm-10 #{app.name} went down
+	tr
+		td.text-right.col-md-2.col-lg-2.col-sm-2: strong 20/11/2013 11:09
+		td.col-md-10.col-lg-10.col-sm-10 #{app.name} was installed on <code>local</code>

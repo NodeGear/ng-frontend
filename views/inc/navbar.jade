@@ -12,8 +12,15 @@ mixin navbar(active)
 				.collapse.navbar-collapse.nodecloud-navbar-collapse
 					if loggedIn
 						ul.nav.navbar-right.navbar-top-links
-							li.dropdown(ng-class="{ active: $state.includes('profile') }")
-								a.dropdown-toggle(href="#", data-toggle="dropdown")
+							li.dropdown
+								a.dropdown-toggle(href data-toggle="dropdown")
+									| Apps 
+									i.fa.fa-caret-down
+								ul.dropdown-menu
+									li(ng-repeat="a in apps")
+										a(ui-sref="app({id:a._id})") {{a.name}}
+							li.dropdown
+								a.dropdown-toggle(href, data-toggle="dropdown")
 									i.fa.fa-user.fa-fw
 									i.fa.fa-caret-down
 								ul.dropdown-menu

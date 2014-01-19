@@ -3,25 +3,9 @@ var nodecloud = angular.module('nodecloud', ['ui.router'])
 nodecloud.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
 	$locationProvider.html5Mode(true);
 	
-	$urlRouterProvider.otherwise('/apps')
+	$urlRouterProvider.otherwise('/analytics')
 	
 	$stateProvider
-	.state('apps', {
-		url: '/apps',
-		resolve: {
-			data: function($q, $http) {
-				var deferred = $q.defer();
-				
-				$http.get('/apps').success(function(data, status) {
-					deferred.resolve(data)
-				})
-				
-				return deferred.promise;
-			}
-		},
-		templateUrl: "/apps?partial=true",
-		controller: "AppsController"
-	})
 	.state('analytics', {
 		url: '/analytics',
 		templateUrl: "/analytics?partial=true"
@@ -105,7 +89,11 @@ nodecloud.config(function($stateProvider, $urlRouterProvider, $locationProvider)
 		}
 	})
 })
-.run(function($rootScope, $state, $stateParams) {
+.run(function($rootScope, $state, $stateParams, $http) {
 	$rootScope.$state = $state
 	$rootScope.$stateParams = $stateParams
+	
+	$http.get('/apps').success(function(data, status) {
+		$rootScope.apps = data.apps;
+	})
 })

@@ -1,46 +1,7 @@
 include ../inc/flash
 
-.full-width-container
+.row
 	+flash()
-	.row
-	.col-lg-2.col-sm-3.col-md-3
-		h4.text-center
-			a(href="http://{{ app.pkg.subdomain }}.nodecloud.net/") {{ app.name }}
-			| &nbsp;
-			small.text-center {{ app.pkg.version }}
-		
-		.text-center
-			.btn-group
-				a.btn.btn-xs.btn-success(ng-show="app.isInstalled", app-start, ng-disabled="app.isRunning || app.deleted", title="Start")
-					i.fa.fa-play.fa-fw
-				a.btn.btn-xs.btn-warning(ng-show="app.isInstalled", app-stop, ng-disabled="!app.isRunning || app.deleted", title="Pause")
-					i.fa.fa-pause.fa-fw
-				a.btn.btn-xs.btn-default(ng-show="app.isInstalled", app-restart, ng-disabled="app.isRunning || app.deleted")
-					| Restart
-				a.btn.btn-info.btn-xs(ng-hide="app.isInstalled", app-install, ng-disabled="app.isInstalled == true") Install
-				a.btn.btn-danger.btn-xs(app-delete, ng-disabled="app.deleted || app.isRunning") Delete
-		.clearfix
-		br
-		.text-center
-			span(ng-show="app.deleted").label.label-warning Deleted
-			span(ng-show="app.deleted") &nbsp;
-			span(ng-show="app.isRunning").label.label-success Running on {{ app.installedOn }}
-			span(ng-show="app.isRunning") &nbsp;
-			span(ng-hide="app.isRunning").label.label-warning Stopped
-			| &nbsp;
-			span(ng-show="app.pid").label.label-default PID {{ app.pid }}
-		hr
-		ul.nav.nav-pills.nav-stacked
-			li(ng-class="{ active: $state.includes('app.dashboard') }")
-				a(ui-sref="app.dashboard") Dashboard
-			li(ng-class="{ active: $state.includes('app.logs') }")
-				a(ui-sref="app.logs") Logs
-			li(ng-class="{ active: $state.includes('app.traffic') }")
-				a(ui-sref="app.traffic") Traffic
-			li(ng-class="{ active: $state.includes('app.usage') }")
-				a(ui-sref="app.usage") Usage
-			li(ng-class="{ active: $state.includes('app.settings') }")
-				a(ui-sref="app.settings") Settings
-	.col-lg-10.col-sm-9.col-md-9
+	.col-lg-12.col-sm-12.col-md-12
 		ui-view
 	.clearfix

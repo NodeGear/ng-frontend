@@ -29,19 +29,36 @@ html(ng-app= loggedIn ? "nodecloud" : "")
 					ul.nav#side-menu
 						if (loggedIn)
 							li
-								a(href) Dashboard
-							li.divider
-							li.active
-								a(href) Apps
-									span.fa.arrow
-								ul.nav.nav-second-level.in
-									li(ng-repeat="a in apps")
-										a(ui-sref="app({id:a._id})") {{a.name}}
-							li.divider
+								a(href)
+									i.fa.fa-dashboard.fa-fw
+									|  Dashboard
 							li
-								a(ui-sref="add") Add Application
+								a(ui-sref="add")
+									i.fa.fa-plus.fa-fw
+									|  Add Application
 							li
 								a(ui-sref="analytics") Analytics
+							li.divider(style="height:20px;")
+							li
+								a(ui-sref="app.dashboard({id: app._id})")
+									i.fa.fa-dashboard.fa-fw
+									|  {{ app.name }}
+							li
+								a(ui-sref="app.logs({id: app._id})")
+									i.fa.fa-comments.fa-fw
+									|  Logs
+							li
+								a(ui-sref="app.traffic({id: app._id})")
+									i.fa.fa-bolt.fa-fw
+									|  Traffic
+							li
+								a(ui-sref="app.usage({id: app._id})")
+									i.fa.fa-eye.fa-fw
+									|  Usage
+							li
+								a(ui-sref="app.settings({id: app._id})")
+									i.fa.fa-wrench.fa-fw
+									|  Settings
 						else
 							li(class= active == -1 ? "active" : null)
 								a(href="/") Login / Register
@@ -49,7 +66,6 @@ html(ng-app= loggedIn ? "nodecloud" : "")
 							li: a(href="http://www.kickstarter.com/projects/echobob/nodecloud") Kickstarter Campaign
 					
 			#page-wrapper
-				br
 				ui-view
 		
 			.container
