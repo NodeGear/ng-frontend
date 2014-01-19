@@ -2,7 +2,10 @@ angular.module('nodecloud')
 
 .controller('AppController', function ($scope, data, $http, $rootScope) {
 	$scope.app = data.app || {}
-	$rootScope.app = $scope.app;
+	$rootScope.app = {
+		_id: data.app._id,
+		name: data.app.name
+	}
 	
 	$scope.newEnv = {};
 	

@@ -4,12 +4,12 @@ var express = require('express')
 	, path = require('path')
 	, mongoose = require('mongoose')
 	, util = require('./util')
-	, MongoStore = require('connect-mongo')(express)
+	, MongoStore = require('session-mongoose')(express)
 	, mailer = require('nodemailer')
 	, passport = require('passport')
 	, auth = require('./auth')
 	, config = require('./config')
-	, socket = require('socket.io-client').connect('http://127.0.0.1:8017')
+	, socket = require('socket.io-client').connect('http://127.0.0.1:8049')
 
 var app = exports.app = express();
 
@@ -35,7 +35,8 @@ if (process.env.NODE_ENV == 'production') {
 	var db = config.db;
 	mongoose.connect(db, {auto_reconnect: true, native_parser: true});
 	sessionStore = new MongoStore({
-		url: db
+		connection: mongoose.connection,
+		interval: 120000
 	});
 } else {
 	// development mode
@@ -43,7 +44,8 @@ if (process.env.NODE_ENV == 'production') {
 	var db = config.db;
 	mongoose.connect(db, {auto_reconnect: true, native_parser: true});
 	sessionStore = new MongoStore({
-		url: db
+		connection: mongoose.connection,
+		interval: 120000
 	});
 }
 

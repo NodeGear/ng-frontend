@@ -1,27 +1,25 @@
 include ../inc/flash
 
-.full-width-container
-	+flash()
-	
-	.panel.panel-default
-		.panel-heading
-			h1.panel-title Global App Analytics
-		.panel-body
-			p Here are global analytics sorted in descending order (time finished request)
-			p Showing 
-				code= analytics.length
-				|  requests, average 
-				code= average.toFixed(2)
-				| ms per request,
-				code= size.toFixed(2)
-				| mb transmitted from apps
-			p
-				code= allTotal
-				|  total requests, average 
-				code= allAverage.toFixed(2)
-				| ms per request, 
-				code= allSize.toFixed(2)
-				| mb transmitted from apps
+.row
+	.col-xs-12.col-sm-12.col-md-12.col-lg-12
+		h1.page-header Global App Analytics
+
+		+flash()
+		p Here are global analytics sorted in descending order (time finished request)
+		p Showing 
+			code= analytics.length
+			|  requests, average 
+			code= average.toFixed(2)
+			| ms per request,
+			code= size.toFixed(2)
+			| mb transmitted from apps
+		p
+			code= allTotal
+			|  total requests, average 
+			code= allAverage.toFixed(2)
+			| ms per request, 
+			code= allSize.toFixed(2)
+			| mb transmitted from apps
 		table.table
 			thead
 				tr
