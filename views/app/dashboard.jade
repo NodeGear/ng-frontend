@@ -1,23 +1,14 @@
 h1.page-header {{app.name}} Dashboard
-
-.text-center
-	.btn-group
-		a.btn.btn-xs.btn-success(ng-show="app.isInstalled", app-start, ng-disabled="app.isRunning || app.deleted", title="Start")
+	.btn-group.pull-right
+		a.btn.btn-md.btn-success(ng-show="app.isInstalled", app-start, ng-disabled="app.isRunning || app.deleted", title="Start")
 			i.fa.fa-play.fa-fw
-		a.btn.btn-xs.btn-warning(ng-show="app.isInstalled", app-stop, ng-disabled="!app.isRunning || app.deleted", title="Pause")
+		a.btn.btn-md.btn-warning(ng-show="app.isInstalled", app-stop, ng-disabled="!app.isRunning || app.deleted", title="Pause")
 			i.fa.fa-pause.fa-fw
-		a.btn.btn-xs.btn-default(ng-show="app.isInstalled", app-restart, ng-disabled="app.isRunning || app.deleted")
+		a.btn.btn-md.btn-default(ng-show="app.isInstalled", app-restart, ng-disabled="!app.isRunning || app.deleted")
 			| Restart
-		a.btn.btn-info.btn-xs(ng-hide="app.isInstalled", app-install, ng-disabled="app.isInstalled == true") Install
-		a.btn.btn-danger.btn-xs(app-delete, ng-disabled="app.deleted || app.isRunning") Delete
 
 table.table
-	tr
-		td.text-right.col-md-2.col-lg-2.col-sm-2: strong 24/11/2013 11:30
-		td.col-md-10.col-lg-10.col-sm-10 #{app.name} restarted
-	tr
-		td.text-right.col-md-2.col-lg-2.col-sm-2: strong 23/11/2013 12:31
-		td.col-md-10.col-lg-10.col-sm-10 #{app.name} went down
-	tr
-		td.text-right.col-md-2.col-lg-2.col-sm-2: strong 20/11/2013 11:09
-		td.col-md-10.col-lg-10.col-sm-10 #{app.name} was installed on <code>local</code>
+	tr(ng-repeat="ev in app.events")
+		td.text-right.col-md-2.col-lg-2.col-sm-2: strong {{ ev.name }}
+		td.col-md-8.col-lg-8.col-sm-8 {{ ev.message }}
+		td.col-md-2.col-lg-2.col-sm-2(title="{{ev.created.format('DD/MM/YYYY HH:mm:ss')}}") {{ ev.created.fromNow() }}

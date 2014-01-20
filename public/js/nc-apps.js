@@ -7,6 +7,15 @@ angular.module('nodecloud')
 		name: data.app.name
 	}
 	
+	for (var i = 0; i < $scope.app.events.length; i++) {
+		$scope.app.events[i].created = moment($scope.app.events[i].created);
+	}
+	$scope.app.events.reverse();
+	
+	for (var i = 0; i < $scope.app.logs.length; i++) {
+		$scope.app.logs[i].created = moment($scope.app.logs[i].created);
+	}
+	
 	$scope.newEnv = {};
 	
 	$scope.log = null
@@ -31,7 +40,7 @@ angular.module('nodecloud')
 			name: $scope.app.name,
 			env: $scope.app.env
 		};
-		console.log(payload)
+		
 		$http.put("/app/"+$scope.app._id, payload).success(function(data, status) {
 			console.log(data);
 		})

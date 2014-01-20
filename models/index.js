@@ -3,5 +3,6 @@ module.exports = {
 	Drone: require('./Drone'),
 	Analytic: require('./Analytic'),
 	Usage: require('./Usage'),
-	PublicKey: require('./PublicKey')
+	PublicKey: require('./PublicKey'),
+	Event: require('./Event')
 }

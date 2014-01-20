@@ -80,17 +80,18 @@ html(ng-app= loggedIn ? "nodecloud" : "")
 							br
 		
 		block js
-			script(src="/js/jquery.min.js", defer)
-			script(src="/js/bootstrap.min.js", defer)
+			script(src="/js/jquery.min.js" defer)
+			script(src="/js/bootstrap.min.js" defer)
 			script(src="/js/jquery.metisMenu.js" defer)
 			script(src="/js/sb-admin.js" defer)
-			script(src="/js/angular.min.js", defer)
+			script(src="/js/angular.min.js" defer)
 			script(src="/js/angular-ui-router.min.js", defer)
 			if loggedIn
-				script(src="/js/highcharts.js", defer)
-				script(src="/js/angular-nodecloud.js", defer)
-				script(src="/js/nc-apps.js", defer)
-				script(src="/js/nc-logs.js", defer)
+				script(src="/js/moment.min.js" defer)
+				script(src="/js/highcharts.js" defer)
+				script(src="/js/angular-nodecloud.js" defer)
+				script(src="/js/nc-apps.js" defer)
+				script(src="/js/nc-logs.js" defer)
 				
 		//- page-specific js
 		block addonjs

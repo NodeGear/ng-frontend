@@ -19,6 +19,6 @@ if app.logs
 					a(href="", ng-click="selectLog(l)")
 						span(ng-show="l._id == log._id")
 							| &#10003; 
-						| {{ l.created }}
+						| {{ l.created.format('DD/MM/YYYY HH:mm:ss') }}
 else
 	h4 Your app has no logs available..

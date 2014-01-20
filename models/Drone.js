@@ -28,6 +28,10 @@ var droneSchema = schema({
 		name: String,
 		value: String,
 		created: { type: Date, default: Date.now() },
+	}],
+	events: [{
+		type: ObjectId,
+		ref: 'Event'
 	}]
 })
 
@@ -126,6 +130,7 @@ droneSchema.statics.getDronesByUserId = function (userID, cb) {
 
 droneSchema.statics.getDroneById = function (id, cb) {
 	module.exports.findById(id)
+		.populate('events')
 		.exec(function(err, drone) {
 		if (err) throw err;
 		
