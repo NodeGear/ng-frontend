@@ -1,11 +1,11 @@
-.panel.panel-default
-	.panel-heading
-		h1.panel-title SSH Public Key
-	.panel-body
+.row
+	.col-md-12.col-sm-12.col-lg-12.col-xs-12
+		h1.page-header SSH Public Key
 		p
 			strong Push to your repositories to 
 			code nodecloud@nodecloud.net:#{user.email}/{repo-name}.git
-		br
+.row
+	.col-md-12.col-sm-12.col-lg-12.col-xs-12
 		form.form-horizontal(action="/profile/ssh", method="POST", autocomplete="off", enctype="multipart/form-data")
 			input(type="hidden", name="_csrf", value=token)
 			.form-group

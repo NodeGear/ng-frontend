@@ -38,33 +38,36 @@ html(ng-app= loggedIn ? "nodecloud" : "")
 									|  Add Application
 							li
 								a(ui-sref="analytics") Analytics
-							li.divider(style="height:20px;")
 							li
+								a(href) Account
+									i.fa.arrow
+								ul.nav.nav-second-level
+									li
+										a(ui-sref="profile") Profile
+									li
+										a(ui-sref="profile.ssh") SSH Public Key
+							li.divider(style="height:20px;" ng-hide="app == null")
+							li(ng-hide="app == null")
 								a(ui-sref="app.dashboard({id: app._id})")
 									i.fa.fa-dashboard.fa-fw
 									|  {{ app.name }}
-							li
+							li(ng-hide="app == null")
 								a(ui-sref="app.logs({id: app._id})")
 									i.fa.fa-comments.fa-fw
 									|  Logs
-							li
+							li(ng-hide="app == null")
 								a(ui-sref="app.traffic({id: app._id})")
 									i.fa.fa-bolt.fa-fw
 									|  Traffic
-							li
+							li(ng-hide="app == null")
 								a(ui-sref="app.usage({id: app._id})")
 									i.fa.fa-eye.fa-fw
 									|  Usage
-							li
+							li(ng-hide="app == null")
 								a(ui-sref="app.settings({id: app._id})")
 									i.fa.fa-wrench.fa-fw
 									|  Settings
-						else
-							li(class= active == -1 ? "active" : null)
-								a(href="/") Login / Register
-						if (isDemo)
-							li: a(href="http://www.kickstarter.com/projects/echobob/nodecloud") Kickstarter Campaign
-					
+
 			#page-wrapper
 				ui-view
 		
