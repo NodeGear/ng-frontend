@@ -18,8 +18,8 @@ usageSchema.statics.getUsageForDrone = function (droneID, limit, cb) {
 	}
 	
 	var now = new Date()
-	var start = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-	var end = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59, 999);
+	var start = new Date(now.getFullYear(), now.getMonth(), now.getDate(), now.getHours()-1, 0, 0, 0);
+	var end = new Date(now.getFullYear(), now.getMonth(), now.getDate(), now.getHours(), now.getMinutes(), now.getSeconds());
 	
 	module.exports.find({
 		drone: droneID,
