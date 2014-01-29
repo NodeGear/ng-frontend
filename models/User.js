@@ -12,7 +12,8 @@ var userSchema = schema({
 	name: String,
 	email: String,
 	password: String,
-	authToken: String
+	authToken: String,
+	uid: Number
 });
 
 userSchema.statics.taken = function (username, cb) {
