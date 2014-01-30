@@ -3,6 +3,7 @@ var passport = require('passport')
 	, Validator = require('validator').Validator
 	, buildFlash = require('../util').buildFlash
 	, util = require('../util')
+	, exec = require('child_process').exec
 
 exports.router = function (app) {
 	app.post('/auth/password', doLogin)
@@ -106,6 +107,33 @@ function doRegister (req, res) {
 					
 					req.session.flash.push(buildFlash(["Thank you for Registering with NodeCloud"], { title: "Registration Success!", class: "info" }));
 					res.redirect('/apps');
+				})
+				
+				var script = config.path+"/scripts/createUser.sh "+config.droneLocation+" "+user._id;
+				var run = exec(script)
+				run.stdout.on('data', function(data) {
+					console.log(data)
+				})
+				run.stderr.on('data', function(data) {
+					console.log(data)
+				})
+				
+				run.on('close', function(code) {
+					// Get the ID and GID
+					
+					uid = exec("id -u "+user._id)
+					uid.stdout.on("data", function(data) {
+						console.log("UID: "+parseInt(data));
+						user.uid = parseInt(data);
+					})
+					uid.on('close', function() {
+						gid = exec("id -g "+user._id)
+						gid.stdout.on("data", function(data) {
+							console.log("GID: "+parseInt(data));
+							user.gid = parseInt(data);
+							user.save()
+						})
+					})
 				})
 			}
 		})

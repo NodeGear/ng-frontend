@@ -19,34 +19,17 @@ socket.on('connect', function() {
 	console.log("Backend Connected")
 })
 
-var sessionStore; // session stored in database
+mongoose.connect(config.db, config.db_options);
+var sessionStore = new MongoStore({
+	connection: mongoose.connection,
+	interval: 120000
+});
 if (process.env.NODE_ENV == 'production') {
 	// production mode
-	
-	// In short, this will ensure a unique database for each environment
-	var mode = process.env.NODE_MODE;
-	if (mode == "dev" || mode == "staging") {
-		mode = "-"+mode;
-	} else {
-		mode = "";
-	}
-	
-	console.log("Production, mode "+mode);
-	var db = config.db;
-	mongoose.connect(db, {auto_reconnect: true, native_parser: true});
-	sessionStore = new MongoStore({
-		connection: mongoose.connection,
-		interval: 120000
-	});
+	console.log("Production");
 } else {
 	// development mode
 	console.log("Development");
-	var db = config.db;
-	mongoose.connect(db, {auto_reconnect: true, native_parser: true});
-	sessionStore = new MongoStore({
-		connection: mongoose.connection,
-		interval: 120000
-	});
 }
 
 var db = mongoose.connection
