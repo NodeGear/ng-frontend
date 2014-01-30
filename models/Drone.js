@@ -8,7 +8,6 @@ var mongoose = require('mongoose')
 
 var droneSchema = schema({
 	name: String,
-	pkg: {},
 	user: {
 		type: ObjectId,
 		ref: "User"
@@ -32,7 +31,10 @@ var droneSchema = schema({
 	events: [{
 		type: ObjectId,
 		ref: 'Event'
-	}]
+	}],
+	domains: [String],
+	subdomain: String,
+	script: String
 })
 
 droneSchema.methods.pullDroneDetails = function (cb) {

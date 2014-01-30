@@ -13,7 +13,8 @@ var userSchema = schema({
 	email: String,
 	password: String,
 	authToken: String,
-	uid: Number
+	uid: Number,
+	gid: Number
 });
 
 userSchema.statics.taken = function (username, cb) {

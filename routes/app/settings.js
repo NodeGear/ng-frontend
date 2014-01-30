@@ -29,7 +29,9 @@ function saveSettings (req, res) {
 			message: "Settings updated"
 		});
 		event.save()
+		
 		app.events.push(event._id)
+		
 		req.session.flash = [util.buildFlash([], { class: "success", title: "Settings updated!" })];
 	} else {
 		req.session.flash = [util.buildFlash(["Incorrect name"], { class: "danger", title: "Cannot save app" })];
