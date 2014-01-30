@@ -17,17 +17,9 @@ usageSchema.statics.getUsageForDrone = function (droneID, limit, cb) {
 		return;
 	}
 	
-	var now = new Date()
-	var start = new Date(now.getFullYear(), now.getMonth(), now.getDate(), now.getHours()-1, 0, 0, 0);
-	var end = new Date(now.getFullYear(), now.getMonth(), now.getDate(), now.getHours(), now.getMinutes(), now.getSeconds());
-	
 	module.exports.find({
 		drone: droneID,
-		time: {
-			$gt: start,
-			$lte: end
-		}
-	}).sort('-time').exec(function(err, usage) {
+	}).sort('-time').limit(60).exec(function(err, usage) {
 		if (err) throw err;
 		
 		cb(usage);
