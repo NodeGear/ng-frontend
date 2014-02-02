@@ -4,6 +4,7 @@ var passport = require('passport')
 	, buildFlash = require('../util').buildFlash
 	, util = require('../util')
 	, exec = require('child_process').exec
+	, config = require('../config')
 
 exports.router = function (app) {
 	app.post('/auth/password', doLogin)
@@ -31,13 +32,13 @@ function doLogin (req, res) {
 	v.check(req.body.password, 'Please enter a valid password').len(4)
 	
 	if (errs.length == 0) {
-		models.User.findOne({ email: req.body.email }, function(err, user) {
+		var email = req.body.email.toLowerCase();
+		models.User.findOne({ email: email }, function(err, user) {
 			if (err) {
 				return cb(err);
 			}
-		
-			// TODO hash
-			if (!user || user.password != req.body.password) {
+			
+			if (!user || user.password != models.User.getHash(req.body.password)) {
 				errs.push("Incorrect credentials")
 			}
 			
@@ -83,8 +84,10 @@ function doRegister (req, res) {
 	v.check(req.body.password, 'Please enter a valid password').len(5)
 	
 	if (errs.length == 0) {
+		var email = req.body.email.toLowerCase();
+		
 		// Check duplicate emails in db
-		models.User.takenEmail(req.body.email, function(taken) {
+		models.User.takenEmail(email, function(taken) {
 			if (taken) {
 				errs.push("Email is already taken. Forgotten your password?[link]");
 				
@@ -95,21 +98,22 @@ function doRegister (req, res) {
 			} else {
 				// Register
 				var user = new models.User({
-					email: req.body.email,
-					password: req.body.password,
+					email: email,
 					name: req.body.name
 				})
+				user.setPassword(req.body.password);
 				user.save()
 				
 				// log in now
 				req.login(user, function(err) {
 					if (err) throw err;
 					
-					req.session.flash.push(buildFlash(["Thank you for Registering with NodeCloud"], { title: "Registration Success!", class: "info" }));
+					req.session.flash.push(buildFlash(["Thank you for Registering with NodeGear"], { title: "Registration Success!", class: "info" }));
 					res.redirect('/apps');
 				})
 				
 				var script = config.path+"/scripts/createUser.sh "+config.droneLocation+" "+user._id;
+				console.log(script);
 				var run = exec(script)
 				run.stdout.on('data', function(data) {
 					console.log(data)

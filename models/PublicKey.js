@@ -17,7 +17,7 @@ var s = schema({
 
 s.statics.updateConfig = function (cb) {
 	var base = "repo gitolite-admin\n\
-    RW+     =   Matej root\n\
+    RW+     =   matej\n\
 \n";
 	
 	require('./User').find({}).select('email').exec(function(err, users) {

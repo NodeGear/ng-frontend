@@ -2,8 +2,8 @@
 	.col-md-12.col-sm-12.col-lg-12.col-xs-12
 		h1.page-header SSH Public Key
 		p
-			strong Push to your repositories to 
-			code nodecloud@nodecloud.net:#{user.email}/{repo-name}.git
+			strong Create/Update Apps using git repository  
+			code git@nodecloud.net:#{user.email}/{repo-name}.git
 .row
 	.col-md-12.col-sm-12.col-lg-12.col-xs-12
 		form.form-horizontal(action="/profile/ssh", method="POST", autocomplete="off", enctype="multipart/form-data")
@@ -11,7 +11,7 @@
 			.form-group
 				label.col-md-3.col-lg-3.col-sm-3.control-label(for="pubKey") Key
 				.col-lg-9.col-md-9.col-sm-9
-					textarea#pubKey.form-control(name="key", placeholder="Copy and paste your public SSH Key for git access (coming soon)", rows="12")= key == null ? null : key.key
+					textarea#pubKey.form-control(name="key", placeholder="Copy and paste your public SSH Key for git access", rows="12")= key == null ? null : key.key
 			.form-group
 				.col-lg-9.col-md-9.col-sm-9.col-lg-offset-3.col-md-offset-3.col-sm-offset-3
 					input.btn.btn-success(type="submit", value="Save")

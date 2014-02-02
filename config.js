@@ -21,22 +21,22 @@ module.exports = new (function() {
 		
 		this.port = process.env.PORT || 80;
 		this.droneLocation = "/var/ng_apps/";
-		this.gitolite = "/var/gitolite/";
+		this.gitolite = "/var/ng_gitolite/";
 		this.gitoliteKeys = this.gitolite+"keydir/";
 		this.gitoliteConfig = this.gitolite+"conf/gitolite.conf";
 	} else {
 		this.db = "mongodb://127.0.0.1/nodegear";
 		
 		this.port = process.env.PORT || 3000;
-		this.droneLocation = process.env.HOME+"/cloudapps/";
-		this.gitolite = process.env.HOME+"/dev/gitolite-admin/";
+		this.droneLocation = process.env.HOME+"/ng_apps/";
+		this.gitolite = process.env.HOME+"/dev/nodegear-gitolite/";
 		this.gitoliteKeys = this.gitolite+"keydir/";
 		this.gitoliteConfig = this.gitolite+"conf/gitolite.conf";
 	}
 	
 	this.path = __dirname;
 	
-	this.tmp = "/tmp/nodecloud/";
+	this.tmp = "/tmp/nodegear/";
 	
 	fs.exists(this.tmp, function(exists) {
 		if (!exists) {

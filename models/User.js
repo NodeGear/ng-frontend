@@ -12,10 +12,20 @@ var userSchema = schema({
 	name: String,
 	email: String,
 	password: String,
-	authToken: String,
+	authToken: String, //wtf is authtoken??
 	uid: Number,
 	gid: Number
 });
+
+userSchema.methods.setPassword = function(password) {
+	var shasum = crypto.createHash('sha1');
+	this.password = shasum.update("n©ear"+password+"<.%2€aa").digest('hex');
+}
+
+userSchema.statics.getHash = function (password) {
+	var shasum = crypto.createHash('sha1');
+	return shasum.update("n©ear"+password+"<.%2€aa").digest('hex');
+}
 
 userSchema.statics.taken = function (username, cb) {
 	model.findOne({
