@@ -124,7 +124,9 @@ s.methods.updateFile = function (cb) {
 	], function(err, results) {
 		if (err) {
 			console.log(err);
-			throw err;
+			
+			cb(err);
+			return;
 		}
 		
 		cb()
