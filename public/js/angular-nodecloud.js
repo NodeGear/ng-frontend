@@ -3,9 +3,13 @@ var nodecloud = angular.module('nodecloud', ['ui.router'])
 nodecloud.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
 	$locationProvider.html5Mode(true);
 	
-	$urlRouterProvider.otherwise('/analytics')
+	$urlRouterProvider.otherwise('/')
 	
 	$stateProvider
+	.state('gettingStarted', {
+		url: '/',
+		templateUrl: "/gettingStarted?partial=true"
+	})
 	.state('analytics', {
 		url: '/analytics',
 		templateUrl: "/analytics?partial=true"

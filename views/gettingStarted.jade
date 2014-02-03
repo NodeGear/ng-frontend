@@ -1,0 +1,52 @@
+.row
+	.col-xs-12.col-sm-12.col-md-12.col-lg-12
+		h1.page-header Getting Started Guide
+		p.lead This document is designed to get you started on NodeGear Alpha PaaS.
+		h3 Welcome to NodeGear <sup><small>Alpha</small></sup>
+		p If there are <strong>any</strong> issues, feedback or bugs, please let us know at 
+			a(href="mailto:support@nodegear.com") support@nodegear.com
+			| .
+		p: small For <i>really</i> urgent matters, you may call us Alan on <a href="tel:+17863510108">+17863510108</a> or Matej on <a href="tel:+447955522239">+447955522239</a>
+		hr
+		h2 Creating an Application
+		p Currently, the only way to create (or update existing) applications is via <code>git</code>.
+		ol
+			li
+				a(ui-sref="profile.ssh") Add an SSH Key
+				|  to your profile
+			li
+				a(href="#package") Update
+				|  your <code>package.json</code> to match our requirements
+			li Push to <code>git@nodegear.com:#{user.email}/myrepository.git</code>
+				ul
+					li Please replace <code>myrepository</code> with the name of your project. Prior to pushing to the remote depository, make sure your package.json is valid.
+					li Watch the output of the <code>git push</code> command. It may tell you useful information regarding your app.
+		h2#package package.json requirements
+		p Example <code>package.json</code>
+		dl.dl-horizontal
+			dt script:
+			dd "app.js"
+			dt &nbsp;
+			dd This property in your package.json tells us which file is used to launch your application.
+			dt subdomain:
+			dd "myapp"
+			dt &nbsp;
+			dd The Subdomain property gives you a unique subdomain within nodegear. For example, if you subdomain is <code>myapp</code> then you can access your web application through <code>myapp.app.nodegear.com</code>
+			dt domains:
+			dd ["myapp.com", "www.myapp.com", "test.myapp.com"]
+			dt &nbsp;
+			dd The domains array lets us know that you've set up A records in your 
+				a(href="#dns") DNS to our servers
+				|  and when a request goes to any of these, we will proxy them to your application
+		h4 Why these are required
+		p We have to know how to launch your app and what web requests go to your application. We have plans to make them optional and enable you to set them from your control panel.
+		h2#dns DNS Settings
+		p You automatically receive a subdomain on <code>X.app.nodegear.com</code>. However, it is recommended you have your own domain name routed to your application. To do that, create A records in your DNS provider and enter the following records (depending on the location of your application):
+		p: small <strong>Note:</strong> The Current Default geographical location for all apps is <strong>Canada</strong>. As our infrastructure grows, you will have a wide choice of servers to deploy to.
+		dl.dl-horizontal
+			dt Canada
+			dd 198.50.168.250
+			dt France
+			dd Not there yet
+			dt Amsterdam
+			dd Not there yet

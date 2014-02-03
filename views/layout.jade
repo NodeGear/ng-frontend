@@ -29,9 +29,9 @@ html(ng-app= loggedIn ? "nodecloud" : "")
 					ul.nav#side-menu
 						if (loggedIn)
 							li
-								a(href)
-									i.fa.fa-dashboard.fa-fw
-									|  Dashboard
+								a(ui-sref="gettingStarted")
+									i.fa.fa-thumb-tack.fa-fw
+									|  Getting Started
 							li
 								a(ui-sref="add")
 									i.fa.fa-plus.fa-fw

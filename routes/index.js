@@ -23,6 +23,8 @@ exports.router = function(app) {
 		})
 	})
 	
+	app.get('/gettingStarted', gettingStarted)
+	
 	apps.router(app)
 	analytics.router(app)
 	profile.router(app)
@@ -38,4 +40,8 @@ function login (req, res, next) {
 
 function viewApps (req, res) {
 	res.redirect('/apps')
+}
+
+function gettingStarted (req, res) {
+	res.render('gettingStarted')
 }
