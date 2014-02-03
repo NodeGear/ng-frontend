@@ -9,7 +9,7 @@ var express = require('express')
 	, passport = require('passport')
 	, auth = require('./auth')
 	, config = require('./config')
-	, socket = require('socket.io-client').connect('http://127.0.0.1:8049')
+	, socket = require('socket.io-client').connect('http://127.0.0.1:8999')
 
 var app = exports.app = express();
 
