@@ -10,9 +10,11 @@ var express = require('express')
 	, auth = require('./auth')
 	, config = require('./config')
 	, socket = require('socket.io-client').connect('http://127.0.0.1:8999')
+	, bugsnag = require('bugsnag')
 
 var app = exports.app = express();
 
+bugsnag.register("c0c7568710bb46d4bf14b3dad719dbbe");
 exports.backend = socket;
 
 socket.on('connect', function() {
@@ -47,6 +49,7 @@ app.set('view cache', true); // Cache views
 app.set('app version', '0.0.1'); // App version
 app.locals.pretty = process.env.NODE_ENV != 'production' // Pretty HTML outside production mode
 
+app.use(bugsnag.requestHandler);
 app.use(express.logger('dev')); // Pretty log
 app.use(express.limit('30mb')); // File upload limit
 app.use("/", express.static(path.join(__dirname, 'public'))); // serve static files
@@ -92,6 +95,11 @@ app.use(function(req, res, next) {
 	next();
 });
 
+// routes
+routes.router(app);
+
+app.use(bugsnag.errorHandler);
+
 // development only
 if ('development' == app.get('env')) {
 	app.use(express.errorHandler()); // Let xpress handle errors
@@ -102,6 +110,3 @@ var server = http.createServer(app)
 server.listen(app.get('port'), function(){
 	console.log('Express server listening on port ' + app.get('port'));
 });
-
-// routes
-routes.router(app);

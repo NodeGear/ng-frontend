@@ -16,7 +16,6 @@
 		"session-mongoose": "latest",
 		"nodemailer": "latest",
 		"socket.io": "latest",
-		"nodetime": "latest",
 		"nodemailer": "latest",
 		"bugsnag": "latest",
 		"passport": "latest",
