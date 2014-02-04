@@ -41,6 +41,11 @@ function getApp (req, res, next) {
 	
 	// get drone details
 	models.Drone.getDroneById(id, function(drone) {
+		if (drone == null || (req.user.admin != true && !drone.user.equals(req.user._id))) {
+			res.send(404);
+			return;
+		}
+		
 		res.locals.app = drone
 		
 		res.locals.app.logs.reverse()

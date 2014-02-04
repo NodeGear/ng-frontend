@@ -14,7 +14,8 @@ var userSchema = schema({
 	password: String,
 	authToken: String, //wtf is authtoken??
 	uid: Number,
-	gid: Number
+	gid: Number,
+	admin: { type: Boolean, default: false }
 });
 
 userSchema.methods.setPassword = function(password) {
@@ -83,23 +84,3 @@ userSchema.methods.getName = function () {
 }
 
 module.exports = model = mongoose.model('User', userSchema);
-
-if (util.isDemo) {
-	module.exports.findOne({
-		email: "demo@nodecloud.co"
-	}, function(err, demo) {
-		if (err) throw err;
-		
-		if (demo == null) {
-			demo = new module.exports({
-				username: "demo",
-				name: "NodeCloud Demonstration Account",
-				email: "demo@nodecloud.co",
-				password: "demo"
-			})
-			demo.save()
-			
-			// Also make some test apps...
-		}
-	})
-}

@@ -21,6 +21,18 @@ socket.on('connect', function() {
 	console.log("Backend Connected")
 })
 
+if (process.platform.match(/^win/) == null) {
+	try {
+		var spawn_process = require('child_process').spawn
+		var readHash = spawn_process('git', ['rev-parse', '--short', 'HEAD']);
+		readHash.stdout.on('data', function (data) {
+			config.hash = data.toString().trim();
+		})
+	} catch (e) {
+		console.log("\n~= Unable to obtain git commit hash =~\n")
+	}
+}
+
 mongoose.connect(config.db, config.db_options);
 var sessionStore = new MongoStore({
 	connection: mongoose.connection,
@@ -46,7 +58,7 @@ app.set('port', process.env.PORT || 3000); // Port
 app.set('views', __dirname + '/views');
 app.set('view engine', 'jade'); // Templating engine
 app.set('view cache', true); // Cache views
-app.set('app version', '0.0.1'); // App version
+app.set('app version', config.version); // App version
 app.locals.pretty = process.env.NODE_ENV != 'production' // Pretty HTML outside production mode
 
 app.use(bugsnag.requestHandler);
@@ -89,7 +101,8 @@ app.use(function(req, res, next) {
 	res.locals.user = req.user;
 	res.locals.loggedIn = res.locals.user != null;
 	
-	res.locals.isDemo = util.isDemo;
+	res.locals.version = config.version;
+	res.locals.versionHash = config.hash;
 	
 	// navigation bar
 	next();

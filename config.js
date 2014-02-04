@@ -3,6 +3,8 @@ var fs = require('fs')
 module.exports = new (function() {
 	var self = this;
 	
+	this.version = '0.0.2';
+	this.hash = '';
 	this.env = process.env.NODE_ENV == "production" ? "production" : "development";
 	
 	this.db_options = {
