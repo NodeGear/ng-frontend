@@ -1,0 +1,27 @@
+extends layout
+
+block content
+	.row
+		.col-lg-12.col-md-12.col-sm-12
+			h1.page-header Apps
+	.row
+		.col-lg-12.col-md-12.col-sm-12
+			table.table
+				thead
+					th Name
+					th User
+					th Status
+					th &nbsp;
+				tbody
+					for app in apps
+						tr
+							td= app.name
+							td: a(href="/admin/user/"+app.user._id)= app.user.name
+							td
+								if (app.isRunning)
+									| Running
+								else
+									| Down
+							td
+								.btn-group.pull-right
+									a.btn.btn-xs.btn-default(href="/admin/app/"+app._id) Access

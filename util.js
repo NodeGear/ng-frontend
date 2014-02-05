@@ -23,6 +23,21 @@ exports.authorized = function (req, res, next) {
 	}
 }
 
+exports.mustBeAdmin = function (req, res, next) {
+	if (req.user.admin) {
+		next();
+	} else {
+		res.format({
+			html: function() {
+				res.redirect('/');
+			},
+			json: function() {
+				res.send(404);
+			}
+		})
+	}
+}
+
 exports.buildFlash = function (errs, opts) {
 	if (opts.dismissable == null) {
 		opts.dismissable = true;

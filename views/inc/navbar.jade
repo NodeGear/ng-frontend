@@ -12,6 +12,8 @@ mixin navbar(active)
 				.collapse.navbar-collapse.nodecloud-navbar-collapse
 					if loggedIn
 						ul.nav.navbar-right.navbar-top-links
+							if user.admin
+								li: a(href="/admin" target="_blank") Admin
 							li.dropdown
 								a.dropdown-toggle(href data-toggle="dropdown")
 									| Apps 

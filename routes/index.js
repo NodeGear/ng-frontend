@@ -3,10 +3,15 @@ var util = require('../util')
 	, apps = require('./app/apps')
 	, analytics = require('./analytics')
 	, profile = require('./profile/profile')
+	, admin = require('./admin')
 
 exports.router = function(app) {
 	app.get('/', login, viewApps);
 	auth.router(app)
+	
+	app.all('/admin', util.mustBeAdmin)
+	app.all('/admin/*', util.mustBeAdmin)
+	admin.router(app)
 	
 	app.get('*', function(req, res, next) {
 		res.format({
