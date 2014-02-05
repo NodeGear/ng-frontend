@@ -14,7 +14,6 @@ function getUsers (req, res) {
 }
 
 function getUser (req, res, next) {
-	console.log("WTF?")
 	models.User.findById(req.params.id, function(err, user) {
 		res.locals.aUser = user;
 		next();

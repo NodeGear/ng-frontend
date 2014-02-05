@@ -4,6 +4,14 @@ exports.router = function (app) {
 	app.get('/analytics', showAnalytics)
 }
 
+var lastAverage = null;
+var avg = {
+	count: 0,
+	total: 0,
+	averageRequests: 0,
+	totalSize: 0
+};
+
 function calculateAverage(data) {
 	var total = 0;
 	var count = 0;
@@ -16,6 +24,8 @@ function calculateAverage(data) {
 		totalSize += data[count].resSize;
 	}
 	return {
+		count: count,
+		total: total,
 		averageRequests: total / count,
 		totalSize: totalSize
 	}
@@ -34,16 +44,37 @@ function showAnalytics (req, res) {
 			res.locals.size = res.locals.size / 1024 / 1024;
 		}
 		
-		models.Analytic.find({}, function(err, all) {
-			res.locals.allTotal = all.length;
-			var results = calculateAverage(all);
-			res.locals.allAverage = results.averageRequests
-			res.locals.allSize = results.totalSize
-			if (res.locals.allSize > 0) {
-				res.locals.allSize = res.locals.allSize / 1024 / 1024;
-			}
-			
-			res.render('analytics/show')
-		})
+		res.locals.allTotal = avg.total;
+		res.locals.allAverage = avg.averageRequests
+		res.locals.allSize = avg.totalSize
+		if (res.locals.allSize > 0) {
+			res.locals.allSize = res.locals.allSize / 1024 / 1024;
+		}
+		
+		res.render('analytics/show')
 	})
 }
+
+function updateAverage () {
+	var search = {
+	}
+	
+	if (lastAverage) {
+		search.end = {
+			$gte: lastAverage
+		}
+	}
+	
+	lastAverage = new Date();
+	models.Analytic.find(search, function(err, all) {
+		var calc = calculateAverage(all);
+		
+		avg.count += calc.count;
+		avg.total += calc.total;
+		avg.averageRequests = avg.total / avg.count;
+		avg.totalSize += calc.totalSize;
+	});
+}
+
+setInterval(updateAverage, 10 * 1000);
+updateAverage();
