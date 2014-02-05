@@ -44,7 +44,7 @@ function showAnalytics (req, res) {
 			res.locals.size = res.locals.size / 1024 / 1024;
 		}
 		
-		res.locals.allTotal = avg.total;
+		res.locals.allTotal = avg.count;
 		res.locals.allAverage = avg.averageRequests
 		res.locals.allSize = avg.totalSize
 		if (res.locals.allSize > 0) {
@@ -73,9 +73,6 @@ function updateAverage () {
 		avg.total += calc.total;
 		avg.averageRequests = avg.total / avg.count;
 		avg.totalSize += calc.totalSize;
-		
-		console.log(calc);
-		console.log(avg)
 	});
 }
 
