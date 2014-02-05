@@ -73,6 +73,9 @@ function updateAverage () {
 		avg.total += calc.total;
 		avg.averageRequests = avg.total / avg.count;
 		avg.totalSize += calc.totalSize;
+		
+		console.log(calc);
+		console.log(avg)
 	});
 }
 
