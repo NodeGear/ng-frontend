@@ -32,7 +32,7 @@ s.statics.updateConfig = function (cb) {
 			
 			base += "repo "+user.email+"/..*\n\
     C   =   "+user._id+"\n\
-	 RW+ = CREATOR
+	 RW+ = CREATOR\
 \n";
 		}
 		
