@@ -47,7 +47,7 @@ html(ng-app= loggedIn ? "nodecloud" : "")
 									li
 										a(ui-sref="profile.ssh") SSH Public Key
 							li
-								a(ui-sref="tickets") Support Tickets
+								a(ui-sref="tickets.tickets") Support Tickets
 							li.divider(style="height:20px;" ng-hide="app == null")
 							li(ng-hide="app == null")
 								a(ui-sref="app.dashboard({id: app._id})")

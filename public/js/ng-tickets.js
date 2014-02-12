@@ -8,7 +8,6 @@ angular.module('nodecloud')
 	$scope.ticket = data.ticket || {}
 	$scope.csrf = "";
 	$scope.status = "";
-	$scope.ticket = {};
 	$scope.disableSend = false;
 	
 	$scope.setCsrf = function (csrf) {

@@ -8,7 +8,15 @@ block content
 		.col-lg-12.col-md-12.col-sm-12
 			table.table
 				thead
-					th X
-					th Y
-					th &nbsp;
+					tr
+						th Subject
+						th User
+						th Created
+						th &nbsp;
 				tbody
+					for ticket in tickets
+						tr
+							td= ticket.subject
+							td= ticket.user.name
+							td= ticket.created
+							td

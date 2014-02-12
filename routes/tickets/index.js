@@ -125,10 +125,12 @@ function getTicket (req, res, next) {
 		}
 		
 		res.locals.ticket = ticket;
+		next()
 	})
 }
 
 function showTicket (req, res) {
+	console.log(res.locals.ticket)
 	res.send({
 		ticket: res.locals.ticket
 	})

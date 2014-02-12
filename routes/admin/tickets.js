@@ -5,12 +5,9 @@ exports.router = function (app) {
 }
 
 function getTickets (req, res) {
-	res.render('admin/tickets');
-	
-	/*
-	models.X.find({}, function(err, tickets) {
+	models.Ticket.find({}).populate('user app message.user').exec(function(err, tickets) {
 		res.locals.tickets = tickets;
 		
 		res.render('admin/tickets')
-	})*/
+	})
 }
