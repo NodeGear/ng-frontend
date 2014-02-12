@@ -10,12 +10,16 @@
 				tr(ng-repeat="message in ticket.messages")
 					td {{ message.user.name }}, {{ message.created }}
 					td {{ message.message }}
-		form.form-horizontal
+		form.form-horizontal(name="ticketReply")
 			.form-group
 				.col-md-offset-3.col-sm-offset-3.col-lg-offset-3.col-md-6.col-sm-6.col-lg-6
 					textarea.form-control(required ng-model="reply" placeholder="Reply to ticket {{ticket.subject}}")
 			.form-group
 				.col-md-offset-3.col-sm-offset-3.col-lg-offset-3.col-md-6.col-sm-6.col-lg-6
-					a.btn.btn-success
-						i.fa.fa-reply.fa-fw
-						|  Submit Reply
+					.btn-group
+						a.btn.btn-success(ng-disabled="ticketReply.$invalid")
+							i.fa.fa-reply.fa-fw
+							|  Submit Reply
+						a.btn.btn-default
+							i.fa.fa-times.fa-fw
+							|  Close Ticket
