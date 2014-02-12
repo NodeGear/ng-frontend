@@ -51,6 +51,18 @@ nodecloud.config(function($stateProvider, $urlRouterProvider, $locationProvider)
 		url: '',
 		templateUrl: "/tickets/tickets?partial=true"
 	})
+	.state('tickets.add', {
+		url: '/add',
+		templateUrl: "/tickets/add?partial=true",
+		controller: "TicketController",
+		resolve: {
+			data: function($q) {
+				var def = $q.defer()
+				def.resolve({});
+				return def.promise;
+			}
+		}
+	})
 	.state('tickets.ticket', {
 		url: '/:id',
 		templateUrl: "/tickets/ticket?partial=true",

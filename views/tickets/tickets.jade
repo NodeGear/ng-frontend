@@ -1,7 +1,7 @@
 .row
 	.col-md-12.col-sm-12.col-lg-12.col-xs-12
 		h1.page-header Support Tickets
-			a.btn.btn-success.pull-right
+			a.btn.btn-success.pull-right(ui-sref="tickets.add")
 				i.fa.fa-ticket.fa-fw
 				|  New Ticket
 .row
@@ -9,7 +9,17 @@
 		table.table.table-striped
 			thead
 				tr
+					th Subject
 					th Created
+					th Replies
+					th &nbsp;
 			tbody
 				tr(ng-repeat="ticket in tickets")
+					td {{ ticket.subject }}
 					td {{ ticket.created }}
+					td {{ ticket.messages.length }}
+					td 
+						.btn-group.pull-right
+							a.btn.btn-xs.btn-default
+								i.fa.fa-reply.fa-fw
+								|  Reply
