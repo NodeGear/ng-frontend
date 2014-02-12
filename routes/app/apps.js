@@ -14,6 +14,13 @@ exports.router = function (_app) {
 	app.router(_app)
 }
 
+exports.socket = function (socket) {
+	app.socket(socket)
+}
+exports.socketDisconnect = function (socket) {
+	app.socketDisconnect(socket)
+}
+
 function getApps (req, res, next) {
 	var self = this;
 	

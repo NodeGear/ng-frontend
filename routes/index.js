@@ -37,6 +37,14 @@ exports.router = function(app) {
 	tickets.router(app)
 }
 
+// webSocket routing stuff
+exports.socket = function (socket) {
+	apps.socket(socket)
+}
+exports.socketDisconnect = function (socket) {
+	apps.socketDisconnect(socket)
+}
+
 function login (req, res, next) {
 	if (res.locals.loggedIn) {
 		next();

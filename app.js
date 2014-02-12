@@ -11,6 +11,7 @@ var express = require('express')
 	, config = require('./config')
 	, socket = require('socket.io-client').connect('http://127.0.0.1:8999')
 	, bugsnag = require('bugsnag')
+	, socketPassport = require('passport.socketio')
 
 var app = exports.app = express();
 
@@ -70,6 +71,7 @@ app.use(express.multipart());
 app.use(express.cookieParser()); // Parse cookies from header
 app.use(express.methodOverride());
 app.use(express.session({ // Session store
+	key: 'ng',
 	secret: "K3hsadkasdoijqwpoie",
 	store: sessionStore,
 	cookie: {
@@ -123,3 +125,25 @@ var server = http.createServer(app)
 server.listen(app.get('port'), function(){
 	console.log('Express server listening on port ' + app.get('port'));
 });
+exports.io = io = require('socket.io').listen(server)
+
+io.set('authorization', socketPassport.authorize({
+	cookieParser: express.cookieParser,
+	key: 'ng',
+	secret: 'K3hsadkasdoijqwpoie',
+	store: sessionStore,
+	passport: passport,
+	fail: function(data, message, error, accept) {
+		throw new Error(message)
+		accept(false);
+	}
+}))
+io.set('log level', 1);
+
+io.sockets.on('connection', function(socket) {
+	routes.socket(socket)
+	
+	socket.on('disconnect', function() {
+		routes.socketDisconnect(this)
+	})
+})

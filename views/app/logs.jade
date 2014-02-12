@@ -2,6 +2,8 @@
 	.col-sm-12.col-xs-12.col-md-12.col-lg-12
 		h1.page-header Application Logs
 			.btn-group.pull-right
+				a.btn.btn-default.btn-md(ng-click="watchLog(log)" title="Stream Log File")
+					i.fa.fa-fw(ng-class="{ 'fa-eye-slash': log.watching, 'fa-eye': !log.watching }")
 				a.btn.btn-success.btn-md(ng-disabled="log == null", target="_blank", href="/app/"+app._id+"/log/{{ log._id }}/download?partial=true")
 					i.fa.fa-download.fa-fw
 					|  Download Selected
@@ -17,8 +19,8 @@ if app.logs
 			ul.list-unstyled
 				li(ng-repeat="l in app.logs")
 					a(href="", ng-click="selectLog(l)")
-						span(ng-show="l._id == log._id")
-							| &#10003; 
 						| {{ l.created.format('DD/MM/YYYY HH:mm:ss') }}
+					span(ng-show="l._id == log._id")
+						|  &#10003;
 else
 	h4 Your app has no logs available..

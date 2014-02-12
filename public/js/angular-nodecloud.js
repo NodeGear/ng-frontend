@@ -3,6 +3,8 @@ var nodecloud = angular.module('nodecloud', ['ui.router'])
 nodecloud.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
 	$locationProvider.html5Mode(true);
 	
+	socket = io.connect()
+	
 	$urlRouterProvider.otherwise('/')
 	
 	$stateProvider

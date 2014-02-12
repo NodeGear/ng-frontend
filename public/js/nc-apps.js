@@ -1,6 +1,21 @@
 angular.module('nodecloud')
 
 .controller('AppController', function ($scope, data, $http, $rootScope) {
+	var socket = io.connect();
+	
+	socket.on('app:logdata', function(data) {
+		if (data.app != $scope.app._id) return; // not for us...
+		
+		// find the log
+		if ($scope.log._id != data.log) return; // log not selected..
+		
+		$scope.log.content = data.data + $scope.log.content;
+		
+		if (!$scope.$$phase) {
+			$scope.$digest()
+		}
+	})
+	
 	$scope.app = data.app || {}
 	$rootScope.app = {
 		_id: data.app._id,
@@ -10,15 +25,17 @@ angular.module('nodecloud')
 	for (var i = 0; i < $scope.app.events.length; i++) {
 		$scope.app.events[i].created = moment($scope.app.events[i].created);
 	}
+	// not a good solution..
 	$scope.app.events.reverse();
 	
 	for (var i = 0; i < $scope.app.logs.length; i++) {
 		$scope.app.logs[i].created = moment($scope.app.logs[i].created);
+		$scope.app.logs[i].watching = false;
 	}
 	
 	$scope.newEnv = {};
 	
-	$scope.log = null
+	$scope.log = null;
 	$scope.usage = [];
 	
 	$scope.setCsrf = function (csrf) {
@@ -52,6 +69,19 @@ angular.module('nodecloud')
 		$http.get('/app/'+$scope.app._id+'/log/'+log._id).success(function(data, status) {
 			$scope.log = data.log;
 		})
+	}
+	
+	$scope.watchLog = function (log) {
+		if (typeof log.watching === 'undefined') {
+			log.watching = false;
+		}
+		log.watching = !log.watching;
+		
+		socket.emit('app:watchLog', {
+			app: $scope.app._id,
+			log: log._id,
+			watch: log.watching
+		});
 	}
 	
 	$scope.getUsage = function () {

@@ -4,6 +4,8 @@ var mongoose = require('mongoose')
 	, config = require('../../config')
 	, drone = require('./drone')
 	, util = require('../../util')
+	, Tail = require('tail').Tail
+	, ansi2html = new (require('ansi-to-html'))
 
 exports.router = function (app) {
 	app.get('/app/:id/log', viewLogs)
@@ -11,6 +13,13 @@ exports.router = function (app) {
 		.get('/app/:id/log/:lid/*', getLog)
 		.get('/app/:id/log/:lid', viewLog)
 		.get('/app/:id/log/:lid/download', downloadLog)
+}
+
+exports.socket = function (socket) {
+	socket.on('app:watchLog', watchLog)
+}
+exports.socketDisconnect = function (socket) {
+	cleanupWatchers(socket);
 }
 
 function getLog (req, res, next) {
@@ -62,4 +71,110 @@ function downloadLog (req, res) {
 		})
 		res.send(log.content)
 	});
+}
+
+function watchLog (data) {
+	var socket = this;
+	
+	var appId = data.app;
+	var lid = data.log;
+	var watch = Boolean(data.watch);
+	try {
+		appId = mongoose.Types.ObjectId(appId);
+		lid = mongoose.Types.ObjectId(lid)
+	} catch (e) {
+		// invalid app id
+		return;
+	}
+	
+	models.Drone.findOne({
+		_id: appId,
+		user: socket.handshake.user._id
+	}, function(err, drone) {
+		if (err) throw err;
+		
+		if (!drone) {
+			// user doesn't have privileges
+			return;
+		}
+		
+		var found = false;
+		for (var i = 0; i < drone.logs.length; i++) {
+			if (drone.logs[i]._id.equals(lid)) {
+				found = drone.logs[i];
+				break;
+			}
+		}
+		
+		if (!found) return;
+		
+		socket.get('app_logWatchers', function(err, watchers) {
+			if (err) throw err;
+			
+			if (!watchers) {
+				watchers = [];
+			}
+			
+			var watcher = false;
+			for (var i = 0; i < watchers.length; i++) {
+				if (watchers[i].app.equals(appId) && watchers[i].log.equals(lid)) {
+					watcher = i;
+					break;
+				}
+			}
+			
+			if (watch) {
+				// Start watching
+				
+				if (watcher === false) {
+					console.log(found.location)
+					
+					var tail = new Tail(found.location);
+					tail.on("line", function(data) {
+						socket.emit('app:logdata', {
+							app: appId,
+							log: lid,
+							data: ansi2html.toHtml(data)+"<br/>"
+						});
+					});
+					
+					watchers.push({
+						app: appId,
+						log: lid,
+						tail: tail
+					});
+					
+				} else {
+					console.log("Already watching??")
+				}
+			} else {
+				if (watcher === false) {
+					console.log("not Watching??")
+					return;
+				}
+				
+				watchers[watcher].tail.unwatch();
+				watchers.splice(watcher, 1);
+			}
+			
+			socket.set('app_logWatchers', watchers);
+		})
+	})
+}
+
+function cleanupWatchers(socket) {
+	socket.get('app_logWatchers', function(err, watchers) {
+		if (err) throw err;
+		
+		if (!watchers) {
+			return;
+		}
+		
+		for (var i = 0; i < watchers.length; i++) {
+			watchers[i].tail.unwatch();
+		}
+		
+		watchers = [];
+		return;
+	})
 }

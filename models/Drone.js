@@ -72,46 +72,46 @@ droneSchema.methods.getLog = function (log, length, parse, cb) {
 	}
 	
 	fs.exists(log.location, function(logExists) {
-		if (logExists) {
-			fs.readFile(log.location, function(err, data) {
-				if (err) {
-					cb(log);
-					return;
-				}
-				
-				if (parse) {
-					// Parse logs
-					// Do some parsing..
-					log.content = "";
-					var lines = data.toString().split('\n');
-					for (var i = lines.length-1; i >= 0; i--) {
-						var line = lines[i]
-						
-						// removes the newline at the end of files
-						if (i == lines.length-1 && line.length == 0) {
-							continue;
-						}
-						
-						log.content += line + "<br/>";
-						
-						// have max length
-						if (length > 0) {
-							if (i + length < lines.length) {
-								break;
-							}
+		if (!logExists) {
+			return cb(log);
+		}
+		
+		fs.readFile(log.location, function(err, data) {
+			if (err) {
+				cb(log);
+				return;
+			}
+			
+			if (parse) {
+				// Parse logs
+				// Do some parsing..
+				log.content = "";
+				var lines = data.toString().split('\n');
+				for (var i = lines.length-1; i >= 0; i--) {
+					var line = lines[i]
+					
+					// removes the newline at the end of files
+					//if (i == lines.length-1 && line.length == 0) {
+					//	continue;
+					//}
+					
+					log.content += line + "<br/>";
+					
+					// have max length
+					if (length > 0) {
+						if (i + length < lines.length) {
+							break;
 						}
 					}
-				
-					log.content = ansi2html.toHtml(log.content)
-				} else {
-					log.content = data;
 				}
-				
-				cb(log);
-			})
-		} else {
+			
+				log.content = ansi2html.toHtml(log.content)
+			} else {
+				log.content = data;
+			}
+			
 			cb(log);
-		}
+		})
 	})
 }
 

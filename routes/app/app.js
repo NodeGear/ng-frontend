@@ -28,6 +28,13 @@ exports.router = function (app) {
 	settings.router(app)
 }
 
+exports.socket = function (socket) {
+	log.socket(socket)
+}
+exports.socketDisconnect = function (socket) {
+	log.socketDisconnect(socket)
+}
+
 function getApp (req, res, next) {
 	var self = this
 	var id = req.params.id;
