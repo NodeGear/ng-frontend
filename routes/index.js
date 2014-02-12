@@ -4,6 +4,7 @@ var util = require('../util')
 	, analytics = require('./analytics')
 	, profile = require('./profile/profile')
 	, admin = require('./admin')
+	, tickets = require('./tickets')
 
 exports.router = function(app) {
 	app.get('/', login, viewApps);
@@ -33,6 +34,7 @@ exports.router = function(app) {
 	apps.router(app)
 	analytics.router(app)
 	profile.router(app)
+	tickets.router(app)
 }
 
 function login (req, res, next) {

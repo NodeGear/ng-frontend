@@ -4,5 +4,6 @@ module.exports = {
 	Analytic: require('./Analytic'),
 	Usage: require('./Usage'),
 	PublicKey: require('./PublicKey'),
-	Event: require('./Event')
+	Event: require('./Event'),
+	Ticket: require('./Ticket')
 }

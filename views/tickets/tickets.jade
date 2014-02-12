@@ -1,0 +1,15 @@
+.row
+	.col-md-12.col-sm-12.col-lg-12.col-xs-12
+		h1.page-header Support Tickets
+			a.btn.btn-success.pull-right
+				i.fa.fa-ticket.fa-fw
+				|  New Ticket
+.row
+	.col-md-12.col-sm-12.col-lg-12.col-xs-12
+		table.table.table-striped
+			thead
+				tr
+					th Created
+			tbody
+				tr(ng-repeat="ticket in tickets")
+					td {{ ticket.created }}
