@@ -1,25 +1,37 @@
 .row
 	.col-sm-12.col-md-12.col-lg-12
-		h1.page-header Your Support Ticket
-		h2 {{ ticket.subject }}
-		table.table
-			tbody
-				tr
-					td You, {{ ticket.created }}
-					td {{ ticket.message }}
-				tr(ng-repeat="message in ticket.messages")
-					td {{ message.user.name }}, {{ message.created }}
-					td {{ message.message }}
-		form.form-horizontal(name="ticketReply")
+		h1.page-header Support Ticket '{{ ticket.subject }}'
+		
+.row
+	.col-sm-4.col-md-4.col-lg-4
+		| You
+		em.pull-right {{ ticket.created }}
+	.col-sm-8.col-md-8.col-lg-8
+		| {{ ticket.message }}
+.row(ng-repeat="message in ticket.messages")
+	.col-sm-4.col-md-4.col-lg-4
+		| {{ message.user.name }}
+		em.pull-right {{ message.created }}
+	.col-sm-8.col-md-8.col-lg-8
+		| {{ message.message }}
+
+br
+
+.row
+	.col-sm-4.col-md-4.col-lg-4
+	.col-sm-8.col-md-8.col-lg-8
+		form.form-horizontal(name="ticketReply" ng-init="setCsrf('#{token}')")
 			.form-group
-				.col-md-offset-3.col-sm-offset-3.col-lg-offset-3.col-md-6.col-sm-6.col-lg-6
+				.col-md-10.col-sm-10.col-lg-10
 					textarea.form-control(required ng-model="reply" placeholder="Reply to ticket {{ticket.subject}}")
 			.form-group
-				.col-md-offset-3.col-sm-offset-3.col-lg-offset-3.col-md-6.col-sm-6.col-lg-6
+				.col-md-10.col-sm-10.col-lg-10
 					.btn-group
-						a.btn.btn-success(ng-disabled="ticketReply.$invalid")
+						a.btn.btn-success(ng-disabled="ticketReply.$invalid || disableSend" ng-click="submitReply()")
 							i.fa.fa-reply.fa-fw
 							|  Submit Reply
 						a.btn.btn-default
 							i.fa.fa-times.fa-fw
 							|  Close Ticket
+					| &nbsp;
+					em {{ status }}

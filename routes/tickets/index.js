@@ -10,7 +10,8 @@ exports.router = function (app) {
 		.get('/tickets/ticket', viewTicketTemplate)
 		.get('/tickets/add', addTicket)
 		.post('/tickets/add', createTicket)
-		.get('/tickets/:tid', getTicket, showTicket);
+		.get('/tickets/:tid', getTicket, showTicket)
+		.put('/tickets/:tid', getTicket, updateTicket)
 }
 
 function viewTickets (req, res) {
@@ -130,8 +131,27 @@ function getTicket (req, res, next) {
 }
 
 function showTicket (req, res) {
-	console.log(res.locals.ticket)
 	res.send({
 		ticket: res.locals.ticket
+	})
+}
+
+function updateTicket (req, res) {
+	if (!req.body.message || req.body.message.length < 2) {
+		res.send({
+			status: 400,
+			message: "Reply invalid"
+		});
+		return;
+	}
+	
+	res.locals.ticket.messages.push({
+		user: req.user._id,
+		message: req.body.message
+	})
+	res.locals.ticket.save();
+	
+	res.send({
+		status: 200
 	})
 }

@@ -36,4 +36,33 @@ angular.module('nodecloud')
 			$scope.status = "Server Error"
 		})
 	}
+	
+	$scope.submitReply = function () {
+		var text = $scope.reply;
+		$scope.disableSend = true;
+		$scope.status = "Sending...";
+		
+		$http.put('/tickets/'+$scope.ticket._id, {
+			_csrf: $scope.csrf,
+			message: text
+		}).success(function(data, status) {
+			if (data.status == 200) {
+				$scope.ticket.messages.push({
+					created: (new Date()).toString(),
+					message: text,
+					user: $scope.ticket.user
+				})
+				
+				$scope.reply = "";
+				$scope.disableSend = false;
+				$scope.status = "Reply Sent";
+			} else {
+				$scope.status = data.message;
+				$scope.disableSend = false;
+			}
+		}).error(function(data) {
+			$scope.disableSend = false;
+			$scope.status = "Server Error."
+		})
+	}
 })
