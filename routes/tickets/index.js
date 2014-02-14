@@ -54,6 +54,22 @@ function createTicket (req, res) {
 		
 		t.save();
 		
+		// Email agents
+		config.transport.sendMail({
+			from: "NodeGear Ticket Gateway <tickets@eventmost.com>",
+			to: "Alan Campbell <alan.echobob@gmail.com>, Matej Kramny <ng@matej.me>",
+			subject: "NG New Ticket: "+ticket.subject,
+			html: "\
+	<p><strong>"+ticket.subject+"</strong><br/>\
+	"+ticket.message+"<br/>\
+	</p>\
+	<a href=\"\">Reply Here</a><br/><br/>Best,<br/>NodeGear Ticket Gateway."
+		}, function(err, response) {
+			if (err) throw err;
+		
+			console.log("Email sent.."+response.message)
+		})
+		
 		res.send({
 			status: errs.length > 0 ? 400 : 200,
 			message: errs.length > 0 ? errs.join(', ') : 'Created.'
