@@ -1,61 +1,61 @@
 var fs = require('fs')
 	, mailer = require('nodemailer')
 
-this.version = '0.0.3';
-this.hash = '';
-this.env = process.env.NODE_ENV == "production" ? "production" : "development";
-this.transport = mailer.createTransport("Mandrill", {
+exports.version = '0.0.3';
+exports.hash = '';
+exports.env = process.env.NODE_ENV == "production" ? "production" : "development";
+exports.transport = mailer.createTransport("Mandrill", {
 	auth: {
 		user: "matej@matej.me",
-		pass: ""
+		pass: "eELIT9FIJIU52NaWvrMrPg"
 	}
 })
 
-this.db_options = {
+exports.db_options = {
 	auto_reconnect: true,
 	native_parser: true,
 	server: {
 		auto_reconnect: true
 	}
 };
-if (this.env == "production") {
-	this.db_options.replset = {
+if (exports.env == "production") {
+	exports.db_options.replset = {
 		rs_name: "rs0"
 	};
 	var auth = "mongodb://nodegear:Jei4hucu5fohNgiengohgh8Pagh4fuacahQuiwee";
-	this.db = auth+"@repl1.mongoset.castawaydev.com/nodegear,"+auth+"@repl2.mongoset.castawaydev.com";
+	exports.db = auth+"@repl1.mongoset.castawaydev.com/nodegear,"+auth+"@repl2.mongoset.castawaydev.com";
 	
-	this.port = process.env.PORT || 80;
-	this.droneLocation = "/var/ng_apps/";
-	this.gitolite = "/var/ng_gitolite/";
-	this.gitoliteKeys = this.gitolite+"keydir/";
-	this.gitoliteConfig = this.gitolite+"conf/gitolite.conf";
+	exports.port = process.env.PORT || 80;
+	exports.droneLocation = "/var/ng_apps/";
+	exports.gitolite = "/var/ng_gitolite/";
+	exports.gitoliteKeys = exports.gitolite+"keydir/";
+	exports.gitoliteConfig = exports.gitolite+"conf/gitolite.conf";
 } else {
-	this.db = "mongodb://127.0.0.1/nodegear";
+	exports.db = "mongodb://127.0.0.1/nodegear";
 	
-	this.port = process.env.PORT || 3000;
-	this.droneLocation = process.env.HOME+"/ng_apps/";
-	this.gitolite = process.env.HOME+"/dev/nodegear-gitolite/";
-	this.gitoliteKeys = this.gitolite+"keydir/";
-	this.gitoliteConfig = this.gitolite+"conf/gitolite.conf";
+	exports.port = process.env.PORT || 3000;
+	exports.droneLocation = process.env.HOME+"/ng_apps/";
+	exports.gitolite = process.env.HOME+"/dev/nodegear-gitolite/";
+	exports.gitoliteKeys = exports.gitolite+"keydir/";
+	exports.gitoliteConfig = exports.gitolite+"conf/gitolite.conf";
 }
 
-this.path = __dirname;
+exports.path = __dirname;
 
-this.tmp = "/tmp/nodegear/";
+exports.tmp = "/tmp/nodegear/";
 
-fs.exists(this.tmp, function(exists) {
+fs.exists(exports.tmp, function(exists) {
 	if (!exists) {
 		console.log("Creating tmp dir")
-		fs.mkdir(self.tmp, function(err) {
+		fs.mkdir(exports.tmp, function(err) {
 			if (err) throw err;
 		})
 	}
 })
-fs.exists(this.droneLocation, function(exists) {
+fs.exists(exports.droneLocation, function(exists) {
 	if (!exists) {
 		console.log("Creating drone location dir")
-		fs.mkdir(self.droneLocation, function(err) {
+		fs.mkdir(exports.droneLocation, function(err) {
 			if (err) throw err;
 		})
 	}
