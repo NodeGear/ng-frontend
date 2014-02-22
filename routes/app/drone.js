@@ -146,3 +146,26 @@ exports.delete = function (req, res) {
 	res.locals.app.save();
 	res.redirect('/apps');
 }
+
+exports.scale = function (req, res) {
+	var _app = res.locals.app;
+	
+	_app.processes = req.body.processes;
+	if (_app.processes < 1) _app.processes = 1;
+	if (_app.processes > 10) _app.processes = 10;
+	
+	app.backend.emit('scale', {
+		scale: _app.processes,
+		id: _app._id
+	});
+	
+	_app.save();
+	res.format({
+		html: function() {
+			redirect('back');
+		},
+		json: function() {
+			res.send(200, {})
+		}
+	});
+}

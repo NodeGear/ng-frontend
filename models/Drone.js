@@ -34,7 +34,8 @@ var droneSchema = schema({
 	}],
 	domains: [String],
 	subdomain: String,
-	script: String
+	script: String,
+	processes: { type: Number, default: 1, min: 1 }
 })
 
 droneSchema.methods.pullDroneDetails = function (cb) {

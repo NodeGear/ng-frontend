@@ -21,6 +21,7 @@ exports.router = function (app) {
 		.get('/app/:id/stop', drone.stop)
 		.get('/app/:id/restart', drone.restart)
 		.get('/app/:id/delete', drone.delete)
+		.put('/app/:id/scale', drone.scale)
 	
 	log.router(app)
 	analytics.router(app)

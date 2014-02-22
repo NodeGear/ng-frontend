@@ -119,6 +119,19 @@ angular.module('nodecloud')
 		$http.get('/app/'+$scope.app._id+'/delete')
 	}
 	
+	$scope.addProcess = function () {
+		$http.put('/app/'+$scope.app._id+'/scale', {
+			_csrf: $scope.csrf,
+			processes: ++$scope.app.processes
+		})
+	}
+	$scope.removeProcess = function () {
+		$http.put('/app/'+$scope.app._id+'/scale', {
+			_csrf: $scope.csrf,
+			processes: --$scope.app.processes
+		})
+	}
+	
 	$scope.plotGraphs = function () {
 		var mem = [], cpu = [];
 		

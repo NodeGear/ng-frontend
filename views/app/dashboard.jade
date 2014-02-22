@@ -1,11 +1,23 @@
+div(ng-init="setCsrf('#{token}')")
+
 h1.page-header {{app.name}} Dashboard
-	.btn-group.pull-right
-		a.btn.btn-md.btn-success(ng-show="app.isInstalled", app-start, ng-disabled="app.isRunning || app.deleted", title="Start")
-			i.fa.fa-play.fa-fw
-		a.btn.btn-md.btn-warning(ng-show="app.isInstalled", app-stop, ng-disabled="!app.isRunning || app.deleted", title="Pause")
-			i.fa.fa-pause.fa-fw
-		a.btn.btn-md.btn-default(ng-show="app.isInstalled", app-restart, ng-disabled="!app.isRunning || app.deleted")
-			| Restart
+	.pull-right
+		.btn-group
+			a.btn.btn-md.btn-success(app-start, ng-disabled="app.isRunning || app.deleted", title="Start")
+				i.fa.fa-play.fa-fw
+			a.btn.btn-md.btn-warning(app-stop, ng-disabled="!app.isRunning || app.deleted", title="Pause")
+				i.fa.fa-pause.fa-fw
+			a.btn.btn-md.btn-default(app-restart, ng-disabled="!app.isRunning || app.deleted")
+				| Restart
+
+p.lead Process Scaling: {{app.processes}}
+	.btn-group
+		a.btn.btn-md.btn-danger(ng-disabled="!app.isRunning" title="Reduce Process" ng-click="removeProcess()")
+			i.fa.fa-level-down.fa-fw
+			|  Remove
+		a.btn.btn-md.btn-success(ng-disabled="!app.isRunning" title="Add A Process" ng-click="addProcess()")
+			i.fa.fa-level-up.fa-fw
+			|  Add
 
 table.table
 	tr(ng-repeat="ev in app.events")
