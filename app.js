@@ -135,7 +135,8 @@ io.set('authorization', socketPassport.authorize({
 	store: sessionStore,
 	passport: passport,
 	fail: function(data, message, error, accept) {
-		throw new Error(message)
+		bugsnag.notify(error);
+		
 		accept(false);
 	}
 }))

@@ -12,10 +12,10 @@ h1.page-header {{app.name}} Dashboard
 
 p.lead Process Scaling: {{app.processes}}
 	.btn-group
-		a.btn.btn-md.btn-danger(ng-disabled="!app.isRunning" title="Reduce Process" ng-click="removeProcess()")
+		a.btn.btn-md.btn-danger(ng-disabled="app.processes <= 1" title="Reduce Process" ng-click="removeProcess()")
 			i.fa.fa-level-down.fa-fw
 			|  Remove
-		a.btn.btn-md.btn-success(ng-disabled="!app.isRunning" title="Add A Process" ng-click="addProcess()")
+		a.btn.btn-md.btn-success(ng-disabled="app.processes >= 10" title="Add A Process" ng-click="addProcess()")
 			i.fa.fa-level-up.fa-fw
 			|  Add
 

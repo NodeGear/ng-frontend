@@ -3,22 +3,6 @@ var http = require('http'),
 	app = require('../../app')
 
 exports.install = function (req, res) {
-	if (res.locals.app._id.toString() != "5293dfc8d2e0794750000003" && util.isDemo == true) {
-		res.locals.app.installedOn = "demo";
-		res.locals.app.isInstalled = true;
-		res.locals.app.save();
-		res.format({
-			html: function() {
-				res.redirect('/app/'+res.locals.app._id)
-			},
-			json: function() {
-				res.send(200, {
-				})
-			}
-		})
-		return;
-	}
-	
 	app.backend.publish("app_assign", JSON.stringify({
 		id: res.locals.app._id
 	}));
@@ -35,21 +19,6 @@ exports.install = function (req, res) {
 }
 
 exports.start = function (req, res) {
-	if (res.locals.app._id.toString() != "5293dfc8d2e0794750000003" && util.isDemo == true) {
-		res.locals.app.isRunning = true;
-		res.locals.app.save();
-		res.format({
-			html: function() {
-				res.redirect('/app/'+res.locals.app._id)
-			},
-			json: function() {
-				res.send(200, {
-				})
-			}
-		})
-		return;
-	}
-	
 	app.backend.publish('app_start', JSON.stringify({
 		id: res.locals.app._id
 	}));
@@ -66,21 +35,6 @@ exports.start = function (req, res) {
 }
 
 exports.stop = function (req, res) {
-	if (res.locals.app._id.toString() != "5293dfc8d2e0794750000003" && util.isDemo == true) {
-		res.locals.app.isRunning = false;
-		res.locals.app.save();
-		res.format({
-			html: function() {
-				res.redirect('/app/'+res.locals.app._id)
-			},
-			json: function() {
-				res.send(200, {
-				})
-			}
-		})
-		return;
-	}
-	
 	app.backend.publish('app_stop', JSON.stringify({
 		id: res.locals.app._id
 	}));
@@ -97,21 +51,6 @@ exports.stop = function (req, res) {
 }
 
 exports.restart = function (req, res) {
-	if (res.locals.app._id.toString() != "5293dfc8d2e0794750000003" && util.isDemo == true) {
-		res.locals.app.isRunning = true;
-		res.locals.app.save();
-		res.format({
-			html: function() {
-				res.redirect('/app/'+res.locals.app._id)
-			},
-			json: function() {
-				res.send(200, {
-				})
-			}
-		})
-		return;
-	}
-	
 	app.backend.publish('app_restart', JSON.stringify({
 		id: res.locals.app._id
 	}));
@@ -128,19 +67,6 @@ exports.restart = function (req, res) {
 }
 
 exports.delete = function (req, res) {
-	if (util.isDemo == true) {
-		res.format({
-			html: function() {
-				res.redirect('/app/'+res.locals.app._id)
-			},
-			json: function() {
-				res.send(200, {
-				})
-			}
-		})
-		return;
-	}
-	
 	// TODO stop, remove from server
 	res.locals.app.deleted = true;
 	res.locals.app.save();
@@ -154,10 +80,12 @@ exports.scale = function (req, res) {
 	if (_app.processes < 1) _app.processes = 1;
 	if (_app.processes > 10) _app.processes = 10;
 	
-	app.backend.publish('app_scale', JSON.stringify({
-		id: _app._id,
-		scale: _app.processes
-	}));
+	if (app.running) {
+		app.backend.publish('app_scale', JSON.stringify({
+			id: _app._id,
+			scale: _app.processes
+		}));
+	}
 	
 	_app.save();
 	res.format({
