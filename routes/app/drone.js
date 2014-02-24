@@ -19,9 +19,9 @@ exports.install = function (req, res) {
 		return;
 	}
 	
-	app.backend.emit('assign', {
+	app.backend.publish("app_assign", JSON.stringify({
 		id: res.locals.app._id
-	});
+	}));
 	
 	res.format({
 		html: function() {
@@ -50,9 +50,9 @@ exports.start = function (req, res) {
 		return;
 	}
 	
-	app.backend.emit('start', {
+	app.backend.publish('app_start', JSON.stringify({
 		id: res.locals.app._id
-	});
+	}));
 	
 	res.format({
 		html: function() {
@@ -81,9 +81,9 @@ exports.stop = function (req, res) {
 		return;
 	}
 	
-	app.backend.emit('stop', {
+	app.backend.publish('app_stop', JSON.stringify({
 		id: res.locals.app._id
-	});
+	}));
 	
 	res.format({
 		html: function() {
@@ -112,9 +112,9 @@ exports.restart = function (req, res) {
 		return;
 	}
 	
-	app.backend.emit('restart', {
+	app.backend.publish('app_restart', JSON.stringify({
 		id: res.locals.app._id
-	});
+	}));
 	
 	res.format({
 		html: function() {
@@ -154,10 +154,10 @@ exports.scale = function (req, res) {
 	if (_app.processes < 1) _app.processes = 1;
 	if (_app.processes > 10) _app.processes = 10;
 	
-	app.backend.emit('scale', {
-		scale: _app.processes,
-		id: _app._id
-	});
+	app.backend.publish('app_scale', JSON.stringify({
+		id: _app._id,
+		scale: _app.processes
+	}));
 	
 	_app.save();
 	res.format({

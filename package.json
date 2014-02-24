@@ -22,6 +22,8 @@
     "ansi-to-html": "latest",
     "socket.io-client": "latest",
     "passport.socketio": "2.2.1",
-	 "tail": "latest"
+	 "tail": "latest",
+	 "hiredis": "latest",
+	 "redis": "latest"
   }
 }

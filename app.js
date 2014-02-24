@@ -9,18 +9,19 @@ var express = require('express')
 	, passport = require('passport')
 	, auth = require('./auth')
 	, config = require('./config')
-	, socket = require('socket.io-client').connect('http://127.0.0.1:8999')
 	, bugsnag = require('bugsnag')
 	, socketPassport = require('passport.socketio')
+	, redis = require("redis")
+	, backend = redis.createClient()
 
 var app = exports.app = express();
 
+exports.backend = backend;
 bugsnag.register("c0c7568710bb46d4bf14b3dad719dbbe");
-exports.backend = socket;
 
-socket.on('connect', function() {
-	console.log("Backend Connected")
-})
+exports.backend.on("error", function (err) {
+	console.log("Backend Error", err);
+});
 
 if (process.platform.match(/^win/) == null) {
 	try {
