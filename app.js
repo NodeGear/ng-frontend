@@ -17,6 +17,10 @@ var express = require('express')
 var app = exports.app = express();
 
 exports.backend = backend;
+if (config.env == 'production') {
+	backend.auth("ahShii3ahyoo0OhJa1ooG4yoosee8me9EvahW0ae")
+}
+
 bugsnag.register("c0c7568710bb46d4bf14b3dad719dbbe");
 
 exports.backend.on("error", function (err) {
