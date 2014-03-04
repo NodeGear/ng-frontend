@@ -1,7 +1,7 @@
 var fs = require('fs')
 	, mailer = require('nodemailer')
 
-exports.version = '0.0.3';
+exports.version = '0.0.4';
 exports.hash = '';
 exports.env = process.env.NODE_ENV == "production" ? "production" : "development";
 exports.transport = mailer.createTransport("Mandrill", {
