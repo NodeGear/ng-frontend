@@ -103,11 +103,15 @@ app.use(function(req, res, next) {
 	
 	res.locals.user = req.user;
 	res.locals.loggedIn = res.locals.user != null;
+	res.locals.requiresTFA = false;
+	if (res.locals.loggedIn) {
+		res.locals.requiresTFA = req.user.tfa.enabled && req.user.tfa.confirmed && req.session.confirmedTFA !== true;
+		res.locals.loggedIn = !res.locals.requiresTFA;
+	}
 	
 	res.locals.version = config.version;
 	res.locals.versionHash = config.hash;
 	
-	// navigation bar
 	next();
 });
 

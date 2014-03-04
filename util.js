@@ -2,8 +2,6 @@ exports.isDemo = typeof process.env.NODECLOUD_DEMO !== 'undefined' ? true : fals
 
 exports.authorized = function (req, res, next) {
 	if (res.locals.loggedIn) {
-		// check user has authorised TFA (in the session)
-		
 		next()
 	} else {
 		res.format({
@@ -23,6 +21,16 @@ exports.authorized = function (req, res, next) {
 			}
 		})
 	}
+}
+
+exports.authorizedPassTFA = function (req, res, next) {
+	if (res.locals.requiresTFA) {
+		next();
+		
+		return;
+	}
+	
+	exports.authorized(req, res, next);
 }
 
 exports.mustBeAdmin = function (req, res, next) {

@@ -10,9 +10,10 @@ var passport = require('passport')
 exports.router = function (app) {
 	app.post('/auth/password', doLogin)
 		.post('/auth/register', doRegister)
-		.put('/auth/tfa/enable', util.authorized, enableTFA)
-		.put('/auth/tfa/disable', util.authorized, disableTFA)
-		.post('/auth/tfa', checkTFA)
+		.put('/auth/tfa', util.authorized, enableTFA)
+		.delete('/auth/tfa', util.authorized, disableTFA)
+		.get('/auth/tfa', util.authorized, checkTFAEnabled)
+		.post('/auth/tfa', util.authorizedPassTFA, checkTFA)
 		
 		.get('/logout', doLogout)
 }
@@ -68,7 +69,8 @@ function doLogin (req, res) {
 				res.format({
 					json: function() {
 						res.send({
-							status: 200
+							status: 200,
+							tfa: (user.tfa.enabled && user.tfa.confirmed)
 						})
 					},
 					html: function() {
@@ -175,9 +177,41 @@ function doRegister (req, res) {
 }
 
 function enableTFA (req, res) {
-	var key = speakeasy.generate_key({length: 20, google_auth_qr: true});
+	var key = speakeasy.generate_key({
+		length: 20,
+		google_auth_qr: true,
+		name: "NodeGear"
+	});
+	
 	req.user.tfa.enabled = true;
+	req.user.tfa.confirmed = false;
 	req.user.tfa.key = key.base32;
+	req.user.save();
+	
+	res.send({
+		status: 200,
+		qr: key.google_auth_qr,
+	})
+}
+
+function checkTFAEnabled (req, res) {
+	var data = {
+		status: 200,
+		enabled: req.user.tfa.enabled,
+		confirmed: req.user.tfa.confirmed
+	};
+	
+	if (data.enabled && !data.confirmed) {
+		data.qr = qr = "https://chart.googleapis.com/chart?chs=166x166&chld=L|0&cht=qr&chl=otpauth://totp/NodeGear%3Fsecret="+req.user.tfa.key;
+	}
+	
+	res.send(data)
+}
+
+function disableTFA (req, res) {
+	req.user.tfa.enabled = false;
+	req.user.tfa.confirmed = false;
+	req.user.tfa.key = "";
 	req.user.save();
 	
 	res.send({
@@ -185,20 +219,49 @@ function enableTFA (req, res) {
 	})
 }
 
-function disableTFA (req, res) {
+function checkTFA (req, res) {
+	var token = speakeasy.time({
+		key: req.user.tfa.key,
+		encoding: 'base32'
+	});
 	
+	console.log(token);
+	console.log(req.user)
+	
+	res.send({
+		token: token
+	});
 }
 
 function checkTFA (req, res) {
-	res.send({
-		time: speakeasy.time({
-			key: req.user.tfa.key,
-			encoding: 'base32'
+	var token = speakeasy.totp({
+		key: req.user.tfa.key,
+		encoding: 'base32'
+	})
+	
+	if (token == req.body.token) {
+		if (!req.user.tfa.confirmed) {
+			req.user.tfa.confirmed = true;
+			req.user.save()
+		}
+		
+		req.session.confirmedTFA = true;
+		
+		res.send({
+			status: 200
 		})
-	});
+	} else {
+		req.session.confirmedTFA = false;
+		
+		res.send({
+			status: 404,
+			message: "Auth failed: Incorrect Token"
+		})
+	}
 }
 
 function doLogout (req, res) {
 	req.logout();
+	req.session.destroy();
 	res.redirect('/')
 }

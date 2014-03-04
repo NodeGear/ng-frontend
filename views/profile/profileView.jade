@@ -18,8 +18,21 @@
 				.col-lg-9.col-md-9.col-sm-9.col-lg-offset-3.col-md-offset-3.col-sm-offset-3
 					input.btn.btn-success(type="submit", value="Change Password")
 
-.row
+.row(ng-controller="TFAController" ng-init="init()")
 	.col-md-12.col-sm-12.col-lg-12.col-xs-12
 		h4 Two Factor Authentication
-		p <strong>Status:</strong> {{tfa.status}}
-		a(ng-click="enableTFA('#{token}')" href="" ng-hide="tfa.hide") Enable TFA
+		p(ng-show="tfa.status.length > 0") {{tfa.status}}
+		a.btn.btn-success(ng-click="enableTFA('#{token}')" href="" ng-hide="tfa.hide || tfa.enabled") Enable TFA
+		a.btn.btn-danger(ng-click="disableTFA('#{token}')" href="" ng-hide="tfa.hide || !tfa.enabled") Disable TFA
+		
+		form.form-horizontal(ng-show="tfa.enabled && tfa.showConfirm" name="confirm")
+			.form-group(ng-show="tfa.qr.length > 0")
+				.col-lg-9.col-md-9.col-sm-9.col-lg-offset-3.col-md-offset-3.col-sm-offset-3
+					img(ng-src="{{tfa.qr}}")
+			.form-group
+				label.col-md-3.col-lg-3.col-sm-3.control-label(for="confirm") Confirm
+				.col-lg-6.col-md-6.col-sm-6
+					input#confirm.form-control(type="text" placeholder="Enter Code from your Generator App" required ng-model="tfa.token")
+			.form-group
+				.col-lg-9.col-md-9.col-sm-9.col-lg-offset-3.col-md-offset-3.col-sm-offset-3
+					button.btn.btn-success(ng-click="confirmTFA('#{token}')" href="" ng-disabled="tfa.hide || confirm.$invalid") Confirm Token

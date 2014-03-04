@@ -1,6 +1,6 @@
-angular.module('nodegear', [])
+angular.module('nodecloud', [])
 
-.controller('SignInController', function($scope, $http) {
+.controller('SignInController', function($scope, $http, $rootScope) {
 	$scope.status = "";
 	$scope.user = {
 		email: "",
@@ -24,6 +24,12 @@ angular.module('nodegear', [])
 			password: pwd
 		}).success(function(data, status) {
 			if (data.status == 200) {
+				if (data.tfa) {
+					// Requires tfa..
+					$rootScope.showTFA = data.tfa;
+					return;
+				}
+				
 				$scope.status = "Login Successful"
 				window.location = "/";
 			} else {

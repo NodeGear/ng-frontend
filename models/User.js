@@ -18,7 +18,8 @@ var userSchema = schema({
 	admin: { type: Boolean, default: false },
 	tfa: {
 		enabled: { type: Boolean, default: false },
-		key: String
+		key: String,
+		confirmed: { type: Boolean, default: false }
 	}
 });
 
