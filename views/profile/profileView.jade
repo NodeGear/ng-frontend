@@ -1,3 +1,25 @@
 .row
 	.col-sm-12.col-md-12.col-lg-12.col-xs-12
 		h1.page-header Account Settings
+
+.row
+	.col-md-12.col-sm-12.col-lg-12.col-xs-12
+		form.form-horizontal(action="/profile/ssh", method="POST", autocomplete="off", enctype="multipart/form-data")
+			input(type="hidden", name="_csrf", value=token)
+			.form-group
+				label.col-md-3.col-lg-3.col-sm-3.control-label(for="password") New Password
+				.col-lg-6.col-md-6.col-sm-6
+					input#password.form-control(type="password" placeholder="New Password")
+			.form-group
+				label.col-md-3.col-lg-3.col-sm-3.control-label(for="old_password") Old Password
+				.col-lg-6.col-md-6.col-sm-6
+					input#old_password.form-control(type="password" placeholder="Old Password")
+			.form-group
+				.col-lg-9.col-md-9.col-sm-9.col-lg-offset-3.col-md-offset-3.col-sm-offset-3
+					input.btn.btn-success(type="submit", value="Change Password")
+
+.row
+	.col-md-12.col-sm-12.col-lg-12.col-xs-12
+		h4 Two Factor Authentication
+		p <strong>Status:</strong> {{tfa.status}}
+		a(ng-click="enableTFA('#{token}')" href="" ng-hide="tfa.hide") Enable TFA

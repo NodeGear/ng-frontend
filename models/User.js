@@ -15,7 +15,11 @@ var userSchema = schema({
 	authToken: String, //wtf is authtoken??
 	uid: Number,
 	gid: Number,
-	admin: { type: Boolean, default: false }
+	admin: { type: Boolean, default: false },
+	tfa: {
+		enabled: { type: Boolean, default: false },
+		key: String
+	}
 });
 
 userSchema.methods.setPassword = function(password) {

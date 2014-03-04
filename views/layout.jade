@@ -14,6 +14,7 @@ html(ng-app= loggedIn ? "nodecloud" : "")
 			link(rel="stylesheet" href="/css/bootstrap.min.css")
 			link(rel="stylesheet" href="/css/bootstrap-theme.min.css")
 			link(rel="stylesheet" href="/css/font-awesome.min.css")
+			link(rel="stylesheet" href="/css/nodegear.css")
 
 	body
 		include inc/navbar
@@ -85,7 +86,8 @@ html(ng-app= loggedIn ? "nodecloud" : "")
 								a(href) Support
 								|  | 
 								a(href) System Status
-								span.pull-right.text-muted #{version}-##{versionHash}
+							p.text-center
+								span.text-muted v#{version}-##{versionHash}
 							br
 		
 		block js
@@ -103,6 +105,7 @@ html(ng-app= loggedIn ? "nodecloud" : "")
 				script(src="/js/nc-apps.js" defer)
 				script(src="/js/nc-logs.js" defer)
 				script(src="/js/ng-tickets.js" defer)
+				script(src="/js/ng-profile.js" defer)
 				
 		//- page-specific js
 		block addonjs

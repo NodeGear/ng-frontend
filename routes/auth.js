@@ -5,10 +5,14 @@ var passport = require('passport')
 	, util = require('../util')
 	, exec = require('child_process').exec
 	, config = require('../config')
+	, speakeasy = require('speakeasy')
 
 exports.router = function (app) {
 	app.post('/auth/password', doLogin)
 		.post('/auth/register', doRegister)
+		.put('/auth/tfa/enable', util.authorized, enableTFA)
+		.put('/auth/tfa/disable', util.authorized, disableTFA)
+		.post('/auth/tfa', checkTFA)
 		
 		.get('/logout', doLogout)
 }
@@ -20,10 +24,7 @@ function doLogin (req, res) {
 		errs.push(err)
 	}
 	
-	if (util.isDemo) {
-		req.body.email = "demo@nodecloud.co"
-		req.body.password = "demo"
-	}
+	console.log(req.body)
 	
 	// validate email
 	v.check(req.body.email, 'Please enter a valid email address').isEmail();
@@ -44,33 +45,57 @@ function doLogin (req, res) {
 			
 			if (errs.length > 0) {
 				var err = buildFlash(errs, { title: "Login Failed..", class: "danger" });
-				req.session.flash = [err];
-				res.redirect('/')
+				
+				res.format({
+					html: function() {
+						req.session.flash = [err];
+						res.redirect('/')
+					},
+					json: function() {
+						res.send({
+							status: 404,
+							message: "Incorrect Credentials"
+						});
+					}
+				});
+				
 				return;
 			}
 			
 			req.login(user, function(err) {
 				if (err) throw err;
 				
-				//req.session.flash.push(buildFlash(["Thank you for logging in with NodeCloud"], { title: "Success", class: "info" }));
-				res.redirect('/apps');
+				res.format({
+					json: function() {
+						res.send({
+							status: 200
+						})
+					},
+					html: function() {
+						res.redirect('/apps');
+					}
+				});
 			})
 		})
 	} else {
 		var err = buildFlash(errs, { title: "Login Failed..", class: "danger" });
-		req.session.flash = [err];
-		res.redirect('/')
+		
+		res.format({
+			html: function() {
+				req.session.flash = [err];
+				res.redirect('/')
+			},
+			json: function() {
+				res.send({
+					status: 404,
+					message: "Incorrect Credentials"
+				});
+			}
+		});
 	}
 }
 
 function doRegister (req, res) {
-	if (util.isDemo) {
-		var info = buildFlash(["This is a demonstration website, please log in using the demonstration account"], { title: "This is a demo..", class: "info" });
-		req.session.flash = [info]
-		res.redirect('/');
-		return;
-	}
-	
 	var v = new Validator()
 	var errs = [];
 	v.error = function (err) {
@@ -147,6 +172,30 @@ function doRegister (req, res) {
 		req.session.flash = [err];
 		res.redirect('/');
 	}
+}
+
+function enableTFA (req, res) {
+	var key = speakeasy.generate_key({length: 20, google_auth_qr: true});
+	req.user.tfa.enabled = true;
+	req.user.tfa.key = key.base32;
+	req.user.save();
+	
+	res.send({
+		status: 200
+	})
+}
+
+function disableTFA (req, res) {
+	
+}
+
+function checkTFA (req, res) {
+	res.send({
+		time: speakeasy.time({
+			key: req.user.tfa.key,
+			encoding: 'base32'
+		})
+	});
 }
 
 function doLogout (req, res) {

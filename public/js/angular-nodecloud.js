@@ -23,7 +23,8 @@ nodecloud.config(function($stateProvider, $urlRouterProvider, $locationProvider)
 	})
 	.state('profile.profile', {
 		url: '',
-		templateUrl: "/profile/profile?partial=true"
+		templateUrl: "/profile/profile?partial=true",
+		controller: 'ProfileController'
 	})
 	.state('profile.ssh', {
 		url: '/ssh',
