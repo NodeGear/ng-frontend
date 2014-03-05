@@ -11,7 +11,7 @@ define([
 		
 		socket = io.connect()
 		
-		$urlRouterProvider.otherwise('/')
+		$urlRouterProvider.otherwise('')
 		
 		$stateProvider
 		.state('gettingStarted', {

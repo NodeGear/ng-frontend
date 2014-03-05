@@ -19,7 +19,7 @@ define([
 					return def.promise;
 				}
 			},
-			template: '<ui-view></ui-view>'
+			template: '<ui-view autoscroll="false"></ui-view>'
 		})
 		.state('tickets.tickets', {
 			url: '',

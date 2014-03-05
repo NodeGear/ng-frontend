@@ -2,7 +2,12 @@ require.config({
    baseUrl: '/js',
 	paths: {
 		angular: 'vendor/angular',
-		uiRouter: 'vendor/angular-ui-router'
+		uiRouter: 'vendor/angular-ui-router',
+		jquery: 'vendor/jquery',
+		highcharts: 'vendor/highcharts',
+		moment: 'vendor/moment',
+		'sb-admin': 'vendor/sb-admin',
+		bootstrap: 'vendor/bootstrap'
 	},
 	shim: {
 		angular: {
@@ -10,7 +15,9 @@ require.config({
 		},
 		uiRouter: {
 			deps: ['angular']
-		}
+		},
+		bootstrap: ['jquery'],
+		'sb-admin': ['jquery']
 	}
 });
 
@@ -18,7 +25,9 @@ require([
 	'angular',
 	'uiRouter',
 	'routes/routes',
-	'app'
+	'app',
+	'bootstrap',
+	'sb-admin'
 ], function(angular) {
 	var $html = angular.element(document.getElementsByTagName('html')[0]);
 	

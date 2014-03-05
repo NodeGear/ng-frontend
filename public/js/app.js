@@ -3,7 +3,11 @@ define([
 	'uiRouter',
 	'routes/routes'
 	], function(angular) {
-		return angular.module('nodegear', [
+		var app = angular.module('nodegear', [
 			'ui.router'
 		]);
+		
+		app.value('$anchorScroll', angular.noop);
+		
+		return app;
 	})

@@ -1,7 +1,8 @@
 define([
 	'angular',
-	'app'
-], function(angular, app) {
+	'app',
+	'moment'
+], function(angular, app, moment) {
 	app.controller('AppController', function ($scope, data, $http, $rootScope) {
 		var socket = io.connect();
 		
@@ -142,48 +143,50 @@ define([
 		}
 	
 		$scope.plotGraphs = function () {
-			var mem = [], cpu = [];
+			require(['highcharts'], function() {
+				var mem = [], cpu = [];
 		
-			for (var i = 0; i < $scope.usage.length; i++) {
-				var u = $scope.usage[i];
-				mem.push([u.time.getTime(), u.memory])
-				cpu.push([u.time.getTime(), u.cpu])
-			}
+				for (var i = 0; i < $scope.usage.length; i++) {
+					var u = $scope.usage[i];
+					mem.push([u.time.getTime(), u.memory])
+					cpu.push([u.time.getTime(), u.cpu])
+				}
 		
-			$('#usageGraph').highcharts({
-				title: {
-					text: ''
-				},
-				xAxis: {
-					type: 'datetime'
-				},
-				yAxis: [{
+				$('#usageGraph').highcharts({
 					title: {
-						text: 'CPU %'
+						text: ''
 					},
-	            min: 0
-				}, {
-					title: {
-						text: 'RAM (MB)'
+					xAxis: {
+						type: 'datetime'
 					},
-					min: 0,
-					opposite: true,
-					allowDecimals: true
-				}],
-		      credits: {
-					enabled: false
-				},
-				series: [{
-					name: 'CPU %',
-					data: cpu,
-					yAxis: 0,
-					type: 'spline'
-				}, {
-					name: 'RAM (MB)',
-					data: mem,
-					yAxis: 1,
-					type: 'spline'
-				}]
+					yAxis: [{
+						title: {
+							text: 'CPU %'
+						},
+		            min: 0
+					}, {
+						title: {
+							text: 'RAM (MB)'
+						},
+						min: 0,
+						opposite: true,
+						allowDecimals: true
+					}],
+			      credits: {
+						enabled: false
+					},
+					series: [{
+						name: 'CPU %',
+						data: cpu,
+						yAxis: 0,
+						type: 'spline'
+					}, {
+						name: 'RAM (MB)',
+						data: mem,
+						yAxis: 1,
+						type: 'spline'
+					}]
+				})
 			})
 		}
 	

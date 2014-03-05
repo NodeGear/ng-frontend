@@ -20,7 +20,7 @@ mixin navbar(active)
 									i.fa.fa-caret-down
 								ul.dropdown-menu
 									li(ng-repeat="a in apps" ng-class="{ active: app._id == a._id }")
-										a(ui-sref="app({id:a._id})") {{a.name}}
+										a(ui-sref="app.dashboard({id:a._id})") {{a.name}}
 							li.dropdown
 								a.dropdown-toggle(href, data-toggle="dropdown")
 									i.fa.fa-user.fa-fw
