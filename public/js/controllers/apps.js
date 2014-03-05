@@ -4,7 +4,11 @@ define([
 ], function(angular, app) {
 	app.controller('AppController', function ($scope, data, $http, $rootScope) {
 		var socket = io.connect();
-	
+		
+		if (!data.app) {
+			return;
+		}
+		
 		socket.on('app:logdata', function(data) {
 			if (data.app != $scope.app._id) return; // not for us...
 		
@@ -18,10 +22,13 @@ define([
 			}
 		})
 	
-		$scope.app = data.app || {}
+		$scope.app = data.app || {
+			events: [],
+			logs: []
+		}
 		$rootScope.app = {
-			_id: data.app._id,
-			name: data.app.name
+			_id: $scope.app._id,
+			name: $scope.app.name
 		}
 	
 		for (var i = 0; i < $scope.app.events.length; i++) {
