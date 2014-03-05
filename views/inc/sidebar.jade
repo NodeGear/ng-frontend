@@ -1,0 +1,46 @@
+mixin sidebar
+	nav.navbar-default.navbar-static-side(role="navigation")
+		.sidebar-collapse
+			ul.nav#side-menu
+				if (loggedIn)
+					li
+						a(ui-sref="gettingStarted")
+							i.fa.fa-thumb-tack.fa-fw
+							|  Getting Started
+					li
+						a(ui-sref="add")
+							i.fa.fa-plus.fa-fw
+							|  Add Application
+					li
+						a(ui-sref="analytics") Analytics
+					li
+						a(href) Account
+							i.fa.arrow
+						ul.nav.nav-second-level
+							li
+								a(ui-sref="profile") Settings
+							li
+								a(ui-sref="profile.ssh") SSH Public Key
+					li
+						a(ui-sref="tickets.tickets") Support Tickets
+					li.divider(style="height:20px;" ng-hide="app == null")
+					li(ng-hide="app == null")
+						a(ui-sref="app.dashboard({id: app._id})")
+							i.fa.fa-dashboard.fa-fw
+							|  {{ app.name }}
+					li(ng-hide="app == null")
+						a(ui-sref="app.logs({id: app._id})")
+							i.fa.fa-comments.fa-fw
+							|  Logs
+					li(ng-hide="app == null")
+						a(ui-sref="app.traffic({id: app._id})")
+							i.fa.fa-bolt.fa-fw
+							|  Traffic
+					li(ng-hide="app == null")
+						a(ui-sref="app.usage({id: app._id})")
+							i.fa.fa-eye.fa-fw
+							|  Usage
+					li(ng-hide="app == null")
+						a(ui-sref="app.settings({id: app._id})")
+							i.fa.fa-wrench.fa-fw
+							|  Settings

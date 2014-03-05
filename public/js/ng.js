@@ -1,6 +1,5 @@
-var nodecloud = angular.module('nodecloud', ['ui.router'])
-
-nodecloud.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
+var nodegear = angular.module('nodecloud')
+.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
 	$locationProvider.html5Mode(true);
 	
 	socket = io.connect()
