@@ -6,43 +6,23 @@ include ../inc/flash
 	.col-lg-12.col-sm-12.col-md-12.col-xs-12
 		h1.page-header Add Application
 .row
-	.col-lg-4.col-sm-4.col-md-4
-		p.lead Create a new <code>node.js</code> application here.
-		p.lead You can also create new applications by pushing to your <code>git</code> space
-		small nodecloud@nodecloud.net:#{user.email}/{repo-name}.git
-	.col-lg-8.col-sm-8.col-md-8
-		form.form-horizontal(action="/app/add", method="POST", autocomplete="off", enctype="multipart/form-data")
-			input(type="hidden", name="_csrf", value=token)
-			input(type="hidden", name="auth", value="login")
+	.col-lg-6.col-sm-6.col-md-6
+		p.lead Create a new <code>node.js</code> application from a template.
+		p.lead To create a custom application, please push your code to 
+			small git://nodecloud@nodecloud.net:#{user.email}/{repo-name}.git
+	
+	.col-lg-6.col-sm-6.col-md-6
+		form.form-horizontal
 			.form-group
-				label.col-md-3.col-xs-3.col-lg-3.col-sm-3.control-label(for="name") Name
-				.col-lg-9.col-md-9.col-xs-9.col-sm-9
-					input#name.form-control(type="text", name="name", placeholder="What's your app called", ng-model="name")
-			.form-group
-				label.col-md-3.col-xs-3.col-lg-3.col-sm-3.control-label(for="name") Name
-				.col-lg-9.col-md-9.col-xs-9.col-sm-9
-					input#subdomain.form-control(type="text", name="subdomain", placeholder="What's your app called", ng-model="subdomain")
+				.col-lg-12.col-md-12.col-xs-12.col-sm-12
+					input.form-control(type="text" placeholder="App Name" ng-model="name" required autofocus="")
 			
 			.form-group
-				label.col-md-3.col-xs-3.col-lg-3.col-sm-3.control-label(for="upload") Upload your app
-				.col-lg-9.col-md-9.col-xs-9.col-sm-9
-					input#upload.form-control(type="file", name="upload")
+				.col-lg-12.col-md-12.col-xs-12.col-sm-12
+					select.form-control(ng-model="template")
+						option(value="ghost") Ghost.js
+						option(value="apostrophe") Apostrophe.js
+			
 			.form-group
-				label.col-md-3.col-xs-3.col-lg-3.col-sm-3.control-label(for="upload") App location
-				.col-lg-9.col-md-9.col-xs-9.col-sm-9
-					.btn-group(data-toggle="buttons")
-						.btn.btn-default
-							input(type="radio", name="location")
-							| Canada
-						.btn.btn-default
-							input(type="radio", name="location")
-							| France
-						.btn.btn-default
-							input(type="radio", name="location")
-							| Amsterdam
-			.form-group
-				.col-lg-9.col-md-9.col-xs-9.col-sm-9.col-lg-offset-3.col-md-offset-3.col-xs-offset-3.col-sm-offset-3
-					input#createButton.btn.btn-success(type="submit", value="Add", disabled= isDemo ? "disabled" : null)
-					if (isDemo)
-						| &nbsp;
-						span.text-help Adding Applications has been disabled in the demo
+				.col-lg-12.col-md-12.col-xs-12.col-sm-12
+					button.btn.btn-success Next
