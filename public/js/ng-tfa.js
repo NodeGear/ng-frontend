@@ -1,4 +1,4 @@
-angular.module('nodecloud')
+angular.module('nodegear')
 
 .controller('TFAController', function($scope, $http) {
 	$scope.tfa = {

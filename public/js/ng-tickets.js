@@ -1,4 +1,4 @@
-angular.module('nodecloud')
+angular.module('nodegear')
 
 .controller('TicketsController', function ($scope, data, $http) {
 	$scope.tickets = data.tickets || [];

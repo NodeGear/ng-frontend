@@ -1,4 +1,4 @@
-angular.module('nodecloud', [])
+angular.module('nodegear', [])
 
 .controller('SignInController', function($scope, $http, $rootScope) {
 	$scope.status = "";
