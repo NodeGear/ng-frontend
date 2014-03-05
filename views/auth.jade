@@ -1,5 +1,5 @@
 doctype
-html(ng-app="nodecloud")
+html
 	head
 		meta(http-equiv="Content-Type", content="text/html; charset=utf-8;")
 		meta(name="_csrf", content="#{token}")
@@ -8,11 +8,11 @@ html(ng-app="nodecloud")
 		title NodeGear
 		link(href="/favicon.ico" type="image/x-icon" rel="icon")
 		link(href="/favicon.ico" type="image/x-icon" rel="shortcut icon")
-		block css
-			link(rel="stylesheet" href="/css/bootstrap.min.css")
-			link(rel="stylesheet" href="/css/bootstrap-theme.min.css")
-			link(rel="stylesheet" href="/css/font-awesome.min.css")
-			link(rel="stylesheet" href="/css/nodegear.css")
+		
+		link(rel="stylesheet" href="/css/bootstrap.min.css")
+		link(rel="stylesheet" href="/css/bootstrap-theme.min.css")
+		link(rel="stylesheet" href="/css/font-awesome.min.css")
+		link(rel="stylesheet" href="/css/nodegear.css")
 
 	body
 		include inc/navbar
@@ -27,7 +27,7 @@ html(ng-app="nodecloud")
 						.panel-body(ng-init="showTFA = #{requiresTFA}")
 							form(name="login" ng-controller="SignInController" ng-init="setCsrf('#{token}')" ng-hide="showTFA")
 								fieldset
-									p.text-center(ng-show="status.length > 0") {{status}}
+									p.text-center(ng-cloak ng-show="status.length > 0" ng-bind="status")
 									.form-group
 										input.form-control(placeholder="Email" type="email" autofocus="" required ng-model="user.email")
 									.form-group
@@ -36,16 +36,16 @@ html(ng-app="nodecloud")
 										button.btn.btn-lg.btn-success.btn-block(ng-disabled="login.$invalid" ng-click="authenticate(user)")
 											i.fa.fa-key.fa-fw
 											|  Authenticate
-							form(name="confirm" ng-controller="TFAController" ng-init="loginAction = true; init()" ng-show="showTFA")
+							form(ng-cloak name="confirm" ng-controller="TFAController" ng-init="loginAction = true; init()" ng-show="showTFA")
 								fieldset
 									p.text-center(ng-show="tfa.status.length > 0") {{tfa.status}}
 									.form-group
-										input.form-control(placeholder="Two Factor Authentication Token" type="text" autofocus="" required ng-model="tfa.token")
+										input.form-control(placeholder="Two Factor Authentication Token" type="text" required ng-model="tfa.token")
 									.form-group
 										button.btn.btn-lg.btn-success.btn-block(ng-disabled="tfa.hide || confirm.$invalid" ng-click="confirmTFA('#{token}')")
 											i.fa.fa-key.fa-fw
 											|  Confirm
-					a.btn.btn-link.btn-block(href="/logout" ng-show="showTFA") Cancel Authentication
+					a.btn.btn-link.btn-block(ng-cloak href="/logout" ng-show="showTFA") Cancel Authentication
 			.row
 				.col-xs-12.col-md-12.col-sm-12.col-lg-12
 					footer
@@ -61,11 +61,4 @@ html(ng-app="nodecloud")
 							span.text-muted v#{version}-##{versionHash}
 						br
 		
-		block js
-			script(src="/js/jquery.min.js" defer)
-			script(src="/js/bootstrap.min.js" defer)
-			script(src="/js/jquery.metisMenu.js" defer)
-			script(src="/js/sb-admin.js" defer)
-			script(src="/js/angular.min.js" defer)
-			script(src="/js/angular-signin.js" defer)
-			script(src="/js/ng-tfa.js" defer)
+		script(src="/js/vendor/require.min.js" data-main="/js/ng_auth.js")

@@ -1,13 +1,15 @@
 define([
-	'angular',
-	'uiRouter',
-	'routes/routes'
+	'angular'
 	], function(angular) {
-		var app = angular.module('nodegear', [
-			'ui.router'
-		]);
-		
-		app.value('$anchorScroll', angular.noop);
+		var app = angular.module('nodegear', ['ui.router']);
+		app.run(function($rootScope, $window) {
+			$rootScope.$on('$locationChangeStart', function(event, newUrl, oldUrl){
+				if (newUrl.match(/\&no_router/)) {
+					event.preventDefault();
+					$window.location.href = newUrl.replace(/\&no_router/, '');
+				}
+			});
+		});
 		
 		return app;
 	})

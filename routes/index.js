@@ -54,7 +54,7 @@ function login (req, res, next) {
 }
 
 function viewApps (req, res) {
-	res.redirect('/apps')
+	res.render('layout')
 }
 
 function gettingStarted (req, res) {

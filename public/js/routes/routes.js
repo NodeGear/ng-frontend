@@ -11,7 +11,7 @@ define([
 		
 		socket = io.connect()
 		
-		$urlRouterProvider.otherwise('')
+		$urlRouterProvider.otherwise('');
 		
 		$stateProvider
 		.state('gettingStarted', {
@@ -25,9 +25,8 @@ define([
 		
 		.state('logout', {
 			url: '/logout',
-			controller: function($scope, $route) {
-				$route.reload()
-				window.location = "/logout";
+			controller: function($scope) {
+				window.location = "/logout&no_router";
 			}
 		})
 	})

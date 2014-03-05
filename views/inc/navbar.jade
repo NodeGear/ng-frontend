@@ -13,7 +13,7 @@ mixin navbar(active)
 					if loggedIn
 						ul.nav.navbar-right.navbar-top-links
 							if user.admin
-								li: a(href="/admin" target="_blank") Admin
+								li: a(href="/admin&no_router") Admin
 							li.dropdown
 								a.dropdown-toggle(href data-toggle="dropdown")
 									| Apps 
@@ -22,7 +22,7 @@ mixin navbar(active)
 									li(ng-repeat="a in apps" ng-class="{ active: app._id == a._id }")
 										a(ui-sref="app.dashboard({id:a._id})") {{a.name}}
 							li.dropdown
-								a.dropdown-toggle(href, data-toggle="dropdown")
+								a.dropdown-toggle(href data-toggle="dropdown")
 									i.fa.fa-user.fa-fw
 									i.fa.fa-caret-down
 								ul.dropdown-menu
