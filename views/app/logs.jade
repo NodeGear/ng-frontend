@@ -14,7 +14,7 @@
 if app.logs
 	.row
 		.col-sm-9.col-xs-9.col-md-9.col-lg-9
-			pre(ng-bind-html-unsafe="log.content")
+			pre(ng-bind-html="log.content")
 		.col-sm-3.col-xs-3.col-md-3.col-lg-3
 			ul.list-unstyled
 				li(ng-repeat="l in app.logs")

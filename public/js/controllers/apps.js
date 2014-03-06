@@ -1,14 +1,11 @@
 define([
 	'angular',
 	'app',
-	'moment'
+	'moment',
+	'../directives/apps'
 ], function(angular, app, moment) {
-	app.controller('AppController', function ($scope, data, $http, $rootScope) {
+	app.controller('AppController', function ($scope, data, $http, $rootScope, $sce) {
 		var socket = io.connect();
-		
-		if (!data.app) {
-			return;
-		}
 		
 		socket.on('app:logdata', function(data) {
 			if (data.app != $scope.app._id) return; // not for us...
@@ -16,7 +13,7 @@ define([
 			// find the log
 			if ($scope.log._id != data.log) return; // log not selected..
 		
-			$scope.log.content = data.data + $scope.log.content;
+			$scope.log.content = $sce.trustAsHtml(data.data + $scope.log.content);
 		
 			if (!$scope.$$phase) {
 				$scope.$digest()
@@ -78,6 +75,7 @@ define([
 		
 			$http.get('/app/'+$scope.app._id+'/log/'+log._id).success(function(data, status) {
 				$scope.log = data.log;
+				$scope.log.content = $sce.trustAsHtml($scope.log.content);
 			})
 		}
 	

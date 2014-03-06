@@ -17,13 +17,15 @@ require.config({
 			deps: ['angular']
 		},
 		bootstrap: ['jquery'],
-		'sb-admin': ['jquery']
+		'sb-admin': ['jquery'],
+		'vendor/angular-sanitize': ['angular']
 	}
 });
 
 require([
 	'angular',
 	'uiRouter',
+	'vendor/angular-sanitize',
 	'routes/routes',
 	'app',
 	'bootstrap',

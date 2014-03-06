@@ -1,18 +1,14 @@
 define([
 	'angular',
 	'app',
-	'../controllers/apps'
+	'../controllers/apps',
+	'../controllers/addApp'
 ], function(angular, app) {
 	app.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
 		$stateProvider.state('add', {
 			url: '/app/add',
 			templateUrl: "/app/add?partial=true",
-			controller: "AppController",
-			resolve: {
-				data: function ($q) {
-					return {}
-				}
-			}
+			controller: "AddAppController"
 		})
 		.state('app', {
 			url: '/app/:id',
