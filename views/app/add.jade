@@ -38,5 +38,7 @@ include ../inc/flash
 			p.lead Creating <strong>{{ name }}</strong>, your new <strong>{{ template }}</strong> application
 			p.lead Watch the install log on the right 
 				i.fa.fa-hand-o-right.fa-fw
+			p (^ thats the future).. For now, just go ahead and click the continue button.
+			button.btn.btn-success(ui-sref="app.dashboard({ id: drone })") Continue
 		.col-lg-6.col-sm-6.col-md-6
 			pre(ng-bind-html="creationLog")

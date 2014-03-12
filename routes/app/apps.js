@@ -105,7 +105,10 @@ function doAddApp (req, res) {
 			template: template
 		}));
 		
-		res.send(200, {})
+		res.send(200, {
+			status: 200,
+			id: drone._id
+		})
 	})
 }
 

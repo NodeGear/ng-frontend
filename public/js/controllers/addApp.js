@@ -16,6 +16,7 @@ define([
 			}).success(function(data, status) {
 				if (data.status == 200) {
 					$scope.creating = true;
+					$scope.drone = data.id;
 				}
 			})
 		}
