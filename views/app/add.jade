@@ -12,20 +12,26 @@ include ../inc/flash
 			p.lead To create a custom application, please push your code to 
 				small git://nodecloud@nodecloud.net:#{user.email}/{repo-name}.git
 		.col-lg-6.col-sm-6.col-md-6
-			form.form-horizontal(name="addApp")
+			form.form-horizontal(name="addApp" ng-init="template = 'ghost';")
 				.form-group
 					.col-lg-12.col-md-12.col-xs-12.col-sm-12
 						input.form-control(type="text" placeholder="App Name" ng-model="name" required autofocus="")
-			
+				
+				.form-group
+					.col-lg-12.col-md-12.col-xs-12.col-sm-12
+						.input-group
+							input.form-control(type="text" placeholder="App Subdomain" ng-model="subdomain" required)
+							span.input-group-addon .app.nodegear.com
+				
 				.form-group
 					.col-lg-12.col-md-12.col-xs-12.col-sm-12
 						select.form-control(ng-model="template")
 							option(value="ghost") Ghost.js
 							option(value="apostrophe") Apostrophe.js
-			
+				
 				.form-group
 					.col-lg-12.col-md-12.col-xs-12.col-sm-12
-						button.btn.btn-success(ng-disabled="addApp.$invalid" ng-click="creating = true") Next
+						button.btn.btn-success(ng-disabled="addApp.$invalid" ng-click="create('#{token}')") Next
 	
 	div(ng-show="creating")
 		.col-lg-6.col-sm-6.col-md-6

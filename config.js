@@ -11,6 +11,8 @@ exports.transport = mailer.createTransport("Mandrill", {
 	}
 })
 
+exports.redis_key = "ahShii3ahyoo0OhJa1ooG4yoosee8me9EvahW0ae";
+
 exports.db_options = {
 	auto_reconnect: true,
 	native_parser: true,
