@@ -180,7 +180,7 @@ function enableTFA (req, res) {
 	var key = speakeasy.generate_key({
 		length: 20,
 		google_auth_qr: true,
-		name: "NodeGear"
+		name: "NodeGear:"+req.user.email
 	});
 	
 	req.user.tfa.enabled = true;
@@ -202,7 +202,7 @@ function checkTFAEnabled (req, res) {
 	};
 	
 	if (data.enabled && !data.confirmed) {
-		data.qr = qr = "https://chart.googleapis.com/chart?chs=166x166&chld=L|0&cht=qr&chl=otpauth://totp/NodeGear%3Fsecret="+req.user.tfa.key;
+		data.qr = qr = "https://chart.googleapis.com/chart?chs=166x166&chld=L|0&cht=qr&chl=otpauth://totp/NodeGear:"+req.user.email+"%3Fsecret="+req.user.tfa.key;
 	}
 	
 	res.send(data)
