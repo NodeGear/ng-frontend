@@ -1,7 +1,10 @@
 define([
 	'angular',
 	'../app',
-	'../controllers/tfa'
+	'../controllers/tfa',
+	'../controllers/billing',
+	'../controllers/billingHistory',
+	'../controllers/billingUsage'
 ], function(angular, app) {
 	app.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
 		$stateProvider.state('profile', {
@@ -16,6 +19,14 @@ define([
 		.state('profile.ssh', {
 			url: '/ssh',
 			templateUrl: "/profile/ssh?partial=true"
+		})
+		.state('profile.billing', {
+			url: '/billing',
+			templateUrl: "/profile/billing?partial=true"
+		})
+		.state('profile.paymentMethods', {
+			url: '/paymentMethods',
+			templateUrl: "/profile/paymentMethods?partial=true"
 		})
 	});
 });

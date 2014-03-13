@@ -3,12 +3,14 @@ var mongoose = require('mongoose')
 	, config = require('../../config')
 	, util = require('../../util')
 	, sshkeys = require('./sshkeys')
+	, billing = require('./billing')
 
 exports.router = function (app) {
 	app.get('/profile', util.authorized, viewProfile)
-	app.get('/profile/profile', util.authorized, getProfile);
+		.get('/profile/profile', util.authorized, getProfile)
 	
 	sshkeys.router(app)
+	billing.router(app)
 }
 
 function viewProfile (req, res) {

@@ -1,5 +1,6 @@
 var fs = require('fs')
 	, mailer = require('nodemailer')
+	, stripe = require('stripe')
 
 exports.version = '0.0.4';
 exports.hash = '';
@@ -12,6 +13,13 @@ exports.transport = mailer.createTransport("Mandrill", {
 })
 
 exports.redis_key = "ahShii3ahyoo0OhJa1ooG4yoosee8me9EvahW0ae";
+
+// before prod. release, convert all these *secret* strings to process.env.____;
+exports.stripe_keys = {
+	pub: process.env.STRIPE_PUB || "pk_test_ntWWvmk133nUhBqeMp81RsM7",
+	secret: process.env.STRIPE_SECRET || "sk_test_SItZ2XOerPoDSVwPC89VI97B"
+}
+exports.stripe = stripe(exports.stripe_keys.secret);
 
 exports.db_options = {
 	auto_reconnect: true,

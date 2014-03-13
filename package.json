@@ -25,6 +25,7 @@
     "tail": "latest",
     "hiredis": "latest",
     "redis": "latest",
-    "speakeasy": "~1.0.3"
+    "speakeasy": "~1.0.3",
+    "stripe": "~2.4.2"
   }
 }

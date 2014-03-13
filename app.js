@@ -113,6 +113,8 @@ app.use(function(req, res, next) {
 		res.locals.loggedIn = !res.locals.requiresTFA;
 	}
 	
+	res.locals.stripe_pub = config.stripe_keys.pub;
+	
 	res.locals.version = config.version;
 	res.locals.versionHash = config.hash;
 	

@@ -20,7 +20,17 @@ var userSchema = schema({
 		enabled: { type: Boolean, default: false },
 		key: String,
 		confirmed: { type: Boolean, default: false }
-	}
+	},
+	balance: { type: Number, default: 0.0 },
+	stripe_customer: String,
+	stripe_cards: [{
+		id: String,
+		name: String,
+		cardholder: String,
+		created: Date,
+		last4: String,
+		default: { type: Boolean, default: false }
+	}]
 });
 
 userSchema.methods.setPassword = function(password) {
