@@ -1,7 +1,7 @@
 var util = require('../util')
 	, auth = require('./auth')
 	, apps = require('./app/apps')
-	, analytics = require('./analytics')
+	//, analytics = require('./analytics')
 	, profile = require('./profile/profile')
 	, admin = require('./admin')
 	, tickets = require('./tickets')
@@ -32,7 +32,7 @@ exports.router = function(app) {
 	app.get('/gettingStarted', gettingStarted)
 	
 	apps.router(app)
-	analytics.router(app)
+	//analytics.router(app)
 	profile.router(app)
 	tickets.router(app)
 }
