@@ -2,7 +2,7 @@ var fs = require('fs')
 	, mailer = require('nodemailer')
 	, stripe = require('stripe')
 
-exports.version = '0.0.6';
+exports.version = '0.1.0';
 exports.hash = '';
 exports.env = process.env.NODE_ENV == "production" ? "production" : "development";
 exports.transport = mailer.createTransport("Mandrill", {
