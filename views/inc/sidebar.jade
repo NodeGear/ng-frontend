@@ -10,16 +10,16 @@ mixin sidebar
 					li
 						a(ui-sref="apps")
 							| Applications
-					li
+					li.active
 						a(href) Account
 							i.fa.arrow
-						ul.nav.nav-second-level
+						ul.nav.nav-second-level.in
 							li
 								a(ui-sref="profile.view") Settings
 							li
-								a(ui-sref="profile.billing") Billing
+								a(ui-sref="profile.billing.history") Billing
 							li
-								a(ui-sref="profile.paymentMethods") Payment Methods
+								a(ui-sref="profile.billing.paymentMethods") Payment Methods
 							li
 								a(ui-sref="profile.ssh") SSH Public Key
 					li

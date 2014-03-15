@@ -4,7 +4,8 @@ require.config({
 		angular: 'vendor/angular',
 		uiRouter: 'vendor/angular-ui-router',
 		jquery: 'vendor/jquery',
-		highcharts: 'vendor/highcharts',
+		d3: 'vendor/d3.min',
+		rickshaw: 'vendor/rickshaw.min',
 		moment: 'vendor/moment',
 		'sb-admin': 'vendor/sb-admin',
 		bootstrap: 'vendor/bootstrap'
@@ -18,7 +19,11 @@ require.config({
 		},
 		bootstrap: ['jquery'],
 		'sb-admin': ['jquery'],
-		'vendor/angular-sanitize': ['angular']
+		'vendor/angular-sanitize': ['angular'],
+		d3: {
+			exports: 'd3'
+		},
+		rickshaw: ['d3']
 	}
 });
 

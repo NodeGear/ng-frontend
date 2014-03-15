@@ -13,14 +13,16 @@ div(ng-controller="PaymentMethodsController" ng-init="init('#{token}', '#{stripe
 						th Number
 						th
 				tbody
-					tr(ng-repeat="card in cards")
-						td {{ card.name }}
-						td XXXX XXXX XXXX {{ card.last4 }}
+					tr(ng-repeat="c in cards")
+						td {{ c.name }}
+						td XXXX XXXX XXXX {{ c.last4 }}
 						td
 							.btn-group.pull-right
-								button.btn.btn-xs.btn-default(ng-click="selectCard(card)") Edit
-								button.btn.btn-xs.btn-default(ng-click="makeDefault(card)" ng-disabled="card.default") Make Default
-								button.btn.btn-xs.btn-danger(ng-click="deleteCard(card)") Delete
+								button.btn.btn-xs.btn-default(ng-click="c._id == card._id ? cancelSave() : selectCard(c)" ng-class="{ 'btn-default': c._id != card._id, 'btn-warning': c._id == card._id }")
+									span(ng-hide="c._id == card._id") Edit
+									span(ng-show="c._id == card._id") Cancel Edit
+								button.btn.btn-xs.btn-default(ng-click="makeDefault(c)" ng-disabled="c.default") Make Default
+								button.btn.btn-xs.btn-danger(ng-click="deleteCard(c)") Delete
 	
 	.row
 		.col-md-12.col-sm-12.col-lg-12.col-xs-12

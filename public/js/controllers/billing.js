@@ -55,6 +55,30 @@ define([
 				}
 			})
 		}
+
+		$scope.makeDefault = function (card) {
+			for (var i = 0; i < $scope.cards.length; i++) {
+				$scope.cards[i].default = false;
+			}
+
+			card.default = true;
+			
+			$http.put('/profile/card', {
+				_csrf: $scope.csrf,
+				_id: card._id,
+				cardholder: card.cardholder,
+				name: card.name,
+				default: card.default
+			}).success(function(data, status) {
+				if (data.status == 200) {
+					$scope.getCards()
+				} else {
+					alert("Could not card as default: "+data.message);
+				}
+			}).error(function(data, status) {
+				alert("Request to save a new default card has failed. Please Try Again later");
+			});
+		}
 		
 		$scope.cancelSave = function () {
 			$scope.card = $scope.getNewCard();
@@ -148,11 +172,6 @@ define([
 				$scope.cardFormDisabled = false;
 			} else {
 				$scope.status = "Saving Card...";
-				$scope.card.number = "XXXX XXXX XXXX "+response.card.last4
-				if ($scope.card.cvc.length > 0) {
-					$scope.card.cvc = "XXX"
-				}
-				$scope.card.expiry = "XX/XXXX";
 				
 				var data = {
 					_csrf: $scope.csrf,
@@ -163,6 +182,12 @@ define([
 				
 				$http.post('/profile/card', data).success(function(data, status) {
 					if (data.status == 200) {
+						$scope.card.number = "XXXX XXXX XXXX "+response.card.last4
+						if ($scope.card.cvc.length > 0) {
+							$scope.card.cvc = "XXX"
+						}
+						$scope.card.expiry = "XX/XXXX";
+						
 						$scope.status = "Card Saved";
 						$scope.getCards();
 						$scope.showEditCard = false;

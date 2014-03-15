@@ -1,6 +1,9 @@
 .row
 	.col-sm-12.col-md-12.col-lg-12.col-xs-12
 		h2.page-header Balance & Usage
+			button.btn.btn-success.pull-right(ui-sref="profile.billing.addCredits")
+				i.fa.fa-fw.fa-plus
+				|  Add Funds
 
 div(ng-controller="CurrentUsageController" ng-init="init()")
 	.row
@@ -13,23 +16,4 @@ div(ng-controller="CurrentUsageController" ng-init="init()")
 				| £{{ used }}
 			h4.text-center: a(href="#" target="_new") View usage and charges
 
-div(ng-controller="BillingHistoryController" ng-init="init()")
-	.row
-		.col-sm-12.col-md-12.col-lg-12.col-xs-12
-			h3 Billing History
-	
-	.row
-		.col-md-12.col-sm-12.col-lg-12.col-xs-12
-			table.table.table-striped(ng-cloak)
-				thead
-					tr
-						th Date
-						th Description
-						th Amount
-						th
-				tbody
-					tr(ng-repeat="item in history")
-						td {{ item.date }}
-						td {{ item.description }}
-						td £{{ item.amount }}
-						td 
+ui-view(autoscroll="false")

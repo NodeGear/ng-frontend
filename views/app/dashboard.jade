@@ -5,10 +5,10 @@ h1.page-header {{app.name}} Dashboard
 		.btn-group
 			a.btn.btn-md.btn-success(process-startup ng-disabled="app.isRunning || app.deleted" title="Start")
 				i.fa.fa-play.fa-fw
-			a.btn.btn-md.btn-warning(process-stop ng-disabled="!app.isRunning || app.deleted" title="Pause")
+			a.btn.btn-md.btn-danger(process-stop ng-disabled="!app.isRunning || app.deleted" title="Pause")
 				i.fa.fa-pause.fa-fw
-			a.btn.btn-md.btn-default(process-restart ng-disabled="!app.isRunning || app.deleted")
-				| Restart
+			a.btn.btn-md.btn-warning(process-restart ng-disabled="!app.isRunning || app.deleted" title="Restart")
+				i.fa.fa-retweet.fa-fw
 
 p.lead Process Scaling: {{app.processes}}
 	.btn-group

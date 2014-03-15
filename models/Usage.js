@@ -19,7 +19,7 @@ usageSchema.statics.getUsageForDrone = function (droneID, limit, cb) {
 	
 	module.exports.find({
 		drone: droneID,
-	}).sort('-time').limit(60).exec(function(err, usage) {
+	}).sort('time').limit(60).exec(function(err, usage) {
 		if (err) throw err;
 		
 		cb(usage);

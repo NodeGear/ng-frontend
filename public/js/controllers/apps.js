@@ -152,55 +152,7 @@ define([
 				processes: --$scope.app.processes
 			})
 		}
-	
-		$scope.plotGraphs = function () {
-			require(['highcharts'], function() {
-				var mem = [], cpu = [];
 		
-				for (var i = 0; i < $scope.usage.length; i++) {
-					var u = $scope.usage[i];
-					mem.push([u.time.getTime(), u.memory])
-					cpu.push([u.time.getTime(), u.cpu])
-				}
-		
-				$('#usageGraph').highcharts({
-					title: {
-						text: ''
-					},
-					xAxis: {
-						type: 'datetime'
-					},
-					yAxis: [{
-						title: {
-							text: 'CPU %'
-						},
-		            min: 0
-					}, {
-						title: {
-							text: 'RAM (MB)'
-						},
-						min: 0,
-						opposite: true,
-						allowDecimals: true
-					}],
-			      credits: {
-						enabled: false
-					},
-					series: [{
-						name: 'CPU %',
-						data: cpu,
-						yAxis: 0,
-						type: 'spline'
-					}, {
-						name: 'RAM (MB)',
-						data: mem,
-						yAxis: 1,
-						type: 'spline'
-					}]
-				})
-			})
-		}
-	
 		if ($scope.app.logs && $scope.app.logs.length > 0) {
 			$scope.selectLog($scope.app.logs[0])
 		}

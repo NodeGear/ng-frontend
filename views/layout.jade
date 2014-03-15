@@ -23,14 +23,14 @@ html
 		
 		#wrapper
 			+navbar(0)
-			+flash()
+			+flash
 			+sidebar
 			
 			#page-wrapper
 				block content
 					ui-view(autoscroll="false")
 			
-			.container
+			.container(style="border-top:1px groove #EFEFEF;")
 				.row
 					.col-xs-12.col-md-12.col-sm-12.col-lg-12
 						footer
