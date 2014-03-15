@@ -8,11 +8,8 @@ mixin sidebar
 							i.fa.fa-thumb-tack.fa-fw
 							|  Getting Started
 					li
-						a(ui-sref="add")
-							i.fa.fa-plus.fa-fw
-							|  Add Application
-					li
-						a(ui-sref="analytics") Analytics
+						a(ui-sref="apps")
+							| Applications
 					li
 						a(href) Account
 							i.fa.arrow
@@ -34,7 +31,7 @@ mixin sidebar
 							|  {{ app.name }}
 					li(ng-hide="app == null")
 						a(ui-sref="app.logs({id: app._id})")
-							i.fa.fa-comments.fa-fw
+							i.fa.fa-files-o.fa-fw
 							|  Logs
 					li(ng-hide="app == null")
 						a(ui-sref="app.traffic({id: app._id})")

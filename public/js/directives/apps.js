@@ -2,44 +2,45 @@ define([
 	'angular',
 	'app'
 ], function(angular, app) {
-	app.directive('appStart', function(){
+	function bindClick (fn) {
 		return {
 			restrict: 'A',
 			link: function(scope, element, attrs) {
-				element.bind('click', scope.startApp)
+				element.bind('click', function() {
+					fn(scope, element, attrs);
+				})
 			}
 		}
+	}
+
+	app.directive('processStartup', function(){
+		return bindClick(function(scope) {
+			scope.startApp();
+		})
 	})
-	.directive('appStop', function(){
-		return {
-			restrict: 'A',
-			link: function(scope, element, attrs) {
-				element.bind('click', scope.stopApp)
-			}
-		}
+	.directive('processStop', function(){
+		return bindClick(function(scope) {
+			scope.stopApp();
+		});
 	})
-	.directive('appRestart', function(){
-		return {
-			restrict: 'A',
-			link: function(scope, element, attrs) {
-				element.bind('click', scope.restartApp)
-			}
-		}
+	.directive('processRestart', function(){
+		return bindClick(function(scope) {
+			scope.restartApp();
+		})
 	})
-	.directive('appInstall', function(){
-		return {
-			restrict: 'A',
-			link: function(scope, element, attrs) {
-				element.bind('click', scope.installApp)
-			}
-		}
+	.directive('processScaleUp', function() {
+		return bindClick(function(scope) {
+			scope.addProcess();
+		})
+	})
+	.directive('processScaleDown', function() {
+		return bindClick(function(scope) {
+			scope.removeProcess();
+		})
 	})
 	.directive('appDelete', function(){
-		return {
-			restrict: 'A',
-			link: function(scope, element, attrs) {
-				element.bind('click', scope.deleteApp)
-			}
-		}
+		return bindClick(function(scope) {
+			scope.deleteApp();
+		})
 	})
 });

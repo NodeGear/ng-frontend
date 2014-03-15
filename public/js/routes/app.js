@@ -10,6 +10,11 @@ define([
 			templateUrl: "/app/add?partial=true",
 			controller: "AddAppController"
 		})
+		.state('apps', {
+			url: '/apps',
+			templateUrl: "/apps?partial=true",
+			controller: "AppsController"
+		})
 		.state('app', {
 			url: '/app/:id',
 			abstract: true,

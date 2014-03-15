@@ -4,6 +4,19 @@ define([
 	'moment',
 	'../directives/apps'
 ], function(angular, app, moment) {
+	app.controller('AppsController', function($scope, $http, $rootScope) {
+		$scope.appsOff = 0;
+		$scope.appsOn = 0;
+
+		for (var i = 0; i < $scope.apps.length; i++) {
+			if ($scope.apps[i].isRunning) {
+				$scope.appsOn++;
+			} else {
+				$scope.appsOff++;
+			}
+		}
+	});
+
 	app.controller('AppController', function ($scope, data, $http, $rootScope, $sce) {
 		var socket = io.connect();
 		
@@ -190,47 +203,6 @@ define([
 	
 		if ($scope.app.logs && $scope.app.logs.length > 0) {
 			$scope.selectLog($scope.app.logs[0])
-		}
-	})
-
-	.directive('appStart', function(){
-		return {
-			restrict: 'A',
-			link: function(scope, element, attrs) {
-				element.bind('click', scope.startApp)
-			}
-		}
-	})
-	.directive('appStop', function(){
-		return {
-			restrict: 'A',
-			link: function(scope, element, attrs) {
-				element.bind('click', scope.stopApp)
-			}
-		}
-	})
-	.directive('appRestart', function(){
-		return {
-			restrict: 'A',
-			link: function(scope, element, attrs) {
-				element.bind('click', scope.restartApp)
-			}
-		}
-	})
-	.directive('appInstall', function(){
-		return {
-			restrict: 'A',
-			link: function(scope, element, attrs) {
-				element.bind('click', scope.installApp)
-			}
-		}
-	})
-	.directive('appDelete', function(){
-		return {
-			restrict: 'A',
-			link: function(scope, element, attrs) {
-				element.bind('click', scope.deleteApp)
-			}
 		}
 	})
 });

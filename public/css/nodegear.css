@@ -1,3 +1,10 @@
 [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
 	display: none !important;
 }
+
+.link-larger {
+	font-size: 1.6em;
+}
+.link-larger:hover {
+	text-decoration: none;
+}
