@@ -206,9 +206,16 @@ function addCredits (req, res) {
 }
 
 function getCards (req, res) {
+	var cards = [];
+	for (var i = 0; i < req.user.stripe_cards.length; i++) {
+		if (!req.user.stripe_cards[i].disabled) {
+			cards.push(req.user.stripe_cards[i]);
+		}
+	};
+
 	res.send({
 		status: 200,
-		cards: req.user.stripe_cards
+		cards: cards
 	});
 }
 
@@ -285,7 +292,8 @@ function createCard (req, res) {
 			last4: card.last4,
 			cardholder: card.name,
 			default: req.body.default == true,
-			name: req.body.name
+			name: req.body.name,
+			disabled: false
 		});
 		req.user.save();
 		
@@ -310,7 +318,7 @@ function updateCard (req, res) {
 	
 	var card = null;
 	for (var i = 0; i < req.user.stripe_cards.length; i++) {
-		if (req.user.stripe_cards[i]._id.equals(id)) {
+		if (req.user.stripe_cards[i].disabled == false && req.user.stripe_cards[i]._id.equals(id)) {
 			card = req.user.stripe_cards[i];
 			break;
 		}
@@ -409,8 +417,18 @@ function deleteCard (req, res) {
 	for (var i = 0; i < req.user.stripe_cards.length; i++) {
 		if (req.user.stripe_cards[i]._id.equals(id)) {
 			card = req.user.stripe_cards[i];
-			req.user.stripe_cards.splice(i, 1);
-			// remove the card
+			card.disabled = true;
+
+			if (card.default && req.user.stripe_cards.length > 1) {
+				var ii = 0;
+				if (i = 0) ii = 1;
+
+				// New default card
+				req.user.stripe_cards[ii].default = true;
+			}
+
+			card.default = false;
+			// disable the card
 			break;
 		}
 	}
@@ -423,8 +441,18 @@ function deleteCard (req, res) {
 		return;
 	}
 	
+	// Delete stripe card
 	stripe.customers.deleteCard(req.user.stripe_customer, card.id, function(err, confirm) {
-		if (err) throw err;
+		if (err) {
+			bugsnag.notify(err);
+
+			res.send({
+				status: 500,
+				message: "Cannot Delete Card due to Server Error"
+			});
+
+			return;
+		}
 		
 		if (confirm.deleted) {
 			req.user.save();

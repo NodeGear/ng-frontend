@@ -7,7 +7,7 @@ define([
 			hide: false,
 			status: "",
 			showConfirm: false,
-			enabled: true,
+			enabled: false,
 			qr: null,
 			token: ""
 		};
@@ -21,9 +21,9 @@ define([
 		
 			$http.get('/auth/tfa').success(function(data) {
 				if (data.status == 200) {
-					$scope.tfa.enabled = data.enabled;
-					$scope.tfa.showConfirm = !data.confirmed;
-			
+					$scope.tfa.enabled = data.full_enabled;
+					$scope.tfa.showConfirm = data.enabled && !data.confirmed;
+					
 					if ($scope.tfa.enabled == true) {
 						$scope.tfa.status = "TFA Is Enabled"
 					} else {
@@ -33,6 +33,8 @@ define([
 						$scope.tfa.status = "Please Scan the QR Code, then confirm by entering the code.";
 						$scope.tfa.qr = data.qr;
 					}
+				} else {
+					$scope.status = data.message;
 				}
 			})
 		}
@@ -63,6 +65,7 @@ define([
 					$scope.tfa.status = "TFA Disabled.";
 					$scope.tfa.enabled = false;
 					$scope.tfa.confirmed = false;
+					$scope.tfa.showConfirm = false;
 					$scope.tfa.hide = false;
 				} else {
 					$scope.tfa.status = data.message;

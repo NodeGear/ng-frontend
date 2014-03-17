@@ -109,7 +109,7 @@ app.use(function(req, res, next) {
 	res.locals.loggedIn = res.locals.user != null;
 	res.locals.requiresTFA = false;
 	if (res.locals.loggedIn) {
-		res.locals.requiresTFA = req.user.tfa.enabled && req.user.tfa.confirmed && req.session.confirmedTFA !== true;
+		res.locals.requiresTFA = req.user.tfa_enabled && req.session.confirmedTFA !== true;
 		res.locals.loggedIn = !res.locals.requiresTFA;
 	}
 	

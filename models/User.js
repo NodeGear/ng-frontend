@@ -12,25 +12,29 @@ var userSchema = schema({
 	name: String,
 	email: String,
 	password: String,
-	authToken: String, //wtf is authtoken??
 	uid: Number,
 	gid: Number,
-	admin: { type: Boolean, default: false },
-	tfa: {
-		enabled: { type: Boolean, default: false },
-		key: String,
-		confirmed: { type: Boolean, default: false }
+	admin: {
+		type: Boolean,
+		default: false
 	},
-	balance: { type: Number, default: 0.0 },
+	balance: {
+		type: Number,
+		default: 0.0
+	},
 	stripe_customer: String,
-	stripe_cards: [{
-		id: String,
-		name: String,
-		cardholder: String,
-		created: Date,
-		last4: String,
-		default: { type: Boolean, default: false }
-	}]
+	default_payment_method: {
+		type: ObjectId,
+		ref: 'PaymentMethod'
+	},
+	tfa_enabled: {
+		type: Boolean,
+		default: false
+	},
+	tfa: {
+		type: ObjectId,
+		ref: 'TFA'
+	}
 });
 
 userSchema.methods.setPassword = function(password) {

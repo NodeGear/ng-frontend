@@ -6,5 +6,7 @@ module.exports = {
 	PublicKey: require('./PublicKey'),
 	Event: require('./Event'),
 	Ticket: require('./Ticket'),
-	Transaction: require('./Transaction')
+	Transaction: require('./Transaction'),
+	PaymentMethod: require('./PaymentMethod'),
+	TFA: require('./TFA')
 }

@@ -20,5 +20,10 @@ define([
 				}
 			})
 		}
+
+		$scope.showMore = function(transaction) {
+			$scope.transaction = transaction;
+			$("#transactionDetailsModal").modal('show');
+		};
 	});
 });
