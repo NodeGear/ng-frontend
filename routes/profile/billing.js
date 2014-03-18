@@ -8,19 +8,66 @@ var mongoose = require('mongoose')
 exports.router = function (app) {
 	app.get('/profile/billing', util.authorized, viewBilling)
 		.get('/profile/billing/paymentMethods', util.authorized, viewPaymentMethods)
-		.get('/profile/billing/history', util.authorized, viewHistory)
+		.get('/profile/billing/history', util.authorized, getUserCards, viewHistory)
 		.get('/profile/billing/credits', util.authorized, viewCredits)
 
 		// Makes a payment..
-		.post('/profile/billing/addCredits', util.authorized, createStripeCustomer, addCredits)
+		.post('/profile/billing/addCredits', util.authorized, createStripeCustomer, getUserCards, addCredits)
 
 		.get('/profile/balance', util.authorized, getBalance)
 
 		// Card API
-		.get('/profile/cards', util.authorized, getCards)
-		.post('/profile/card', util.authorized, createStripeCustomer, createCard)
-		.put('/profile/card', util.authorized, createStripeCustomer, updateCard)
-		.delete('/profile/card', util.authorized, deleteCard)
+		.get('/profile/cards', util.authorized, getUserCards, getCards)
+		.post('/profile/card', util.authorized, createStripeCustomer, getUserCards, createCard)
+		.put('/profile/card', util.authorized, createStripeCustomer, getUserCards, updateCard)
+		.delete('/profile/card', util.authorized, getUserCards, deleteCard)
+}
+
+function getUserCards (req, res, next) {
+	models.PaymentMethod.find({
+		user: req.user._id,
+		disabled: false,
+	}, function(err, paymentMethods) {
+		if (err) throw err;
+
+		res.locals.paymentMethods = paymentMethods;
+
+		next();
+	})
+}
+
+function getUserCard (req, res, next) {
+	var card = req.body.card;
+
+	try {
+		card = mongoose.Types.ObjectId(card);
+	} catch (e) {
+		res.send({
+			status: 400,
+			message: "Invalid Card"
+		});
+
+		return;
+	}
+
+	// Find the real card.
+	models.PaymentMethods.findOne({
+		_id: card,
+		disabled: false
+	}, function(err, card) {
+		if (err) throw err;
+
+		if (!card) {
+			res.send({
+				status: 400,
+				message: "Card Not Found"
+			});
+			return;
+		}
+
+		res.locals.card = card;
+		next();
+	})
 }
 
 function viewPaymentMethods (req, res) {
@@ -48,27 +95,15 @@ function viewHistory (req, res) {
 			var t = transactions[i].toObject();
 
 			if (!t.card) {
-				t.card = "Unknown Card";
+				t.card = "Deleted Card";
 
 				ts.push(t);
 				continue;
 			}
 
-			var found = false;
-			for (var c = 0; c < req.user.stripe_cards.length; c++) {
-				if (req.user.stripe_cards[c]._id.equals(t.card)) {
-					t.card = req.user.stripe_cards[c].name + ' XXXX'+req.user.stripe_cards[c].last4;
-					if (t.default) {
-						t.card = '(Default) ' + t.card;
-					}
-
-					found = true;
-					break;
-				}
-			}
-
-			if (!found) {
-				t.card = "Deleted Card";
+			t.card = req.user.stripe_cards[c].name + ' XXXX'+req.user.stripe_cards[c].last4;
+			if (t.card.default) {
+				t.card = '(Default) ' + t.card;
 			}
 
 			ts.push(t);
@@ -93,18 +128,7 @@ function viewCredits (req, res) {
 }
 
 function addCredits (req, res) {
-	var card = req.body.card;
-
-	try {
-		card = mongoose.Types.ObjectId(card);
-	} catch (e) {
-		res.send({
-			status: 400,
-			message: "Invalid Card Selected"
-		});
-
-		return;
-	}
+	var card = res.locals.card;
 
 	var value = parseInt(req.body.value);
 	if (!(value == 5 || value == 10 || value == 25 || value == 50 || value == 100) || isNaN(value)) {
@@ -115,29 +139,22 @@ function addCredits (req, res) {
 		return;
 	}
 
-	// Find the real card.
-	var found = false;
-	for (var i = 0; i < req.user.stripe_cards.length; i++) {
-		if (req.user.stripe_cards[i]._id.equals(card)) {
-			card = req.user.stripe_cards[i];
-			found = true;
-			break;
-		}
-	}
-	if (!found) {
-		res.send({
-			status: 400,
-			message: "Card Not Found"
-		});
-		return;
-	}
-
 	var transaction = new models.Transaction({
+		charges: [{
+			is_app: false,
+			name: "Credit £"+value,
+			description: "Adding Credits to Account",
+			total: value
+		}],
 		user: req.user._id,
+		paid: false,
 		total: value,
-		details: "Adding Credits £"+value,
+		payment_method: card._id,
+		status: 'created',
+		details: "Manual Transaction",
 		type: 'manual',
-		card: card._id
+		old_balance: req.user.balance,
+		new_balance: req.user.balance,
 	});
 
 	stripe.charges.create({
@@ -150,10 +167,6 @@ function addCredits (req, res) {
 		if (err) {
 			console.log(err);
 			
-			transaction.status = 'failed';
-			transaction.message = err.toString();
-			transaction.save();
-
 			var message = "";
 			switch (err.type) {
 				case 'StripeCardError':
@@ -171,7 +184,12 @@ function addCredits (req, res) {
 						user: req.user._id
 					})
 			}
-			
+
+			transaction.paid = false;
+			transaction.status = 'failed';
+			transaction.details = message;
+			transaction.save();
+
 			res.send({
 				status: 400,
 				message: message
@@ -179,9 +197,8 @@ function addCredits (req, res) {
 			
 			return;
 		}
-		
-		console.log(charge);
-		
+
+		transaction.paid = true;
 		transaction.payment_id = charge.id;
 		transaction.status = 'complete';
 		transaction.save();
@@ -206,16 +223,9 @@ function addCredits (req, res) {
 }
 
 function getCards (req, res) {
-	var cards = [];
-	for (var i = 0; i < req.user.stripe_cards.length; i++) {
-		if (!req.user.stripe_cards[i].disabled) {
-			cards.push(req.user.stripe_cards[i]);
-		}
-	};
-
 	res.send({
 		status: 200,
-		cards: cards
+		cards: res.locals.paymentMethods
 	});
 }
 
@@ -280,26 +290,26 @@ function createCard (req, res) {
 			});
 			return;
 		}
-		
-		if (req.body.default == true) {
-			for (var i = 0; i < req.user.stripe_cards.length; i++) {
-				req.user.stripe_cards[i].default = false;
-			}
-		}
-		
-		req.user.stripe_cards.push({
+
+		var paymentMethod = new models.PaymentMethod({
+			type: 'card',
 			id: card.id,
-			last4: card.last4,
-			cardholder: card.name,
-			default: req.body.default == true,
 			name: req.body.name,
-			disabled: false
+			cardholder: card.name,
+			last4: card.last4,
+			disabled: false,
+			user: req.user._id
 		});
-		req.user.save();
-		
+		paymentMethod.save();
+
+		if (req.body.default == true) {
+			req.user.default_payment_method = paymentMethod._id;
+			req.user.save()
+		}
+
 		res.send({
 			status: 200
-		})
+		});
 	})
 }
 

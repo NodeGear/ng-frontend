@@ -55,10 +55,10 @@ var scheme = schema({
 		type: Date,
 		default: Date.now
 	},
-	// complete | cancelled | pending | failed
+	// created | complete | cancelled | pending | failed
 	status: {
 		type: String,
-		default: 'pending'
+		default: 'created'
 	},
 	// additional details
 	details: String,

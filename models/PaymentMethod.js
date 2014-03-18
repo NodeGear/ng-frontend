@@ -10,7 +10,10 @@ var scheme = schema({
 	id: String,
 	name: String,
 	cardholder: String,
-	created: Date,
+	created: {
+		type: Date,
+		default: Date.now()
+	},
 	last4: String,
 	disabled: {
 		type: Boolean,
