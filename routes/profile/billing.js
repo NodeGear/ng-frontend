@@ -11,6 +11,9 @@ exports.router = function (app) {
 		.get('/profile/billing/history', util.authorized, viewHistory)
 		.get('/profile/billing/credits', util.authorized, viewCredits)
 
+		.get('/profile/billing/transaction', util.authorized, getTransactionView)
+		.get('/profile/billing/transaction/:tid', util.authorized, getTransaction)
+
 		// Makes a payment..
 		.post('/profile/billing/addCredits', util.authorized, createStripeCustomer, getUserCard, addCredits)
 
@@ -83,6 +86,37 @@ function getUserCard (req, res, next) {
 	})
 }
 
+function getTransaction (req, res) {
+	var tid = req.params.tid;
+
+	try {
+		tid = mongoose.Types.ObjectId(tid);
+	} catch (e) {
+		res.send({
+			status: 404,
+			transaction: null
+		});
+		return;
+	}
+
+
+	models.Transaction.findOne({
+		_id: tid
+	}).select('created details total status type old_balance new_balance charges payment_method')
+		.populate('payment_method').exec(function(err, transaction) {
+			if (err) throw err;
+
+			res.send({
+				status: 200,
+				transaction: transaction
+			});
+	})
+}
+
+function getTransactionView (req, res) {
+	res.render('profile/transaction')
+}
+
 function viewPaymentMethods (req, res) {
 	res.render('profile/paymentMethods');
 }
@@ -99,7 +133,7 @@ function viewHistory (req, res) {
 
 	models.Transaction.find({
 		user: req.user._id
-	}).select('created details total status type old_balance new_balance charges payment_method').sort('-created').populate('payment_method').exec(function(err, transactions) {
+	}).select('created details total status type old_balance new_balance payment_method').sort('-created').populate('payment_method').exec(function(err, transactions) {
 		if (err) throw err;
 
 		var ts = [];

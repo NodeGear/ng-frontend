@@ -5,7 +5,8 @@ define([
 	'../controllers/billing',
 	'../controllers/billingHistory',
 	'../controllers/billingUsage',
-	'../controllers/billingCredits'
+	'../controllers/billingCredits',
+	'../controllers/transaction'
 ], function(angular, app) {
 	app.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
 		$stateProvider.state('profile', {
@@ -29,6 +30,23 @@ define([
 		.state('profile.billing.history', {
 			url: '',
 			templateUrl: "/profile/billing/history?partial=true"
+		})
+		.state('profile.billing.history.transaction', {
+			url: '/transaction/:transaction_id',
+			templateUrl: "/profile/billing/transaction?partial=true",
+			controller: "TransactionController",
+			resolve: {
+				transaction: function($q, $http, $stateParams) {
+					var d = $q.defer();
+
+					$http.get('/profile/billing/transaction/'+$stateParams.transaction_id)
+					.success(function(data, status) {
+						d.resolve(data.transaction);
+					})
+
+					return d.promise;
+				}
+			}
 		})
 		.state('profile.billing.addCredits', {
 			url: '/credits/add',
