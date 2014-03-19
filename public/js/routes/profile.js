@@ -6,7 +6,8 @@ define([
 	'../controllers/billingHistory',
 	'../controllers/billingUsage',
 	'../controllers/billingCredits',
-	'../controllers/transaction'
+	'../controllers/transaction',
+	'../controllers/accountSettings'
 ], function(angular, app) {
 	app.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
 		$stateProvider.state('profile', {

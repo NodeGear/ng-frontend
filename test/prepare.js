@@ -5,6 +5,10 @@ var request = require('supertest').agent(app.app)
 var should = require('should'),
 	models = require('../models')
 
+if (!process.env.NG_TEST) {
+	console.log("\nNot in TEST environment. Please export NG_TEST variable\n");
+}
+
 should(process.env.NG_TEST).be.ok;
 
 it('clean the database', function(done) {

@@ -6,8 +6,11 @@ var fs = require('fs')
 
 try {
 	var credentials = './credentials';
-	if (process.env.NG_TEST)
+	if (process.env.NG_TEST) {
 		credentials = './credentials-test';
+
+		console.log("-- TEST MODE --")
+	}
 
 	var credentials = require(credentials)
 } catch (e) {

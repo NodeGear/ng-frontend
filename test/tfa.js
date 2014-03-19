@@ -171,7 +171,10 @@ describe('Authentication', function() {
 
 			it('should disable tfa', function(done) {
 				request
-					.delete('/auth/tfa')
+					.del('/auth/tfa')
+					.accept('json')
+					.expect(200)
+					.end(done)
 			})
 		})
 	});
