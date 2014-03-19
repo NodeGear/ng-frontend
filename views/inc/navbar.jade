@@ -23,7 +23,8 @@ mixin navbar(active)
 										a(ui-sref="app.dashboard({id:a._id})") {{a.name}}
 							li.dropdown
 								a.dropdown-toggle(href data-toggle="dropdown")
-									i.fa.fa-user.fa-fw
+									= user.name
+									|  
 									i.fa.fa-caret-down
 								ul.dropdown-menu
 									li

@@ -38,21 +38,6 @@ exports.gitoliteConfig = credentials.gitoliteConfig;
 
 exports.db_options = credentials.db_options;
 
-/*
-if (exports.env == "production") {
-	exports.db_options.replset = {
-		rs_name: "rs0"
-	};
-	var auth = "mongodb://nodegear:Jei4hucu5fohNgiengohgh8Pagh4fuacahQuiwee";
-	exports.db = auth+"@repl1.mongoset.castawaydev.com/nodegear,"+auth+"@repl2.mongoset.castawaydev.com";
-	
-	exports.port = process.env.PORT || 80;
-	exports.droneLocation = "/var/ng_apps/";
-	exports.gitolite = "/var/ng_gitolite/";
-	exports.gitoliteKeys = exports.gitolite+"keydir/";
-	exports.gitoliteConfig = exports.gitolite+"conf/gitolite.conf";
-} Legacy Settings */
-
 exports.path = __dirname;
 
 exports.tmp = "/tmp/nodegear/";

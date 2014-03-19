@@ -37,14 +37,7 @@ define([
 			controller: "TransactionController",
 			resolve: {
 				transaction: function($q, $http, $stateParams) {
-					var d = $q.defer();
-
-					$http.get('/profile/billing/transaction/'+$stateParams.transaction_id)
-					.success(function(data, status) {
-						d.resolve(data.transaction);
-					})
-
-					return d.promise;
+					return $http.get('/profile/billing/transaction/'+$stateParams.transaction_id)
 				}
 			}
 		})

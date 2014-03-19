@@ -4,7 +4,7 @@ define([
 	'moment'
 ], function(angular, app, moment) {
 	app.controller('TransactionController', function ($scope, transaction, $state) {
-		$scope.transaction = transaction;
+		$scope.transaction = transaction.data.transaction;
 
 		$("#transactionDetailsModal").modal('show')
 		.on('hidden.bs.modal', function() {
