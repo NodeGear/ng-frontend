@@ -68,7 +68,9 @@ app.set('app version', config.version); // App version
 app.locals.pretty = process.env.NODE_ENV != 'production' // Pretty HTML outside production mode
 
 app.use(bugsnag.requestHandler);
-app.use(express.logger('dev')); // Pretty log
+if (!process.env.NG_TEST) {
+	app.use(express.logger('dev')); // Pretty log
+}
 app.use(express.limit('30mb')); // File upload limit
 app.use("/", express.static(path.join(__dirname, 'public'))); // serve static files
 app.use(express.bodyParser()); // Parse the request body
@@ -83,7 +85,9 @@ app.use(express.session({ // Session store
 		maxAge: 604800000 // 7 days in s * 10^3
 	}
 }));
-app.use(express.csrf()); // csrf protection
+if (!process.env.NG_TEST) {
+	app.use(express.csrf()); // csrf protection
+}
 
 app.use(passport.initialize());
 app.use(passport.session());
@@ -92,7 +96,9 @@ app.use(passport.session());
 app.use(function(req, res, next) {
 	// request middleware
 	
-	res.locals.token = req.csrfToken();
+	if (!process.env.NG_TEST) {
+		res.locals.token = req.csrfToken();
+	}
 	
 	// flash
 	if (req.session.flash) {

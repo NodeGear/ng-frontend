@@ -35,7 +35,7 @@ function doLogin (req, res) {
 		var email = req.body.email.toLowerCase();
 		models.User.findOne({ email: email }, function(err, user) {
 			if (err) {
-				return cb(err);
+				throw err;
 			}
 			
 			if (!user || user.password != models.User.getHash(req.body.password)) {
@@ -79,7 +79,7 @@ function doLogin (req, res) {
 		})
 	} else {
 		var err = buildFlash(errs, { title: "Login Failed..", class: "danger" });
-		
+
 		res.format({
 			html: function() {
 				req.session.flash = [err];
@@ -210,16 +210,25 @@ function enableTFA (req, res) {
 	tfa.save();
 	req.user.save();
 	
-	res.send({
+	var data = {
 		status: 200,
 		qr: key.google_auth_qr,
-	})
+	};
+
+	if (process.env.NG_TEST) {
+		data.token = speakeasy.totp({
+			key: tfa.key,
+			encoding: 'base32'
+		});
+	}
+
+	res.send(data)
 }
 
 function checkTFAEnabled (req, res) {
 	if (!req.user.tfa) {
 		res.send({
-			status: 400,
+			status: 404,
 			message: "Not Enabled"
 		});
 		return;
@@ -319,5 +328,15 @@ function checkTFA (req, res) {
 function doLogout (req, res) {
 	req.logout();
 	req.session.destroy();
-	res.redirect('/')
+
+	res.format({
+		json: function() {
+			res.send({
+				status: 200
+			})
+		},
+		html: function() {
+			res.redirect('/')
+		}
+	})
 }

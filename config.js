@@ -2,8 +2,14 @@ var fs = require('fs')
 	, mailer = require('nodemailer')
 	, stripe = require('stripe')
 
+// Warning: Export NG_TEST to enable test mode.
+
 try {
-	var credentials = require('./credentials')
+	var credentials = './credentials';
+	if (process.env.NG_TEST)
+		credentials = './credentials-test';
+
+	var credentials = require(credentials)
 } catch (e) {
 	console.log("\nNo credentials.js File!\n")
 	process.exit(1);

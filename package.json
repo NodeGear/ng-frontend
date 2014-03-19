@@ -27,5 +27,9 @@
     "redis": "latest",
     "speakeasy": "~1.0.3",
     "stripe": "~2.4.2"
+  },
+  "devDependencies": {
+    "should": "^3.1.4",
+    "supertest": "^0.9.2"
   }
 }
