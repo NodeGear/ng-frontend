@@ -8,19 +8,19 @@ var mongoose = require('mongoose')
 exports.router = function (app) {
 	app.get('/profile/billing', util.authorized, viewBilling)
 		.get('/profile/billing/paymentMethods', util.authorized, viewPaymentMethods)
-		.get('/profile/billing/history', util.authorized, getUserCards, viewHistory)
+		.get('/profile/billing/history', util.authorized, viewHistory)
 		.get('/profile/billing/credits', util.authorized, viewCredits)
 
 		// Makes a payment..
-		.post('/profile/billing/addCredits', util.authorized, createStripeCustomer, getUserCards, addCredits)
+		.post('/profile/billing/addCredits', util.authorized, createStripeCustomer, getUserCard, addCredits)
 
 		.get('/profile/balance', util.authorized, getBalance)
 
 		// Card API
 		.get('/profile/cards', util.authorized, getUserCards, getCards)
 		.post('/profile/card', util.authorized, createStripeCustomer, getUserCards, createCard)
-		.put('/profile/card', util.authorized, createStripeCustomer, getUserCards, updateCard)
-		.delete('/profile/card', util.authorized, getUserCards, deleteCard)
+		.put('/profile/card', util.authorized, createStripeCustomer, getUserCard, updateCard)
+		.delete('/profile/card', util.authorized, getUserCard, deleteCard)
 }
 
 function getUserCards (req, res, next) {
@@ -30,7 +30,20 @@ function getUserCards (req, res, next) {
 	}, function(err, paymentMethods) {
 		if (err) throw err;
 
-		res.locals.paymentMethods = paymentMethods;
+		var ps = [];
+		for (var i = 0; i < paymentMethods.length; i++) {
+			var p = paymentMethods[i].toObject();
+
+			if (req.user.default_payment_method && req.user.default_payment_method.equals(p._id)) {
+				p.default = true;
+			} else {
+				p.default = false;
+			}
+
+			ps.push(p)
+		};
+
+		res.locals.paymentMethods = ps;
 
 		next();
 	})
@@ -51,7 +64,7 @@ function getUserCard (req, res, next) {
 	}
 
 	// Find the real card.
-	models.PaymentMethods.findOne({
+	models.PaymentMethod.findOne({
 		_id: card,
 		disabled: false
 	}, function(err, card) {
@@ -86,24 +99,19 @@ function viewHistory (req, res) {
 
 	models.Transaction.find({
 		user: req.user._id
-	}).sort('-created').select('total type details status created card').exec(function(err, transactions) {
+	}).select('created details total status type old_balance new_balance charges payment_method').sort('-created').populate('payment_method').exec(function(err, transactions) {
 		if (err) throw err;
 
-		// sort out cards..
 		var ts = [];
 		for (var i = 0; i < transactions.length; i++) {
 			var t = transactions[i].toObject();
-
-			if (!t.card) {
+			var card = t.payment_method;
+			delete t.payment_method;
+			
+			if (!card) {
 				t.card = "Deleted Card";
-
-				ts.push(t);
-				continue;
-			}
-
-			t.card = req.user.stripe_cards[c].name + ' XXXX'+req.user.stripe_cards[c].last4;
-			if (t.card.default) {
-				t.card = '(Default) ' + t.card;
+			} else {
+				t.card = card.name + ' XXXX'+card.last4;
 			}
 
 			ts.push(t);
@@ -189,6 +197,8 @@ function addCredits (req, res) {
 			transaction.status = 'failed';
 			transaction.details = message;
 			transaction.save();
+
+			// Todo email customer
 
 			res.send({
 				status: 400,
@@ -314,34 +324,6 @@ function createCard (req, res) {
 }
 
 function updateCard (req, res) {
-	var id = req.body._id;
-	try {
-		id = mongoose.Types.ObjectId(id);
-	} catch (e) {
-		// error.
-		res.send({
-			status: 400,
-			message: "Invalid Card"
-		});
-		return;
-	}
-	
-	var card = null;
-	for (var i = 0; i < req.user.stripe_cards.length; i++) {
-		if (req.user.stripe_cards[i].disabled == false && req.user.stripe_cards[i]._id.equals(id)) {
-			card = req.user.stripe_cards[i];
-			break;
-		}
-	}
-	
-	if (!card) {
-		res.send({
-			status: 400,
-			message: "Card Not Found"
-		})
-		return;
-	}
-	
 	if (!req.body.name || req.body.name.length == 0) {
 		res.send({
 			status: 400,
@@ -361,12 +343,12 @@ function updateCard (req, res) {
 		req.body.default = false;
 	}
 	
+	var card = res.locals.card;
+
 	stripe.customers.updateCard(req.user.stripe_customer, card.id, {
 		name: req.body.cardholder
 	}, function(err, _card) {
 		if (err) {
-			console.log(err);
-			
 			var message = "";
 			switch (err.type) {
 				case 'StripeCardError':
@@ -394,14 +376,16 @@ function updateCard (req, res) {
 		
 		card.name = req.body.name;
 		card.cardholder = req.body.cardholder;
+		if (req.user.default_payment_method && req.user.default_payment_method.equals(card._id) && req.body.default == false) {
+			// is default but user doesn't want it default
+			req.user.default_payment_method = null;
+		}
+
 		if (req.body.default == true) {
-			for (var i = 0; i < req.user.stripe_cards.length; i++) {
-				req.user.stripe_cards[i].default = false;
-			}
+			req.user.default_payment_method = card._id;
 		}
 		
-		card.default = req.body.default;
-		
+		card.save();
 		req.user.save();
 		
 		res.send({

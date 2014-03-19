@@ -134,7 +134,7 @@ define([
 		$scope.updateCard = function () {
 			$http.put('/profile/card', {
 				_csrf: $scope.csrf,
-				_id: $scope.card._id,
+				card: $scope.card._id,
 				cardholder: $scope.card.cardholder,
 				name: $scope.card.name,
 				default: $scope.card.default
@@ -152,6 +152,10 @@ define([
 			}).error(function(data, status) {
 				$scope.status = "Request Failed. Please Try Again";
 				$scope.cardFormDisabled = false;
+
+				if (!$scope.$$phase) {
+					$scope.$digest();
+				}
 			})
 		}
 		
