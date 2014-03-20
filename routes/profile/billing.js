@@ -308,8 +308,6 @@ function createCard (req, res) {
 		card: req.body.card_id
 	}, function(err, card) {
 		if (err) {
-			console.log(err);
-			
 			var message = "";
 			switch (err.type) {
 				case 'StripeCardError':
