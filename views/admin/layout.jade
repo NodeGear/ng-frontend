@@ -52,9 +52,6 @@ html(ng-app="nodeGearAdmin")
 							a(href="/admin/apps") Apps
 						li
 							a(href="/admin/tickets") Support Tickets
-						li.divider(style="height:20px;")
-						li
-							a(href="/admin/account") Account
 			
 			#page-wrapper
 				block content
@@ -64,14 +61,8 @@ html(ng-app="nodeGearAdmin")
 					.col-xs-12.col-md-12.col-sm-12.col-lg-12
 						footer
 							br
-							p.text-center NodeGear
-								br
-								a(href) Contact
-								|  | 
-								a(href) Support
-								|  | 
-								a(href) System Status
-								span.pull-right.text-muted #{version}-##{versionHash}
+							p.text-center NodeGear 
+								span.text-muted v#{version}-##{versionHash}
 							br
 		
 		block js

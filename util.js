@@ -34,7 +34,7 @@ exports.authorizedPassTFA = function (req, res, next) {
 }
 
 exports.mustBeAdmin = function (req, res, next) {
-	if (req.user.admin) {
+	if (req.user && req.user.admin) {
 		next();
 	} else {
 		res.format({

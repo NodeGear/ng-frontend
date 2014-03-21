@@ -6,7 +6,10 @@ passport.serializeUser(function(user, done) {
 });
 
 passport.deserializeUser(function(id, done) {
-	models.User.findById(id, function(err, user) {
+	models.User.findOne({
+		_id: id,
+		disabled: false
+	}, function(err, user) {
 		done(err, user)
 	})
 })

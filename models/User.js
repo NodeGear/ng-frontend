@@ -18,6 +18,10 @@ var userSchema = schema({
 		type: Boolean,
 		default: false
 	},
+	disabled: {
+		type: Boolean,
+		default: false
+	},
 	balance: {
 		type: Number,
 		default: 0.0

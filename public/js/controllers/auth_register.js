@@ -57,22 +57,19 @@ define([
 		}
 
 		if (isLocalStorageCapable) {
-			["register_email", "register_name", "register_username"].each(function() {
-				
-			})
-			if (localStorage["register_email"]) {
-				$scope.user.email = localStorage["login_email"];
-			}
-		}
-
-		$scope.$watch('user.email', function(email) {
-			if (isLocalStorageCapable) {
-				if (typeof email !== 'undefined' && email.length > 0) {
-					localStorage["login_email"] = email;
-				} else {
-					localStorage["login_email"] = "";
+			["email", "name", "username"].forEach(function(it) {
+				if (localStorage["register_"+it]) {
+					$scope.user[it] = localStorage["register_"+it];
 				}
-			}
-		})
+
+				$scope.$watch('user.'+it, function(val) {
+					if (typeof val !== 'undefined' && val.length > 0) {
+						localStorage["register_"+it] = val;
+					} else {
+						localStorage["register_"+it] = "";
+					}
+				})
+			})
+		}
 	});
 });

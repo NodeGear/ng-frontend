@@ -51,7 +51,8 @@ function updateProfile (req, res) {
 				}
 
 				models.User.find({
-					username: username
+					username: username,
+					disabled: false
 				}).select('_id').exec(function(err, users) {
 					if (err) return cb(err);
 
@@ -78,7 +79,8 @@ function updateProfile (req, res) {
 				}
 
 				models.User.find({
-					email: email
+					email: email,
+					disabled: false
 				}).select('_id').exec(function(err, users) {
 					if (err) return cb(err);
 					

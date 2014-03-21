@@ -62,7 +62,10 @@ function doLogin (req, res) {
 	
 	if (errs.length == 0) {
 		var email = req.body.email.toLowerCase();
-		models.User.findOne({ email: email }, function(err, user) {
+		models.User.findOne({
+			email: email,
+			disabled: false
+		}, function(err, user) {
 			if (err) {
 				throw err;
 			}

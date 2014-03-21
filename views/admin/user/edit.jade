@@ -1,0 +1,56 @@
+extends ../layout
+
+block content
+	.row
+		.col-lg-12.col-md-12.col-sm-12
+			h1.page-header Editing User #{aUser.name}
+	.row
+		.col-md-6.col-lg-6
+			form.form-horizontal(method="POST" action="/admin/user/#{aUser._id}/edit" autocomplete="off")
+				input(type="hidden" name="_csrf" value=token)
+				.form-group
+					label.col-md-4.col-lg-4.col-sm-4.control-label(for="name") Full Name
+					.col-lg-7.col-md-7.col-sm-7
+						input#name.form-control(required type="text" placeholder="Full Name" name="name" value=aUser.name)
+				.form-group
+					label.col-md-4.col-lg-4.col-sm-4.control-label(for="username") Username
+					.col-lg-7.col-md-7.col-sm-7
+						input#username.form-control(required type="text" placeholder="Username" name="username" value=aUser.username)
+				.form-group
+					label.col-md-4.col-lg-4.col-sm-4.control-label(for="email") Email
+					.col-lg-7.col-md-7.col-sm-7
+						input#email.form-control(required type="email" placeholder="Email" name="email" value=aUser.email)
+				.form-group
+					label.col-md-4.col-lg-4.col-sm-4.control-label(for="change_password") Change Password
+					.col-lg-7.col-md-7.col-sm-7
+						input#change_password.form-control(type="password" placeholder="Change Password" name="password")
+				.form-group
+					label.col-md-4.col-lg-4.col-sm-4.control-label(for="balance") Balance (GBP)
+					.col-lg-7.col-md-7.col-sm-7
+						input#balance.form-control(required type="text" placeholder="Balance (0)" name="balance" value=aUser.balance)
+				.form-group
+					label.col-md-4.col-lg-4.col-sm-4.control-label(for="stripe_customer") Stripe Customer
+					.col-lg-7.col-md-7.col-sm-7
+						input#stripe_customer.form-control(required type="text" placeholder="Stripe Customer" name="stripe_customer" value=aUser.stripe_customer)
+				.form-group
+					.col-lg-6.col-md-6.col-sm-6.col-lg-offset-4.col-md-offset-4.col-sm-offset-4
+						.checkbox
+							label
+								input(required disabled=aUser._id.equals(user._id) type="checkbox" name="admin" value="true" checked=aUser.admin)
+								|  Is Admin
+				.form-group
+					.col-lg-6.col-md-6.col-sm-6.col-lg-offset-4.col-md-offset-4.col-sm-offset-4
+						.checkbox
+							label
+								input(required disabled=(!aUser.tfa_enabled) type="checkbox" name="tfa_enabled" value="true" checked=aUser.tfa_enabled)
+								|  TFA Enabled
+				.form-group
+					.col-lg-6.col-md-6.col-sm-6.col-lg-offset-4.col-md-offset-4.col-sm-offset-4
+						.checkbox
+							label
+								input(required disabled=(aUser._id.equals(user._id)) type="checkbox" name="disabled" value="true" checked=aUser.disabled)
+								|  User Disabled
+				
+				.form-group
+					.col-lg-6.col-md-6.col-sm-6.col-lg-offset-4.col-md-offset-4.col-sm-offset-4
+						button.btn.btn-success(type="submit") Save User
