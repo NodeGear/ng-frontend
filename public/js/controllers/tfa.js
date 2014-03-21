@@ -17,6 +17,8 @@ define([
 			if ($scope.loginAction == true) {
 				$scope.tfa.status = "Please Enter Your TFA Token"
 
+				$('form[name=confirm] input[type=text]').trigger('focus');
+
 				$http.get('/auth/loggedin').success(function(data, status) {
 					if (data.loggedin) {
 						window.location = '/&no_router';
