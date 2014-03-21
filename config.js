@@ -18,7 +18,7 @@ try {
 	process.exit(1);
 }
 
-exports.version = '0.1.1';
+exports.version = '0.1.2';
 exports.hash = '';
 exports.env = process.env.NODE_ENV == "production" ? "production" : "development";
 exports.transport = mailer.createTransport("Mandrill", credentials.transport)
