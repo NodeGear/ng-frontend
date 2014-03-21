@@ -288,7 +288,7 @@ function createStripeCustomer (req, res, next) {
 		if (err) throw err;
 		
 		req.user.stripe_customer = customer.id;
-		console.log(customer)
+
 		req.user.save();
 		
 		next()
@@ -427,46 +427,9 @@ function updateCard (req, res) {
 }
 
 function deleteCard (req, res) {
-	var id = req.query._id;
-	try {
-		id = mongoose.Types.ObjectId(id);
-	} catch (e) {
-		// error.
-		res.send({
-			status: 400,
-			message: "Invalid Card"
-		});
-		return;
-	}
-	
-	var card = null;
-	for (var i = 0; i < req.user.stripe_cards.length; i++) {
-		if (req.user.stripe_cards[i]._id.equals(id)) {
-			card = req.user.stripe_cards[i];
-			card.disabled = true;
+	var card = res.locals.card;
+	card.disabled = true;
 
-			if (card.default && req.user.stripe_cards.length > 1) {
-				var ii = 0;
-				if (i = 0) ii = 1;
-
-				// New default card
-				req.user.stripe_cards[ii].default = true;
-			}
-
-			card.default = false;
-			// disable the card
-			break;
-		}
-	}
-	
-	if (!card) {
-		res.send({
-			status: 400,
-			message: "Card Not Found"
-		})
-		return;
-	}
-	
 	// Delete stripe card
 	stripe.customers.deleteCard(req.user.stripe_customer, card.id, function(err, confirm) {
 		if (err) {
@@ -481,6 +444,7 @@ function deleteCard (req, res) {
 		}
 		
 		if (confirm.deleted) {
+			card.save();
 			req.user.save();
 	
 			res.send({

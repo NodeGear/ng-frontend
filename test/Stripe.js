@@ -8,7 +8,7 @@ var stripe = require('../config').stripe
 var should = require('should')
 	, models = require('../models')
 
-describe('Stripe', function() {
+describe('Stripe & Payment', function() {
 	var password, user;
 	
 	before(function () {
@@ -46,8 +46,11 @@ describe('Stripe', function() {
 			})
 	})
 
-	describe('payment method', function() {
-		var card_token = null, invalid_card_token = null;
+	var card_token = null, invalid_card_token = null;
+	var card_id = null;
+
+	describe('generate Stripe tokens', function() {
+		this.timeout(0);
 
 		it('should add a card to Stripe', function(done) {
 			stripe.tokens.create({
@@ -84,8 +87,12 @@ describe('Stripe', function() {
 				done()
 			})
 		})
+	});
 
-		it('should reject adding the card', function(done) {
+	describe('manipulating payment methods', function() {
+		this.timeout(10000);
+
+		it('should reject adding the card (charge fails)', function(done) {
 			request
 				.post('/profile/card')
 				.accept('json')
@@ -99,7 +106,7 @@ describe('Stripe', function() {
 					should(err).be.equal(null);
 
 					var body = req.res.body;
-					body.status.should.be.equal(400);
+					body.status.should.not.be.equal(200);
 					body.message.should.not.be.empty;
 
 					done();
@@ -126,7 +133,7 @@ describe('Stripe', function() {
 				})
 		})
 
-		it('should retrieve payment methods', function(done) {
+		it('should retrieve 1 payment method, which is a default payment method', function(done) {
 			request
 				.get('/profile/cards')
 				.accept('json')
@@ -139,6 +146,343 @@ describe('Stripe', function() {
 					body.cards.should.not.be.empty;
 					body.cards.should.be.instanceOf(Array);
 					body.cards.should.have.length(1);
+
+					// Check card properties
+					var c = body.cards[0];
+					c._id.should.not.be.empty;
+					c.name.should.be.equal("Test Card");
+					c.default.should.be.true;
+
+					card_id = c._id;
+
+					done();
+				})
+		})
+
+		describe('modify card details', function(done) {
+			it('shouldn\'t update card due to name', function(done) {
+				request
+					.put('/profile/card')
+					.accept('json')
+					.send({
+						// name omitted
+						cardholder: "Tester Testy",
+						card: card_id,
+						default: false
+					})
+					.expect(200)
+					.end(function(err, req) {
+						should(err).be.equal(null);
+
+						var body = req.res.body;
+						body.status.should.not.be.equal(200);
+						body.message.should.not.be.empty;
+
+						done();
+					})
+			})
+
+			it('shouldn\'t update card due to cardholder', function(done) {
+				request
+					.put('/profile/card')
+					.accept('json')
+					.send({
+						name: "Hello World",
+						// cardholder omitted
+						card: card_id,
+						default: false
+					})
+					.expect(200)
+					.end(function(err, req) {
+						should(err).be.equal(null);
+
+						var body = req.res.body;
+						body.status.should.not.be.equal(200);
+						body.message.should.not.be.empty;
+
+						done();
+					})
+			})
+
+			it('shouldn\'t update card due to invalid card id', function(done) {
+				request
+					.put('/profile/card')
+					.accept('json')
+					.send({
+						// 'abcd'.split('').reverse().join('') == 'dcba'
+						// effectively malforms the id, so should be !found
+						card: card_id.split('').reverse().join('')
+					})
+					.expect(200)
+					.end(function(err, req) {
+						should(err).be.equal(null);
+
+						var body = req.res.body;
+						body.status.should.not.be.equal(200);
+						body.message.should.not.be.empty;
+
+						done();
+					})
+			})
+
+			it('should verify integrity of card details', function(done) {
+				request
+					.get('/profile/cards')
+					.accept('json')
+					.expect(200)
+					.end(function(err, req) {
+						should(err).be.equal(null);
+
+						var body = req.res.body;
+						body.status.should.be.equal(200);
+						body.cards.should.not.be.empty;
+						body.cards.should.be.instanceOf(Array);
+						body.cards.should.have.length(1);
+
+						// Check card properties
+						var c = body.cards[0];
+						c._id.should.not.be.empty;
+						c._id.should.be.equal(card_id);
+						c._id.should.not.be.empty;
+						c.name.should.be.equal("Test Card");
+						c.default.should.be.true;
+						c.cardholder.should.be.equal("Mocha Tester");
+
+						done();
+					})
+			})
+
+			it('should update the card', function(done) {
+				request
+					.put('/profile/card')
+					.accept('json')
+					.send({
+						name: "Card Two",
+						cardholder: "Tester Testy",
+						card: card_id,
+						default: false
+					})
+					.expect(200)
+					.end(function(err, req) {
+						should(err).be.equal(null);
+
+						var body = req.res.body;
+						body.status.should.be.equal(200);
+
+						done();
+					})
+			})
+
+			it('should verify card details', function(done) {
+				request
+					.get('/profile/cards')
+					.accept('json')
+					.expect(200)
+					.end(function(err, req) {
+						should(err).be.equal(null);
+
+						var body = req.res.body;
+						body.status.should.be.equal(200);
+						body.cards.should.not.be.empty;
+						body.cards.should.be.instanceOf(Array);
+						body.cards.should.have.length(1);
+
+						// Check card properties
+						var c = body.cards[0];
+						c._id.should.not.be.empty;
+						c._id.should.be.equal(card_id);
+						c.name.should.be.equal("Card Two");
+						c.cardholder.should.be.equal("Tester Testy");
+						c.default.should.be.false;
+
+						card_id = c._id;
+
+						done();
+					})
+			})
+		})
+	})
+
+	describe('Charges', function() {
+		this.timeout(10000);
+		var transaction_id = null;
+
+		it('should charge nothing (malformed value)', function(done) {
+			request
+				.post('/profile/billing/addCredits')
+				.accept('json')
+				.send({
+					card: card_id,
+					value: 'abcd',
+				})
+				.expect(200)
+				.end(function(err, req) {
+					should(err).be.equal(null);
+
+					req.res.body.status.should.not.be.equal(200);
+					req.res.body.message.should.not.be.empty;
+
+					done();
+				})
+		})
+
+		it('should charge nothing (invalid value)', function(done) {
+			request
+				.post('/profile/billing/addCredits')
+				.accept('json')
+				.send({
+					card: card_id,
+					value: 2000,
+				})
+				.expect(200)
+				.end(function(err, req) {
+					should(err).be.equal(null);
+
+					req.res.body.status.should.not.be.equal(200);
+					req.res.body.message.should.not.be.empty;
+
+					done();
+				})
+		})
+
+		it('should charge £5', function(done) {
+			request
+				.post('/profile/billing/addCredits')
+				.accept('json')
+				.send({
+					card: card_id,
+					value: 5,
+				})
+				.expect(200)
+				.end(function(err, req) {
+					should(err).be.equal(null);
+
+					req.res.body.status.should.be.equal(200);
+
+					done();
+				})
+		})
+
+		it('should verify user has payment history', function(done) {
+			request
+				.get('/profile/billing/history')
+				.accept('json')
+				.expect(200)
+				.end(function(err, req) {
+					should(err).be.equal(null);
+
+					var body = req.res.body;
+					body.status.should.be.equal(200);
+					body.transactions.should.be.instanceOf(Array);
+					body.transactions.should.have.lengthOf(1);
+
+					var t = body.transactions[0];
+					t.total.should.be.equal(5);
+					transaction_id = t._id;
+					t.old_balance.should.be.equal(0);
+					t.new_balance.should.be.equal(5);
+					t.status.should.not.be.empty;
+					t.type.should.not.be.empty;
+
+					done();
+				})
+		})
+
+		it('should retrieve transaction', function(done) {
+			request
+				.get('/profile/billing/transaction/'+transaction_id)
+				.accept('json')
+				.expect(200)
+				.end(function(err, req) {
+					should(err).be.equal(null);
+
+					var body = req.res.body;
+					body.status.should.be.equal(200);
+					body.transaction.should.be.instanceOf(Object);
+					body.transaction.should.not.be.empty;
+
+					var t = body.transaction;
+					t.total.should.be.equal(5);
+					t.old_balance.should.be.equal(0);
+					t.new_balance.should.be.equal(5);
+					t.status.should.not.be.empty;
+					t.type.should.not.be.empty;
+					t.charges.should.not.be.empty;
+					t.charges.should.have.lengthOf(1);
+					t.charges[0].total.should.be.equal(5);
+
+					done();
+				})
+		})
+
+		it('should verify balance', function(done) {
+			request
+				.get('/profile/balance')
+				.accept('json')
+				.expect(200)
+				.end(function(err, req) {
+					should(err).be.equal(null);
+
+					req.res.body.status.should.be.equal(200);
+					req.res.body.balance.should.be.equal(5);
+
+					done();
+				})
+		})
+	})
+
+	describe('removing a card', function() {
+		this.timeout(10000);
+
+		it('shouldn\'t delete a card', function(done) {
+			request
+				.del('/profile/card')
+				.accept('json')
+				.send({
+					card: card_id.split('').reverse().join('')
+				})
+				.expect(200)
+				.end(function(err, req) {
+					should(err).be.equal(null);
+
+					var body = req.res.body;
+					body.status.should.be.not.equal(200);
+					body.message.should.not.be.empty;
+
+					done();
+				})
+		})
+
+		it('should delete the card', function(done) {
+			request
+				.del('/profile/card')
+				.accept('json')
+				.send({
+					card: card_id
+				})
+				.expect(200)
+				.end(function(err, req) {
+					should(err).be.equal(null);
+
+					var body = req.res.body;
+					body.status.should.be.equal(200);
+
+					done();
+				})
+		})
+
+		it('should find 0 cards', function(done) {
+			request
+				.get('/profile/cards')
+				.accept('json')
+				.expect(200)
+				.end(function(err, req) {
+					should(err).be.equal(null);
+
+					var body = req.res.body;
+					body.status.should.be.equal(200);
+					body.cards.should.be.instanceOf(Array);
+					body.cards.should.be.empty;
 
 					done();
 				})
