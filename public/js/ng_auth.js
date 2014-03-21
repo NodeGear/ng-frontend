@@ -28,7 +28,7 @@ require([
 	'app',
 	'bootstrap',
 	'sb-admin',
-	'controllers/auth'
+	'routes/auth'
 ], function(angular) {
 	var $html = angular.element(document.getElementsByTagName('html')[0]);
 	

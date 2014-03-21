@@ -2,7 +2,7 @@ doctype
 html
 	head
 		meta(http-equiv="Content-Type", content="text/html; charset=utf-8;")
-		meta(name="_csrf", content="#{token}")
+		meta(name="_csrf" content="#{token}")
 		meta(name="viewport" content="width=device-width, initial-scale=1.0")
 		block meta
 		title NodeGear
@@ -14,50 +14,25 @@ html
 		link(rel="stylesheet" href="/css/font-awesome.min.css")
 		link(rel="stylesheet" href="/css/nodegear.css")
 
-	body
+	body(style="background-color:#fff;")
 		include inc/navbar
 		include inc/flash
 		
 		.container
 			.row
-				.col-md-4.col-md-offset-4
-					.login-panel.panel.panel-default
-						.panel-heading
-							h3.panel-title.text-center NodeGear Authentication
-						.panel-body(ng-init="showTFA = #{requiresTFA}")
-							form(name="login" ng-controller="SignInController" ng-init="setCsrf('#{token}')" ng-hide="showTFA")
-								fieldset
-									p.text-center(ng-cloak ng-show="status.length > 0" ng-bind="status")
-									.form-group
-										input.form-control(placeholder="Email" type="email" autofocus="" required ng-model="user.email")
-									.form-group
-										input.form-control(placeholder="Password" type="password" required ng-model="user.password")
-									.form-group
-										button.btn.btn-lg.btn-success.btn-block(ng-disabled="login.$invalid" ng-click="authenticate(user)")
-											i.fa.fa-key.fa-fw
-											|  Authenticate
-							form(ng-cloak name="confirm" ng-controller="TFAController" ng-init="loginAction = true; init()" ng-show="showTFA")
-								fieldset
-									p.text-center(ng-show="tfa.status.length > 0") {{tfa.status}}
-									.form-group
-										input.form-control(placeholder="Two Factor Authentication Token" type="text" required ng-model="tfa.token")
-									.form-group
-										button.btn.btn-lg.btn-success.btn-block(ng-disabled="tfa.hide || confirm.$invalid" ng-click="confirmTFA('#{token}')")
-											i.fa.fa-key.fa-fw
-											|  Confirm
-					a.btn.btn-link.btn-block(ng-cloak href="/logout" ng-show="showTFA") Cancel Authentication
+				ui-view
+					.col-md-4.col-md-offset-4.col-lg-4.col-lg-offset-4.col-sm-6.col-sm-offset-3.col-xs-10.col-xs-offset-1
+						.login-panel.panel.panel-default
+							.panel-heading
+								h3.panel-title.text-center &nbsp;
+							.panel-body
+								p.text-info.text-center Please hang on, we're loading all the content
 			.row
 				.col-xs-12.col-md-12.col-sm-12.col-lg-12
 					footer
 						br
-						p.text-center NodeGear
-							br
-							a(href) Contact
-							|  | 
-							a(href) Support
-							|  | 
-							a(href) System Status
 						p.text-center
+							| NodeGear 
 							span.text-muted v#{version}-##{versionHash}
 						br
 		

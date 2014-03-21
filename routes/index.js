@@ -23,7 +23,10 @@ exports.router = function(app) {
 				if (req.query.partial) {
 					next()
 				} else {
-					res.render('layout')
+					if (res.locals.loggedIn)
+						res.render('layout')
+					else
+						res.render('auth')
 				}
 			}
 		})

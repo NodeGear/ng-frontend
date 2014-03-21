@@ -16,6 +16,35 @@ exports.router = function (app) {
 		.post('/auth/tfa', util.authorizedPassTFA, getTFA, checkTFA)
 		
 		.get('/logout', doLogout)
+
+		.get('/auth/loggedin', isLoggedIn)
+		.get('/auth/page/login', getLoginPage)
+		.get('/auth/page/forgot', getForgotPage)
+		.get('/auth/page/register', getRegisterPage)
+		.get('/auth/page/tfa', getTFAPage)
+}
+
+function isLoggedIn (req, res) {
+	res.send({
+		isLoggedIn: res.locals.loggedIn,
+		requiresTFA: res.locals.requiresTFA
+	});
+}
+
+function getLoginPage (req, res) {
+	res.render('auth/login');
+}
+
+function getForgotPage (req, res) {
+	res.render('auth/forgot');
+}
+
+function getRegisterPage (req, res) {
+	res.render('auth/register');
+}
+
+function getTFAPage (req, res) {
+	res.render('auth/tfa')
 }
 
 function doLogin (req, res) {

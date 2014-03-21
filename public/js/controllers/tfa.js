@@ -2,7 +2,7 @@ define([
 	'angular',
 	'app'
 ], function(angular, app) {
-	app.controller('TFAController', function($scope, $http) {
+	app.controller('TFAController', function($scope, $http, $state) {
 		$scope.tfa = {
 			hide: false,
 			status: "",
@@ -16,6 +16,19 @@ define([
 		$scope.init = function() {
 			if ($scope.loginAction == true) {
 				$scope.tfa.status = "Please Enter Your TFA Token"
+
+				$http.get('/auth/loggedin').success(function(data, status) {
+					if (data.loggedin) {
+						window.location = '/&no_router';
+						return;
+					}
+
+					if (!data.requiresTFA) {
+						$scope.status = "Not Authenticated, redirecting...";
+						$state.transitionTo('login')
+					}
+				})
+
 				return;
 			}
 		

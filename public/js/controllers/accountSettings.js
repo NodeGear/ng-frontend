@@ -36,13 +36,23 @@ define([
 				$scope.status = data.message;
 
 				if (data.status == 200) {
-					$scpoe.changePassword = false;
+					$scope.status = "Account Updated.";
+					$scope.changePassword = false;
 				}
 
 				if (!$scope.$$phase) {
 					$scope.$digest();
 				}
 			})
+		};
+
+		$scope.setChangePassword = function(change) {
+			$scope.changePassword = change;
+
+			if (!change) {
+				$scope.user.password = "";
+				$scope.user.newPassword = "";
+			}
 		};
 	})
 });

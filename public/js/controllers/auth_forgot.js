@@ -3,7 +3,7 @@ define([
 	'../app',
 	'./tfa'
 ], function(angular, app) {
-	app.controller('SignInController', function($scope, $http, $rootScope) {
+	app.controller('ForgotController', function($scope, $http, $rootScope) {
 		$scope.status = "";
 		$scope.user = {
 			email: "",

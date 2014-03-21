@@ -112,6 +112,18 @@ function updateProfile (req, res) {
 			ers.push("Name Invalid")
 		}
 
+		if (user.password && user.newPassword && user.password.length > 0 && user.newPassword.length > 0) {
+			if (models.User.getHash(user.password) != req.user.password) {
+				ers.push("Current Password Invalid");
+			} else {
+				if (user.newPassword.length > 6) {
+					req.user.setPassword(user.newPassword);
+				} else {
+					ers.push("New Password must be over 6 characters.");
+				}
+			}
+		}
+
 		if (ers.length > 0) {
 			res.send({
 				status: 400,

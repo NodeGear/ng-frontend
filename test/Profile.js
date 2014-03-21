@@ -103,8 +103,114 @@ describe('Account', function() {
 				u.name.should.be.equal("Hello Tester");
 				u.username.should.be.equal("free");
 				u.email.should.be.equal("free@test.nodegear.com");
-
+				u.password.should.be.equal(models.User.getHash("password"));
 				user = u;
+
+				done();
+			})
+		})
+	})
+
+	describe('changes user password', function() {
+		it('should not update user profile (current password wrong)', function(done) {
+			request
+				.put('/profile/profile')
+				.accept('json')
+				.send({
+					user: {
+						name: "Hello Tester",
+						username: "free",
+						email: "free@test.nodegear.com",
+						password: "wrongpassword",
+						newPassword: "newPassword"
+					}
+				})
+				.expect(200)
+				.end(function(err, req) {
+					should(err).be.equal(null);
+
+					var body = req.res.body;
+					body.status.should.not.be.equal(200);
+					body.message.should.not.be.empty;
+
+					done()
+				})
+		})
+
+		it('should change user password (password length)', function(done) {
+			request
+				.put('/profile/profile')
+				.accept('json')
+				.send({
+					user: {
+						name: "Hello Tester",
+						username: "free",
+						email: "free@test.nodegear.com",
+						password: "password",
+						newPassword: "short"
+					}
+				})
+				.expect(200)
+				.end(function(err, req) {
+					should(err).be.equal(null);
+
+					var body = req.res.body;
+					body.status.should.not.be.equal(200);
+					body.message.should.not.be.empty;
+
+					done()
+				})
+		})
+
+		it('should check user password has not changed', function(done) {
+			models.User.findOne({
+				_id: user._id
+			}, function(err, u) {
+				should(err).be.equal(null);
+
+				u.name.should.be.equal("Hello Tester");
+				u.username.should.be.equal("free");
+				u.email.should.be.equal("free@test.nodegear.com");
+				u.password.should.be.equal(models.User.getHash("password"));
+
+				done();
+			})
+		})
+
+		it('should change user password', function(done) {
+			request
+				.put('/profile/profile')
+				.accept('json')
+				.send({
+					user: {
+						name: "Hello Tester",
+						username: "free",
+						email: "free@test.nodegear.com",
+						password: "password",
+						newPassword: "newpassword"
+					}
+				})
+				.expect(200)
+				.end(function(err, req) {
+					should(err).be.equal(null);
+
+					var body = req.res.body;
+					body.status.should.be.equal(200);
+
+					done()
+				})
+		})
+
+		it('should check user password has changed', function(done) {
+			models.User.findOne({
+				_id: user._id
+			}, function(err, u) {
+				should(err).be.equal(null);
+
+				u.name.should.be.equal("Hello Tester");
+				u.username.should.be.equal("free");
+				u.email.should.be.equal("free@test.nodegear.com");
+				u.password.should.be.equal(models.User.getHash("newpassword"));
 
 				done();
 			})

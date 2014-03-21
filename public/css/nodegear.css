@@ -8,3 +8,14 @@
 .link-larger:hover {
 	text-decoration: none;
 }
+
+.link-black, .link-black:hover {
+	color: #333;
+}
+.link-underline {
+	text-decoration: underline;
+}
+
+.link-muted, .link-muted:hover {
+	color: #999;
+}
