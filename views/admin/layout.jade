@@ -47,11 +47,18 @@ html(ng-app="nodeGearAdmin")
 				.sidebar-collapse
 					ul.nav#side-menu
 						li
+							a(href="/admin") Dashboard
+						li.divider
+						li
 							a(href="/admin/users") Users
 						li
 							a(href="/admin/apps") Apps
 						li
 							a(href="/admin/tickets") Support Tickets
+						li
+							a(href="/admin/paymentMethods") Payment Methods
+						li
+							a(href="/admin/transactions") Transactions
 			
 			#page-wrapper
 				block content

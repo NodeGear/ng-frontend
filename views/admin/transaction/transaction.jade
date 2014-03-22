@@ -1,0 +1,55 @@
+extends ../layout
+
+block content
+	.row
+		.col-lg-12.col-md-12.col-sm-12
+			h1.page-header Transaction on <small>#{transaction.created}</small>
+	.row
+		.col-lg-6.col-md-6.col-sm-6
+			dl.dl-horizontal
+				dt Paid
+				dd= transaction.paid
+				dt Total
+				dd= transaction.total
+				dt User
+				dd: a(href="/admin/user/#{transaction.user._id}")= transaction.user.name
+				dt Payment_method
+				dd: a(href="/admin/paymentMethod/#{transaction.payment_method._id}")= transaction.payment_method.name
+				dt Created
+				dd= transaction.created
+				dt Status
+				dd= transaction.status
+				dt Details
+				dd= transaction.details
+				dt Payment_id
+				dd= transaction.payment_id
+				dt Type
+				dd= transaction.type
+				dt Old_balance
+				dd= transaction.old_balance
+				dt New_balance
+				dd= transaction.new_balance
+	.row
+		.col-lg-12.col-md-12.col-sm-12
+			table.table.table-responsive
+				thead
+					tr
+						th Is_app
+						th App
+						th Name
+						th Description
+						th Total
+						th Has_hours
+						th Hours.number
+						th Hours.price
+				tbody
+					for charge in transaction.charges
+						tr
+							td= charge.is_app
+							td= charge.app
+							td= charge.name
+							td= charge.description
+							td= charge.total
+							td= charge.has_hours
+							td= charge.hours.number
+							td= charge.hours.price

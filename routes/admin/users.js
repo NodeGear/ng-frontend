@@ -8,10 +8,15 @@ exports.router = function (app) {
 }
 
 function getUsers (req, res) {
-	models.User.find({}, function(err, users) {
+	var sort = '-created';
+	if (req.query.sort) {
+		sort = req.query.sort;
+	}
+
+	models.User.find({}).sort(sort).exec(function(err, users) {
 		res.locals.users = users;
 		
-		res.render('admin/users')
+		res.render('admin/user/users')
 	})
 }
 
@@ -23,7 +28,7 @@ function getUser (req, res, next) {
 }
 
 function showUser (req, res) {
-	res.render('admin/user')
+	res.render('admin/user/user')
 }
 
 function editUser (req, res) {
@@ -36,7 +41,7 @@ function doEditUser (req, res) {
 	u.name = req.body.name;
 	u.username = req.body.username;
 	u.email = req.body.email;
-	
+
 	if (req.body.password && req.body.password.length > 0) {
 		u.setPassword(req.body.password);
 	}

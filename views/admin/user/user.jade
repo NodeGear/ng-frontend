@@ -1,4 +1,4 @@
-extends layout
+extends ../layout
 
 block content
 	.row
@@ -10,6 +10,8 @@ block content
 			dl.dl-horizontal
 				dt(title="_id") _id
 				dd= aUser._id
+				dt Created
+				dd= aUser.created
 				dt(title="Username") Username
 				dd= aUser.username
 				dt(title="Name") Name
@@ -32,7 +34,7 @@ block content
 				dt(title="Stripe Customer") Stripe Customer
 				dd= aUser.stripe_customer
 				dt(title="Default Payment Method") Default Payment Method
-				dd: a(href="/admin/paymentMethods/#{aUser.default_payment_method}")= aUser.default_payment_method
+				dd: a(href="/admin/paymentMethod/#{aUser.default_payment_method}")= aUser.default_payment_method
 				dt(title="Tfa Enabled") Tfa Enabled
 				dd= aUser.tfa_enabled
 				dt(title="Tfa") Tfa

@@ -8,6 +8,10 @@ var PublicKey = require('./PublicKey')
 var util = require('../util')
 
 var userSchema = schema({
+	created: {
+		type: Date,
+		default: Date.now
+	},
 	username: String,
 	name: String,
 	email: String,
