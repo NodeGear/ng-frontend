@@ -14,7 +14,10 @@ block content
 				dt User
 				dd: a(href="/admin/user/#{transaction.user._id}")= transaction.user.name
 				dt Payment_method
-				dd: a(href="/admin/paymentMethod/#{transaction.payment_method._id}")= transaction.payment_method.name
+				if (transaction.payment_method)
+					dd: a(href="/admin/paymentMethod/#{transaction.payment_method._id}")= transaction.payment_method.name
+				else
+					dd &nbsp;
 				dt Created
 				dd= transaction.created
 				dt Status
