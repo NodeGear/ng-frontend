@@ -7,6 +7,9 @@ var crypto = require('crypto')
 var PublicKey = require('./PublicKey')
 var util = require('../util')
 
+var config = require('../config')
+	, jade = require('jade')
+
 var userSchema = schema({
 	created: {
 		type: Date,
@@ -105,6 +108,33 @@ userSchema.methods.getPublicKey = function (cb) {
 		cb(key);
 	})
 }
+
+userSchema.methods.sendEmail = function(from, subject, view, locals) {
+	var u = this;
+
+	if (!config.transport_enabled || !u.email) {
+		return null;
+	}
+
+	var html = jade.renderFile(config.path + '/views/' + view, locals);
+	
+	var options = {
+		from: from,
+		to: u.name+" <"+u.email+">",
+		subject: subject,
+		html: html
+	};
+
+	config.transport.sendMail(options, function(error, response){
+		if (error) {
+			console.log(error);
+		} else {
+			console.log("Message sent: " + response.message);
+		}
+	});
+
+	return true;
+};
 
 userSchema.methods.getName = function () {
 	return this.name.length > 0 ? this.name : this.email;

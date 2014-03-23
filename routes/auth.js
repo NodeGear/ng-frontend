@@ -241,7 +241,7 @@ function enableTFA (req, res) {
 
 	tfa.save();
 	req.user.save();
-	
+
 	var data = {
 		status: 200,
 		qr: key.google_auth_qr,
@@ -305,6 +305,10 @@ function disableTFA (req, res) {
 
 	req.user.tfa = null;
 	req.user.save();
+
+	req.user.sendEmail("NodeGear Security Guard <security@nodegear.com>", "Two Factor Auth Disabled!", "emails/tfa/removed.jade", {
+		user: req.user
+	});
 	
 	res.send({
 		status: 200
@@ -340,6 +344,10 @@ function checkTFA (req, res) {
 			req.user.tfa_enabled = true;
 			req.user.tfa.save();
 			req.user.save();
+
+			req.user.sendEmail("NodeGear Security Guard <security@nodegear.com>", "Two Factor Auth Is Enabled", "emails/tfa/added.jade", {
+				user: req.user
+			});
 		}
 		
 		req.session.confirmedTFA = true;

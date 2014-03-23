@@ -17,7 +17,7 @@ block content
 				if (transaction.payment_method)
 					dd: a(href="/admin/paymentMethod/#{transaction.payment_method._id}")= transaction.payment_method.name
 				else
-					dd &nbsp;
+					dd= transaction.payment_method
 				dt Created
 				dd= transaction.created
 				dt Status

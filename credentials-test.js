@@ -5,11 +5,9 @@ exports.stripe_keys = {
 	secret: "sk_test_mmZnb9OiVoxdrFj6wuQGvMvP"
 };
 
-exports.transport = {
-	auth: {
-		user: "matej@matej.me",
-		pass: "eELIT9FIJIU52NaWvrMrPg"
-	}
+exports.smtp = {
+	user: "matej@matej.me",
+	pass: "eELIT9FIJIU52NaWvrMrPg"
 }
 
 exports.db = "mongodb://127.0.0.1/nodegear-test";

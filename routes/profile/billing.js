@@ -207,8 +207,6 @@ function addCredits (req, res) {
 		currency: "GBP",
 	}, function(err, charge) {
 		if (err) {
-			console.log(err);
-			
 			var message = "";
 			switch (err.type) {
 				case 'StripeCardError':
@@ -232,7 +230,10 @@ function addCredits (req, res) {
 			transaction.details = message;
 			transaction.save();
 
-			// Todo email customer
+			req.user.sendEmail("NodeGear Payment Gateway <payments@nodegear.com>", "Payment Failed", "emails/billing/failed.jade", {
+				user: req.user,
+				transaction: transaction
+			});
 
 			res.send({
 				status: 400,
@@ -252,7 +253,10 @@ function addCredits (req, res) {
 			message: "Thanks for your payment! A confirmation email was sent to "+req.user.email
 		});
 
-		// TODO Send confirmation email
+		req.user.sendEmail("NodeGear Payment Gateway <payments@nodegear.com>", "Payment Confirmation", "emails/billing/confirm.jade", {
+			user: req.user,
+			transaction: transaction
+		});
 
 		// Does this in case a race condition happens and balance is updated [somewhere]..
 		models.User.findById(req.user._id, function(err, user) {
@@ -348,6 +352,11 @@ function createCard (req, res) {
 			req.user.default_payment_method = paymentMethod._id;
 			req.user.save()
 		}
+
+		req.user.sendEmail("NodeGear Billing Dept. <billing@nodegear.com>", "Payment Method Added", "emails/billing/addedPaymentMethod.jade", {
+			user: req.user,
+			paymentMethod: paymentMethod
+		});
 
 		res.send({
 			status: 200

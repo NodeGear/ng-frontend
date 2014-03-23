@@ -18,10 +18,20 @@ try {
 	process.exit(1);
 }
 
+// Create SMTP transport method
+if (process.env.NG_TEST) {
+	exports.transport_enabled = false;
+} else {
+	exports.transport_enabled = credentials.smtp.user.length > 0;
+}
+exports.transport = mailer.createTransport("SMTP", {
+	service: "Mandrill",
+	auth: credentials.smtp
+})
+
 exports.version = '0.2.1';
 exports.hash = '';
 exports.env = process.env.NODE_ENV == "production" ? "production" : "development";
-exports.transport = mailer.createTransport("Mandrill", credentials.transport)
 
 exports.redis_key = credentials.redis_key;
 
