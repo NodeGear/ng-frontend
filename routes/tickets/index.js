@@ -80,7 +80,8 @@ function createTicket (req, res) {
 		
 		res.send({
 			status: errs.length > 0 ? 400 : 200,
-			message: errs.length > 0 ? errs.join(', ') : 'Created.'
+			message: errs.length > 0 ? errs.join(', ') : 'Created.',
+			_id: t._id
 		});
 	}
 	

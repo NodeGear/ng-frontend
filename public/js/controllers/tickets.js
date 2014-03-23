@@ -6,7 +6,7 @@ define([
 		$scope.tickets = data.tickets || [];
 	})
 
-	.controller('TicketController', function ($scope, data, $http, $rootScope) {
+	.controller('TicketController', function ($scope, data, $http, $rootScope, $state) {
 		$scope.ticket = data.ticket || {}
 		$scope.csrf = "";
 		$scope.status = "";
@@ -25,6 +25,9 @@ define([
 			}).success(function(data, status) {
 				if (data.status == 200) {
 					$scope.status = "Done.";
+					$state.transitionTo('tickets.ticket', {
+						id: data._id
+					})
 				} else {
 					$scope.status = data.message;
 					$scope.disableSend = false;
