@@ -8,5 +8,6 @@ module.exports = {
 	Ticket: require('./Ticket'),
 	Transaction: require('./Transaction'),
 	PaymentMethod: require('./PaymentMethod'),
-	TFA: require('./TFA')
+	TFA: require('./TFA'),
+	EmailVerification: require('./EmailVerification')
 }

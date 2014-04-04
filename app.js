@@ -124,7 +124,7 @@ app.use(function(req, res, next) {
 	res.locals.requiresTFA = false;
 	if (res.locals.loggedIn) {
 		res.locals.requiresTFA = req.user.tfa_enabled && req.session.confirmedTFA !== true;
-		res.locals.loggedIn = !res.locals.requiresTFA;
+		res.locals.loggedIn = !(res.locals.requiresTFA || !req.user.email_verified);
 	}
 	
 	res.locals.stripe_pub = config.stripe_keys.pub;

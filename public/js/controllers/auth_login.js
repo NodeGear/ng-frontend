@@ -32,6 +32,11 @@ define([
 						$state.transitionTo('tfa')
 						return;
 					}
+					if (!data.email_verification) {
+						// Requires user to verify email
+						$state.transitionTo('verifyEmail');
+						return;
+					}
 				
 					$scope.status = "Login Successful"
 					window.location = "/";

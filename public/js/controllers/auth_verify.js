@@ -3,38 +3,25 @@ define([
 	'../app',
 	'./tfa'
 ], function(angular, app) {
-	app.controller('SignUpController', function($scope, $http, $state) {
+	app.controller('VerifyEmailController', function($scope, $http) {
 		$scope.status = "";
-		$scope.user = {};
-		$scope.help_text = {};
 		$scope.csrf = "";
+		$scope.code = "";
 		
-		$scope.resetUser = function() {
-			$scope.user = {
-				name: "",
-				username: "",
-				email: "",
-				password: ""
-			};
-			$scope.help_text = {};
-		};
-
 		$scope.init = function (csrf) {
 			$scope.csrf = csrf;
 		}
-
-		$scope.registerUser = function () {
+	
+		$scope.verify = function() {
 			$scope.status = "Registering.."
 			
-			$scope.help_text = {};
-			
-			$http.post('/auth/register', {
+			$http.post('/auth/password', {
 				_csrf: $scope.csrf,
 				user: $scope.user
 			}).success(function(data, status) {
 				if (data.status == 200) {
 					$scope.status = "Registration Successful"
-					$state.transitionTo('verifyEmail')
+					$state.transitionTo('emailVerification')
 				} else {
 					if (data.taken) {
 						$scope.help_text = {};
@@ -48,13 +35,7 @@ define([
 
 					$scope.status = data.message;
 				}
-
-				if (!$scope.$$phase) {
-					$scope.$digest();
-				}
 			});
 		}
-
-		$scope.resetUser();
 	});
 });

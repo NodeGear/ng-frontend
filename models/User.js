@@ -9,6 +9,9 @@ var util = require('../util')
 
 var config = require('../config')
 	, jade = require('jade')
+	, exec = require('child_process').exec
+	, async = require('async')
+	, bugsnag = require('bugsnag')
 
 var userSchema = schema({
 	created: {
@@ -16,8 +19,13 @@ var userSchema = schema({
 		default: Date.now
 	},
 	username: String,
+	usernameLowercase: String,
 	name: String,
 	email: String,
+	email_verified: {
+		type: Boolean,
+		default: false
+	},
 	password: String,
 	uid: Number,
 	gid: Number,
@@ -59,27 +67,29 @@ userSchema.statics.getHash = function (password) {
 }
 
 userSchema.statics.taken = function (username, cb) {
-	model.findOne({
-		username: username
+	module.exports.findOne({
+		usernameLowercase: username.toLowerCase()
 	}, function(err, user) {
 		if (err) throw err;
-		
-		cb(user == null ? false : true)
+
+		var taken = (user == null) ? false : true;
+		cb(taken)
 	})
 }
 
 userSchema.statics.takenEmail = function (email, cb) {
-	model.findOne({
-		email: email
+	module.exports.findOne({
+		email: email.toLowerCase()
 	}, function(err, user) {
 		if (err) throw err;
-		
-		cb(user == null ? false : true)
+
+		var taken = (user == null) ? false : true;
+		cb(taken)
 	})
 }
 
 userSchema.statics.authenticate = function (token, cb) {
-	model.findOne({
+	module.exports.findOne({
 		authToken: token
 	}, function(err, user) {
 		if (err) throw err;
@@ -138,6 +148,52 @@ userSchema.methods.sendEmail = function(from, subject, view, locals) {
 
 userSchema.methods.getName = function () {
 	return this.name.length > 0 ? this.name : this.email;
-}
+};
 
-module.exports = model = mongoose.model('User', userSchema);
+userSchema.methods.createIDs = function() {
+	var user = this;
+
+	var script = config.path+"/scripts/createUser.sh "+config.droneLocation+" "+user._id;
+	
+	console.log("Running CreateID", script);
+
+	var run = exec(script)
+	run.stdout.on('data', function(data) {
+		console.log(data)
+	})
+	run.stderr.on('data', function(data) {
+		console.log(data)
+	})
+	
+	run.on('close', function(code) {
+		// Get the ID and GID
+		async.parallel({
+			uid: function(done) {
+				var uid = exec("id -u "+user._id)
+				uid.stdout.on("data", function(data) {
+					console.log("UID: "+parseInt(data));
+					done(null, parseInt(data))
+				});
+			},
+			gid: function(done) {
+				var gid = exec("id -g "+user._id)
+				gid.stdout.on("data", function(data) {
+					console.log("GID: "+parseInt(data));
+					done(null, parseInt(data));
+				})
+			}
+		}, function(err, results) {
+			if (uid < 500 || gid < 500) {
+				console.log("UID|GID < 500, dangerous by my standards..");
+				bugsnag.notify("UID|GID < 500, dangerous by my standards..")
+				return;
+			}
+
+			user.uid = results.uid;
+			user.gid = results.gid;
+			user.save();
+		})
+	})
+};
+
+module.exports = mongoose.model('User', userSchema);

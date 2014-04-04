@@ -6,6 +6,7 @@ var passport = require('passport')
 	, exec = require('child_process').exec
 	, config = require('../config')
 	, speakeasy = require('speakeasy')
+	, async = require('async')
 
 exports.router = function (app) {
 	app.post('/auth/password', doLogin)
@@ -22,6 +23,7 @@ exports.router = function (app) {
 		.get('/auth/page/forgot', getForgotPage)
 		.get('/auth/page/register', getRegisterPage)
 		.get('/auth/page/tfa', getTFAPage)
+		.get('/auth/page/verifyEmail', getVerifyEmailPage)
 }
 
 function isLoggedIn (req, res) {
@@ -45,6 +47,10 @@ function getRegisterPage (req, res) {
 
 function getTFAPage (req, res) {
 	res.render('auth/tfa')
+}
+
+function getVerifyEmailPage (req, res) {
+	res.render('auth/verifyEmail')
 }
 
 function doLogin (req, res) {
@@ -100,7 +106,8 @@ function doLogin (req, res) {
 					json: function() {
 						res.send({
 							status: 200,
-							tfa: user.tfa_enabled
+							tfa: user.tfa_enabled,
+							email_verification: user.email_verified
 						})
 					},
 					html: function() {
@@ -128,86 +135,100 @@ function doLogin (req, res) {
 }
 
 function doRegister (req, res) {
-	//TODO let people register..
-	res.send(404);
-	return;
-
 	var v = new Validator()
 	var errs = [];
 	v.error = function (err) {
 		errs.push(err)
 	}
+
+	if (req.body.user && typeof req.body.user === 'object') {
+		var name = req.body.user.name;
+		var email = req.body.user.email;
+		if (email) {
+			email = email.toLowerCase();
+		}
+		var username = req.body.user.username;
+		var password = req.body.user.password;
+	}
 	
 	// validate email
-	v.check(req.body.email, 'Please enter a valid email address').isEmail();
+	v.check(email, 'Please enter a valid email address').isEmail();
+	v.check(username, 'Please enter a valid username').len(4);
+	v.check(name, 'Please enter a valid name').len(4);
 	
 	// validate password
-	v.check(req.body.password, 'Please enter a valid password').len(5)
-	
-	if (errs.length == 0) {
-		var email = req.body.email.toLowerCase();
+	v.check(password, 'Please enter a valid password').len(5);
+
+	if (errs.length > 0) {
+		var err = buildFlash(errs, { title: "Registration Failed..", class: "danger" });
 		
-		// Check duplicate emails in db
-		models.User.takenEmail(email, function(taken) {
-			if (taken) {
-				errs.push("Email is already taken. Forgotten your password?[link]");
-				
-				var err = buildFlash(errs, { title: "Registration Failed..", class: "danger" });
-				
+		res.format({
+			html: function() {
 				req.session.flash = [err];
 				res.redirect('/');
-			} else {
-				// Register
-				var user = new models.User({
-					email: email,
-					name: req.body.name
-				})
-				user.setPassword(req.body.password);
-				user.save()
-				
-				// log in now
-				req.login(user, function(err) {
-					if (err) throw err;
-					
-					req.session.flash.push(buildFlash(["Thank you for Registering with NodeGear"], { title: "Registration Success!", class: "info" }));
-					res.redirect('/apps');
-				})
-				
-				var script = config.path+"/scripts/createUser.sh "+config.droneLocation+" "+user._id;
-				console.log(script);
-				var run = exec(script)
-				run.stdout.on('data', function(data) {
-					console.log(data)
-				})
-				run.stderr.on('data', function(data) {
-					console.log(data)
-				})
-				
-				run.on('close', function(code) {
-					// Get the ID and GID
-					
-					uid = exec("id -u "+user._id)
-					uid.stdout.on("data", function(data) {
-						console.log("UID: "+parseInt(data));
-						user.uid = parseInt(data);
-					})
-					uid.on('close', function() {
-						gid = exec("id -g "+user._id)
-						gid.stdout.on("data", function(data) {
-							console.log("GID: "+parseInt(data));
-							user.gid = parseInt(data);
-							user.save()
-						})
-					})
+			},
+			json: function() {
+				res.send({
+					status: 400,
+					errs: errs,
+					message: errs.join(', ')
 				})
 			}
 		})
-	} else {
-		var err = buildFlash(errs, { title: "Registration Failed..", class: "danger" });
 		
-		req.session.flash = [err];
-		res.redirect('/');
+		return;
 	}
+
+	async.parallel({
+		email: function(done) {
+			// Check duplicate emails in db
+			models.User.takenEmail(email, function(taken) {
+				done(null, taken);
+			});
+		},
+		username: function(done) {
+			models.User.taken(username, function(taken) {
+				done(null, taken);
+			})
+		}
+	}, function(err, results) {
+		if (results.email == true || results.username == true) {
+			res.send({
+				status: 400,
+				message: "Registration Failed",
+				taken: results
+			});
+
+			return;
+		}
+
+		// Register
+		var user = new models.User({
+			email: email,
+			username: username,
+			usernameLowercase: username.toLowerCase(),
+			name: name
+		})
+		user.setPassword(password);
+		user.save();
+		
+		// log in now
+		req.login(user, function(err) {
+			if (err) throw err;
+			
+			res.format({
+				html: function() {
+					req.session.flash.push(buildFlash(["Thank you for Registering with NodeGear"], { title: "Registration Success!", class: "info" }));
+					res.redirect('/apps');
+				},
+				json: function() {
+					res.send({
+						status: 200
+					})
+				}
+			})
+		})
+	});
 }
 
 function getTFA (req, res, next) {

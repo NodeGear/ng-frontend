@@ -3,19 +3,21 @@
 		.panel-heading
 			h3.panel-title.text-center Registration Form
 		.panel-body
-			form(name="register" ng-init="setCsrf('#{token}')")
+			form(name="register" ng-init="init('#{token}')")
 				fieldset
 					p.text-center(ng-cloak ng-show="status.length > 0" ng-bind="status")
 					.form-group
 						input.form-control(placeholder="What's your Name?" type="text" autofocus="" required ng-model="user.name")
 					.form-group
 						input.form-control(placeholder="Pick a Username" type="text" required ng-model="user.username")
+						p.help-block(ng-show="help_text.username.length > 0") {{ help_text.username }}
 					.form-group
 						input.form-control(placeholder="Enter a valid Email Address" type="email" required ng-model="user.email")
+						p.help-block(ng-show="help_text.email.length > 0") {{ help_text.email }}
 					.form-group
 						input.form-control(placeholder="Choose a strong Password" type="password" required ng-model="user.password")
 					.form-group
-						button.btn.btn-lg.btn-success.btn-block(ng-disabled="register.$invalid" ng-click="register(user)")
+						button.btn.btn-lg.btn-success.btn-block(ng-disabled="register.$invalid" ng-click="registerUser()")
 							i.fa.fa-key.fa-fw
 							|  Register
 	p.text-center

@@ -18,13 +18,12 @@ html
 
 	body
 		include inc/navbar
-		include inc/sidebar
 		include inc/flash
 		
 		#wrapper
 			+navbar(0)
 			+flash
-			+sidebar
+			include inc/sidebar
 			
 			#page-wrapper
 				block content
