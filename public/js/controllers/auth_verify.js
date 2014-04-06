@@ -6,11 +6,19 @@ define([
 	app.controller('VerifyEmailController', function($scope, $http) {
 		$scope.status = "";
 		$scope.csrf = "";
-		$scope.code = "";
-		
+		$scope.codeTextTransform = "none";
+
 		$scope.init = function (csrf) {
 			$scope.csrf = csrf;
 		}
+
+		$scope.$watch('code', function() {
+			if (typeof $scope.code != 'undefined' && $scope.code.length > 0) {
+				$scope.codeTextTransform = 'uppercase';
+			} else {
+				$scope.codeTextTransform = 'none';
+			}
+		})
 	
 		$scope.verify = function() {
 			$scope.status = "Registering.."

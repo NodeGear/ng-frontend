@@ -210,23 +210,40 @@ function doRegister (req, res) {
 			name: name
 		})
 		user.setPassword(password);
-		user.save();
-		
-		// log in now
-		req.login(user, function(err) {
-			if (err) throw err;
+
+		var emailVerification = new models.EmailVerification({
+			email: email,
+			user: user._id
+		})
+
+		emailVerification.generateCode(function(code) {
+			emailVerification.save();
 			
-			res.format({
-				html: function() {
-					req.session.flash.push(buildFlash(["Thank you for Registering with NodeGear"], { title: "Registration Success!", class: "info" }));
-					res.redirect('/apps');
-				},
-				json: function() {
-					res.send({
-						status: 200
-					})
-				}
+			user.sendEmail('NodeGear Registrations <registration@nodegear.com>', 'Confirm Your NodeGear Account', 'emails/register.jade', {
+				user: user,
+				code: code
+			});
+			user.save();
+			
+			user.createIDs();
+
+			// log in now
+			req.login(user, function(err) {
+				if (err) throw err;
+				
+				res.format({
+					html: function() {
+						req.session.flash.push(buildFlash(["Thank you for Registering with NodeGear"], { title: "Registration Success!", class: "info" }));
+						res.redirect('/apps');
+					},
+					json: function() {
+						res.send({
+							status: 200
+						})
+					}
+				})
 			})
+
 		})
 	});
 }
