@@ -7,7 +7,7 @@
 				fieldset
 					p.text-center(ng-cloak ng-show="status.length > 0" ng-bind="status")
 					.form-group
-						input.form-control(placeholder="Email" type="email" autofocus="" required ng-model="user.email")
+						input.form-control(placeholder="Username -or- Email Address" type="text" autofocus="" required ng-model="user.auth")
 					.form-group
 						input.form-control(placeholder="Password" type="password" required ng-model="user.password")
 					.form-group

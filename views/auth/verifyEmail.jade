@@ -9,7 +9,7 @@
 					.form-group
 						input.form-control(placeholder="Email Verification Token" type="text" required maxlength="6" ng-model="code" ng-style="{ 'text-transform': codeTextTransform }")
 					.form-group
-						button.btn.btn-lg.btn-success.btn-block(ng-disabled="confirmEmail.$invalid" ng-click="confirm()")
+						button.btn.btn-lg.btn-success.btn-block(ng-disabled="confirmEmail.$invalid" ng-click="verify()")
 							i.fa.fa-key.fa-fw
 							|  Confirm
 	a.btn.btn-link.btn-block(href="/logout&no_router") Cancel Registration

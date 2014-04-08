@@ -18,6 +18,7 @@ describe('Stripe & Payment', function() {
 			username: "stripe-tester",
 			name: "Stripe Tester",
 			email: "stripe@test.nodegear.com",
+			email_verified: true,
 			admin: false,
 			balance: 0,
 			tfa_enabled: false,
@@ -31,7 +32,7 @@ describe('Stripe & Payment', function() {
 		request
 			.post('/auth/password')
 			.send({
-				email: user.email,
+				auth: user.email,
 				password: password
 			})
 			.accept('json')

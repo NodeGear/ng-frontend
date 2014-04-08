@@ -7,6 +7,7 @@ define([
 		$scope.status = "";
 		$scope.csrf = "";
 		$scope.codeTextTransform = "none";
+		$scope.code = "";
 
 		$scope.init = function (csrf) {
 			$scope.csrf = csrf;
@@ -21,26 +22,16 @@ define([
 		})
 	
 		$scope.verify = function() {
-			$scope.status = "Registering.."
+			$scope.status = "Verifying.."
 			
-			$http.post('/auth/password', {
+			$http.post('/auth/verifyEmail', {
 				_csrf: $scope.csrf,
-				user: $scope.user
+				code: $scope.code
 			}).success(function(data, status) {
 				if (data.status == 200) {
-					$scope.status = "Registration Successful"
-					$state.transitionTo('emailVerification')
+					$scope.status = "Verification Successful"
+					window.location = "/&no_router";
 				} else {
-					if (data.taken) {
-						$scope.help_text = {};
-						if (data.taken.username) {
-							$scope.help_text.username = "Username is taken";
-						}
-						if (data.taken.email) {
-							$scope.help_text.email = "Email is already in use";
-						}
-					}
-
 					$scope.status = data.message;
 				}
 			});

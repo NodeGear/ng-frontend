@@ -12,7 +12,12 @@ var schema = mongoose.Schema({
 		ref: 'User'
 	},
 	email: String,
-	code: String
+	code: String,
+	verified: {
+		type: Boolean,
+		default: false
+	},
+	verifiedDate: Date
 });
 
 schema.methods.generateCode = function(cb) {

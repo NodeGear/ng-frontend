@@ -16,6 +16,7 @@ describe('Account', function() {
 			username: "taken",
 			name: "Taken User",
 			email: "taken@test.nodegear.com",
+			email_verified: true,
 			admin: false
 		}).save();
 
@@ -23,6 +24,7 @@ describe('Account', function() {
 			username: "account",
 			name: "Account Tester",
 			email: "account@test.nodegear.com",
+			email_verified: true,
 			admin: false,
 			balance: 0,
 			tfa_enabled: false,
@@ -36,7 +38,7 @@ describe('Account', function() {
 		request
 			.post('/auth/password')
 			.send({
-				email: user.email,
+				auth: user.email,
 				password: password
 			})
 			.accept('json')

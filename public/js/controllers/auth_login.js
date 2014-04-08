@@ -6,7 +6,7 @@ define([
 	app.controller('SignInController', function($scope, $http, $rootScope, $state) {
 		$scope.status = "";
 		$scope.user = {
-			email: "",
+			auth: "",
 			password: ""
 		};
 		$scope.csrf = "";
@@ -23,7 +23,7 @@ define([
 		
 			$http.post('/auth/password', {
 				_csrf: $scope.csrf,
-				email: user.email,
+				auth: user.auth,
 				password: pwd
 			}).success(function(data, status) {
 				if (data.status == 200) {
@@ -53,18 +53,18 @@ define([
 			isLocalStorageCapable = false;
 		}
 
-		if (isLocalStorageCapable && localStorage["login_email"]) {
+		if (isLocalStorageCapable && localStorage["login_auth"]) {
 			$scope.status = "Welcome Back!";
-			$scope.user.email = localStorage["login_email"];
+			$scope.user.auth = localStorage["login_auth"];
 			$('form[name=login] input[type=password]').trigger('focus');
 		}
 
-		$scope.$watch('user.email', function(email) {
+		$scope.$watch('user.auth', function(auth) {
 			if (isLocalStorageCapable) {
-				if (typeof email !== 'undefined' && email.length > 0) {
-					localStorage["login_email"] = email;
+				if (typeof auth !== 'undefined' && auth.length > 0) {
+					localStorage["login_auth"] = auth;
 				} else {
-					localStorage["login_email"] = "";
+					localStorage["login_auth"] = "";
 				}
 			}
 		})

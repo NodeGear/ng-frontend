@@ -29,7 +29,7 @@ exports.transport = mailer.createTransport("SMTP", {
 	auth: credentials.smtp
 })
 
-exports.version = '0.2.2';
+exports.version = require('./package.json').version;
 exports.hash = '';
 exports.env = process.env.NODE_ENV == "production" ? "production" : "development";
 

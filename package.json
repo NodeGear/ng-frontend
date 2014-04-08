@@ -27,7 +27,9 @@
     "hiredis": "latest",
     "redis": "latest",
     "speakeasy": "~1.0.3",
-    "stripe": "~2.4.2"
+    "stripe": "~2.4.2",
+    "grunt": "^0.4.4",
+    "grunt-bump": "0.0.13"
   },
   "devDependencies": {
     "should": "^3.1.4",

@@ -21,15 +21,14 @@ if (config.env == 'production') {
 	backend.auth(config.redis_key)
 }
 
-var releaseStage = config.env;
-if (process.env.NG_TEST) {
-	releaseStage = "testing";
-}
+if (!process.env.NG_TEST) {
+	var releaseStage = config.env;
 
-bugsnag.register("c0c7568710bb46d4bf14b3dad719dbbe", {
-	notifyReleaseStages: ["production"],
-	releaseStage: releaseStage
-});
+	bugsnag.register("c0c7568710bb46d4bf14b3dad719dbbe", {
+		notifyReleaseStages: ["production"],
+		releaseStage: releaseStage
+	});
+}
 
 exports.backend.on("error", function (err) {
 	console.log("Backend Error", err);

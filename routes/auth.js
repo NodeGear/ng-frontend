@@ -15,7 +15,16 @@ exports.router = function (app) {
 		.delete('/auth/tfa', util.authorized, getTFA, disableTFA)
 		.get('/auth/tfa', util.authorized, getTFA, checkTFAEnabled)
 		.post('/auth/tfa', util.authorizedPassTFA, getTFA, checkTFA)
-		
+		.post('/auth/verifyEmail', function (req, res, next) {
+			if (req.user && !req.user.email_verified) {
+				next();
+
+				return;
+			}
+
+			util.authorized(req, res, next);
+		}, doVerifyEmail)
+
 		.get('/logout', doLogout)
 
 		.get('/auth/loggedin', isLoggedIn)
@@ -60,63 +69,21 @@ function doLogin (req, res) {
 		errs.push(err)
 	}
 	
-	// validate email
-	v.check(req.body.email, 'Please enter a valid email address').isEmail();
+	var isEmail = false;
+
+	try {
+		require('validator').check(req.body.auth).isEmail();
+		isEmail = true;
+	} catch (e) {
+		// not an email
+	}
+
+	v.check(req.body.auth, 'Please enter a valid Username/Email').len(4);
 	
 	// validate password
 	v.check(req.body.password, 'Please enter a valid password').len(4)
 	
-	if (errs.length == 0) {
-		var email = req.body.email.toLowerCase();
-		models.User.findOne({
-			email: email,
-			disabled: false
-		}, function(err, user) {
-			if (err) {
-				throw err;
-			}
-			
-			if (!user || user.password != models.User.getHash(req.body.password)) {
-				errs.push("Incorrect credentials")
-			}
-			
-			if (errs.length > 0) {
-				var err = buildFlash(errs, { title: "Login Failed..", class: "danger" });
-				
-				res.format({
-					html: function() {
-						req.session.flash = [err];
-						res.redirect('/')
-					},
-					json: function() {
-						res.send({
-							status: 404,
-							message: "Incorrect Credentials"
-						});
-					}
-				});
-				
-				return;
-			}
-			
-			req.login(user, function(err) {
-				if (err) throw err;
-				
-				res.format({
-					json: function() {
-						res.send({
-							status: 200,
-							tfa: user.tfa_enabled,
-							email_verification: user.email_verified
-						})
-					},
-					html: function() {
-						res.redirect('/apps');
-					}
-				});
-			})
-		})
-	} else {
+	if (errs.length > 0) {
 		var err = buildFlash(errs, { title: "Login Failed..", class: "danger" });
 
 		res.format({
@@ -131,7 +98,64 @@ function doLogin (req, res) {
 				});
 			}
 		});
+
+		return;
 	}
+
+	var authDetail = req.body.auth.toLowerCase();
+	var authMethod = isEmail ? "email" : "usernameLowercase";
+	
+	var query = {
+		disabled: false
+	};
+	query[authMethod] = authDetail;
+
+	models.User.findOne(query, function(err, user) {
+		if (err) {
+			throw err;
+		}
+		
+		if (!user || user.password != models.User.getHash(req.body.password)) {
+			errs.push("Incorrect credentials")
+		}
+		
+		if (errs.length > 0) {
+			var err = buildFlash(errs, { title: "Login Failed..", class: "danger" });
+			
+			res.format({
+				html: function() {
+					req.session.flash = [err];
+					res.redirect('/')
+				},
+				json: function() {
+					res.send({
+						status: 404,
+						message: "Incorrect Credentials"
+					});
+				}
+			});
+			
+			return;
+		}
+		
+		req.login(user, function(err) {
+			if (err) throw err;
+			
+			res.format({
+				json: function() {
+					res.send({
+						status: 200,
+						tfa: user.tfa_enabled,
+						email_verification: user.email_verified
+					})
+				},
+				html: function() {
+					res.redirect('/apps');
+				}
+			});
+		})
+	})
+
 }
 
 function doRegister (req, res) {
@@ -218,7 +242,7 @@ function doRegister (req, res) {
 
 		emailVerification.generateCode(function(code) {
 			emailVerification.save();
-			
+
 			user.sendEmail('NodeGear Registrations <registration@nodegear.com>', 'Confirm Your NodeGear Account', 'emails/register.jade', {
 				user: user,
 				code: code
@@ -245,6 +269,47 @@ function doRegister (req, res) {
 			})
 
 		})
+	});
+}
+
+function doVerifyEmail (req, res) {
+	var code = req.body.code;
+
+	if (!code || code.length > 6) {
+		res.send({
+			status: 400,
+			message: "Invalid Code"
+		});
+		return;
+	}
+
+	models.EmailVerification.findOne({
+		user: req.user._id,
+		verified: false,
+		code: code
+	}, function(err, emailVerification) {
+		if (err) {
+			throw err;
+		}
+
+		if (!emailVerification) {
+			res.send({
+				status: 400,
+				message: "Invalid Code"
+			});
+			return;
+		}
+
+		emailVerification.verified = true;
+		emailVerification.verifiedDate = Date.now();
+		emailVerification.save();
+		req.user.email_verified = true;
+		req.user.save();
+
+		res.send({
+			status: 200,
+			message: "Email Verified."
+		});
 	});
 }
 
