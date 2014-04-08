@@ -13,20 +13,20 @@ var schema = mongoose.Schema({
 	},
 	email: String,
 	code: String,
-	verified: {
+	used: {
 		type: Boolean,
 		default: false
 	},
-	verifiedDate: Date
+	usedDate: Date
 });
 
 schema.methods.generateCode = function(cb) {
 	var self = this;
 
-	crypto.randomBytes(6, function(ex, buf) {
-		self.code = buf.toString('hex').substring(0, 5).toUpperCase();
+	crypto.randomBytes(48, function(ex, buf) {
+		self.code = buf.toString('hex').substring(0, 23).toUpperCase();
 		cb(self.code);
 	});
 };
 
-module.exports = mongoose.model("EmailVerification", schema);
+module.exports = mongoose.model("ForgotNotification", schema);

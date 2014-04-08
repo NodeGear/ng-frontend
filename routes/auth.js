@@ -11,6 +11,9 @@ var passport = require('passport')
 exports.router = function (app) {
 	app.post('/auth/password', doLogin)
 		.post('/auth/register', doRegister)
+		.post('/auth/forgot', doForgot)
+		.get('/auth/forgot', showForgot)
+		.post('/auth/forgot/reset', performReset)
 		.put('/auth/tfa', util.authorized, getTFA, enableTFA)
 		.delete('/auth/tfa', util.authorized, getTFA, disableTFA)
 		.get('/auth/tfa', util.authorized, getTFA, checkTFAEnabled)
@@ -104,7 +107,7 @@ function doLogin (req, res) {
 
 	var authDetail = req.body.auth.toLowerCase();
 	var authMethod = isEmail ? "email" : "usernameLowercase";
-	
+
 	var query = {
 		disabled: false
 	};
@@ -243,9 +246,10 @@ function doRegister (req, res) {
 		emailVerification.generateCode(function(code) {
 			emailVerification.save();
 
-			user.sendEmail('NodeGear Registrations <registration@nodegear.com>', 'Confirm Your NodeGear Account', 'emails/register.jade', {
+			user.sendEmail('NodeGear Registrations <registration@nodegear.com>', 'Confirm Your NodeGear Account', 'emails/forgot.jade', {
 				user: user,
-				code: code
+				code: code,
+				host: req.host
 			});
 			user.save();
 			
@@ -310,6 +314,143 @@ function doVerifyEmail (req, res) {
 			status: 200,
 			message: "Email Verified."
 		});
+	});
+}
+
+function doForgot (req, res) {
+	var auth = req.body.auth;
+	var code = req.body.code;
+
+	var isEmail = false;
+
+	try {
+		require('validator').check(req.body.auth).isEmail();
+		isEmail = true;
+	} catch (e) {
+		// not an email
+	}
+
+	if (auth.length <= 4) {
+		res.send({
+			status: 400,
+			message: "Invalid Username/Email Supplied."
+		});
+
+		return;
+	}
+
+	var authDetail = req.body.auth.toLowerCase();
+	var authMethod = isEmail ? "email" : "usernameLowercase";
+
+	var query = {
+		disabled: false
+	};
+	query[authMethod] = authDetail;
+
+	models.User.findOne(query, function(err, user) {
+		if (err) {
+			throw err;
+		}
+
+		res.send({
+			status: 200,
+			message: ""
+		});
+
+		if (!user) {
+			return;
+		}
+
+		var forgot = new models.ForgotNotification({
+			user: user._id,
+			email: user.email
+		});
+		forgot.generateCode(function(code) {
+			forgot.save();
+
+			user.sendEmail('NodeGear User Daemon <users@nodegear.com>', 'NodeGear Password Reset', 'emails/forgot.jade', {
+				user: user,
+				code: code,
+				host: req.host
+			});
+		});
+	});
+}
+
+function showForgot (req, res) {
+	var code = req.query.code;
+
+	if (!code) {
+		res.redirect('/');
+		return;
+	}
+
+	models.ForgotNotification.findOne({
+		code: code,
+		used: false,
+		created: {
+			$gte: Date.now() - (60 * 60 * 1000) // now - 1hr in ms
+		}
+	}, function(err, forgotNotification) {
+		if (err) {
+			throw err;
+		}
+
+		if (!forgotNotification) {
+			res.redirect('/');
+			return;
+		}
+
+		res.render('auth/forgotReset', {
+			code: forgotNotification.code
+		})
+	});
+}
+
+function performReset (req, res) {
+	var code = req.body.code;
+
+	if (!code) {
+		res.redirect('/');
+		return;
+	}
+
+	models.ForgotNotification.findOne({
+		code: code,
+		used: false,
+		created: {
+			$gte: Date.now() - (60 * 60 * 1000) // now - 1hr in ms
+		}
+	}).populate('user').exec(function(err, forgotNotification) {
+		if (err) {
+			throw err;
+		}
+
+		if (!forgotNotification) {
+			res.redirect('/');
+			return;
+		}
+
+		if (!req.body.password || req.body.password < 4) {
+			res.render('auth/forgotReset', {
+				code: forgotNotification.code
+			});
+
+			return;
+		}
+
+		forgotNotification.user.setPassword(req.body.password);
+		forgotNotification.user.sendEmail('NodeGear User Daemon <users@nodegear.com>', 'NodeGear Password Reset Complete', 'emails/forgotComplete.jade', {
+			user: forgotNotification.user,
+			host: req.host
+		});
+
+		forgotNotification.user.save();
+		forgotNotification.used = true;
+		forgotNotification.usedDate = Date.now();
+		forgotNotification.save();
+
+		res.redirect('/');
 	});
 }
 

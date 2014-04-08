@@ -16,15 +16,18 @@ define([
 		$stateProvider
 		.state('gettingStarted', {
 			url: '/',
+			pageTitle: 'Getting Started',
 			templateUrl: "/gettingStarted?partial=true"
 		})
 		.state('analytics', {
 			url: '/analytics',
+			pageTitle: 'Analytics',
 			templateUrl: "/analytics?partial=true"
 		})
 		
 		.state('logout', {
 			url: '/logout',
+			pageTitle: 'Log Out',
 			controller: function($scope) {
 				window.location = "/logout&no_router";
 			}

@@ -1,7 +1,6 @@
 define([
 	'angular',
-	'../app',
-	'./tfa'
+	'../app'
 ], function(angular, app) {
 	app.controller('VerifyEmailController', function($scope, $http) {
 		$scope.status = "";
@@ -11,6 +10,13 @@ define([
 
 		$scope.init = function (csrf) {
 			$scope.csrf = csrf;
+
+			$scope.status = "Loading...";
+			$http.get('/profile/profile').success(function(data, status) {
+				$scope.status = "We sent a token to "+data.user.email+".";
+			}).error(function(data) {
+
+			})
 		}
 
 		$scope.$watch('code', function() {
@@ -22,7 +28,7 @@ define([
 		})
 	
 		$scope.verify = function() {
-			$scope.status = "Verifying.."
+			$scope.status = "Authenticating TFA.."
 			
 			$http.post('/auth/verifyEmail', {
 				_csrf: $scope.csrf,

@@ -13,6 +13,7 @@ var express = require('express')
 	, socketPassport = require('passport.socketio')
 	, redis = require("redis")
 	, backend = redis.createClient()
+	, toobusy = require('toobusy')
 
 var app = exports.app = express();
 
@@ -80,6 +81,22 @@ if (!process.env.NG_TEST) {
 }
 app.use(express.limit('30mb')); // File upload limit
 app.use("/", express.static(path.join(__dirname, 'public'))); // serve static files
+// Toobusy middleware..
+app.use(function(req, res, next) {
+	if (toobusy()) {
+		res.format({
+			html: function() {
+				res.status(503);
+				res.render('too_busy');
+			},
+			json: function() {
+				res.send(503, "");
+			}
+		});
+	} else {
+		next();
+	}
+});
 app.use(express.bodyParser()); // Parse the request body
 app.use(express.multipart());
 app.use(express.cookieParser()); // Parse cookies from header

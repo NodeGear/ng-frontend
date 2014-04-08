@@ -18,7 +18,7 @@
 			li
 				a(href="#package") Update
 				|  your <code>package.json</code> to match our requirements
-			li Push to <code>git@nodegear.com:#{user.email}/myrepository.git</code>
+			li Push to <code>git@nodegear.io:#{user.username}/myrepository.git</code>
 				ul
 					li Please replace <code>myrepository</code> with the name of your project. Prior to pushing to the remote depository, make sure your package.json is valid.
 					li Watch the output of the <code>git push</code> command. It may tell you useful information regarding your app.
@@ -42,11 +42,13 @@
 		h4 Why these are required
 		p We have to know how to launch your app and what web requests go to your application. We have plans to make them optional and enable you to set them from your control panel.
 		h2#dns DNS Settings
-		p You automatically receive a subdomain on <code>X.app.nodegear.com</code>. However, it is recommended you have your own domain name routed to your application. To do that, create A records in your DNS provider and enter the following records (depending on the location of your application):
+		p You automatically receive a subdomain on <code>X.ngapp.io</code>. However, it is recommended you have your own domain name routed to your application. To do that, create <code>CNAME</code>/<code>A</code> records in your DNS provider and enter the following records (depending on the location of your application):
 		p: small <strong>Note:</strong> The Current Default geographical location for all apps is <strong>Canada</strong>. As our infrastructure grows, you will have a wide choice of servers to deploy to.
 		dl.dl-horizontal
 			dt Canada
-			dd 198.50.168.250
+			dd CNAME ngapp.io
+			dd A 198.50.168.250
+			dd AAAA (coming soon)
 			dt France
 			dd Not there yet
 			dt Amsterdam

@@ -1,0 +1,15 @@
+h3 Password Reset for #{ user.name }
+
+p You've requested a password reset for your account. If this wasn't you, please delete this email.
+p To Reset your account's password, please click on the link below.
+
+p Click to 
+	a(href="http://#{host}/auth/forgot?code=#{code}") reset
+	|  your account's password.
+
+p Note that this code is only valid for 1 hour since the request was made.
+
+p Thanks,
+	br
+	| NodeGear
+p Note: You are receiving this email because you signed up for NodeGear. To Unsubscribe, please visit your account, or contact us at info@nodegear.com.

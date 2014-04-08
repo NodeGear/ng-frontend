@@ -6,6 +6,7 @@ define([
 	app.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
 		$stateProvider.state('tickets', {
 			url: '/tickets',
+			pageTitle: 'Support Tickets',
 			abstract: true,
 			controller: 'TicketsController',
 			resolve: {
@@ -23,10 +24,12 @@ define([
 		})
 		.state('tickets.tickets', {
 			url: '',
+			pageTitle: 'Support Tickets',
 			templateUrl: "/tickets/tickets?partial=true"
 		})
 		.state('tickets.add', {
 			url: '/add',
+			pageTitle: 'Create Support Ticket',
 			templateUrl: "/tickets/add?partial=true",
 			controller: "TicketController",
 			resolve: {
@@ -39,6 +42,7 @@ define([
 		})
 		.state('tickets.ticket', {
 			url: '/:id',
+			pageTitle: 'Support Ticket',
 			templateUrl: "/tickets/ticket?partial=true",
 			controller: "TicketController",
 			resolve: {

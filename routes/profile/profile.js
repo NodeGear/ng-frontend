@@ -8,7 +8,7 @@ var mongoose = require('mongoose')
 
 exports.router = function (app) {
 	app.get('/profile', util.authorized, viewProfile)
-		.get('/profile/profile', util.authorized, getProfile)
+		.get('/profile/profile', util.authorizedPassEmail, getProfile)
 		.put('/profile/profile', util.authorized, updateProfile)
 	
 	sshkeys.router(app)

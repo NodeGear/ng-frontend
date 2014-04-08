@@ -14,7 +14,7 @@ define([
 		$scope.setCsrf = function (csrf) {
 			$scope.csrf = csrf;
 		}
-	
+		
 		$scope.authenticate = function(user) {
 			$scope.status = "Authenticating.."
 		

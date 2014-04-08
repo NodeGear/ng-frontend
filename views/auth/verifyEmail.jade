@@ -7,9 +7,11 @@
 				fieldset
 					p.text-center(ng-show="status.length > 0") {{status}}
 					.form-group
-						input.form-control(placeholder="Email Verification Token" type="text" required maxlength="6" ng-model="code" ng-style="{ 'text-transform': codeTextTransform }")
+						input.form-control(placeholder="Email Verification Token" type="text" required maxlength="6" ng-model="code" ng-style="{ 'text-transform': codeTextTransform }" autofocus)
 					.form-group
 						button.btn.btn-lg.btn-success.btn-block(ng-disabled="confirmEmail.$invalid" ng-click="verify()")
 							i.fa.fa-key.fa-fw
 							|  Confirm
-	a.btn.btn-link.btn-block(href="/logout&no_router") Cancel Registration
+	p.text-muted If you're having trouble with the email, please let us know at 
+						a.text-muted(href="mailto:support@nodegear.com") support@nodegear.com
+	a.btn.btn-link.btn-block(href="/logout&no_router") Cancel Verification

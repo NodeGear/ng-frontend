@@ -183,7 +183,7 @@ userSchema.methods.createIDs = function() {
 				})
 			}
 		}, function(err, results) {
-			if (uid < 500 || gid < 500) {
+			if (results.uid < 500 || results.gid < 500) {
 				console.log("UID|GID < 500, dangerous by my standards..");
 				bugsnag.notify("UID|GID < 500, dangerous by my standards..")
 				return;

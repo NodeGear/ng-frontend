@@ -1,40 +1,28 @@
 define([
 	'angular',
-	'../app',
-	'./tfa'
+	'../app'
 ], function(angular, app) {
 	app.controller('ForgotController', function($scope, $http, $rootScope) {
 		$scope.status = "";
-		$scope.user = {
-			email: "",
-			password: ""
-		};
+		$scope.authDetail = "";
 		$scope.csrf = "";
+		$scope.authDetailDisabled = false;
 	
 		$scope.setCsrf = function (csrf) {
 			$scope.csrf = csrf;
 		}
 	
-		$scope.authenticate = function(user) {
-			$scope.status = "Authenticating.."
-		
-			var pwd = user.password;
-			user.password = "";
-		
-			$http.post('/auth/password', {
+		$scope.submitForgot = function() {
+			$scope.status = "Loading.."
+
+			$http.post('/auth/forgot', {
 				_csrf: $scope.csrf,
-				email: user.email,
-				password: pwd
+				auth: $scope.authDetail
 			}).success(function(data, status) {
 				if (data.status == 200) {
-					if (data.tfa) {
-						// Requires tfa..
-						$rootScope.showTFA = data.tfa;
-						return;
-					}
-				
-					$scope.status = "Login Successful"
-					window.location = "/";
+					$scope.status = "Thanks, we've sent an email to the user matching the details provided."
+					$scope.authDetail = "";
+					$scope.authDetailDisabled = true;
 				} else {
 					$scope.status = data.message;
 				}
