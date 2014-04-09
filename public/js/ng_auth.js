@@ -3,7 +3,6 @@ var conf = {
 };
 
 require.config({
-   baseUrl: '/js/'+conf.version,
 	paths: {
 		angular: 'vendor/angular',
 		uiRouter: 'vendor/angular-ui-router',

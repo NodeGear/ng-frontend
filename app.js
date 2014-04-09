@@ -161,6 +161,8 @@ app.use(function(req, res, next) {
 	
 	res.locals.version = config.version;
 	res.locals.versionHash = config.hash;
+
+	res.locals.cdn = (config.cdn && config.cdn.enabled) ? config.cdn.url : "";
 	
 	next();
 });

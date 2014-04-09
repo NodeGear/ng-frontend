@@ -1,5 +1,5 @@
 module.exports = function(grunt) {
-	var files = ['package.json', 'public/js/ng.js', 'public/js/ng_auth.js'];
+	var files = ['package.json'];
 
 	grunt.initConfig({
 		pkg: grunt.file.readJSON('package.json'),

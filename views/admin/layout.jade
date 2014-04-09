@@ -11,9 +11,9 @@ html(ng-app="nodeGearAdmin")
 		
 		//- all css goes here
 		block css
-			link(rel="stylesheet" href="/css/#{version}/bootstrap.min.css")
-			link(rel="stylesheet" href="/css/#{version}/bootstrap-theme.min.css")
-			link(rel="stylesheet" href="/css/#{version}/font-awesome.min.css")
+			link(rel="stylesheet" href="#{cdn}/css/#{version}/bootstrap.min.css")
+			link(rel="stylesheet" href="#{cdn}/css/#{version}/bootstrap-theme.min.css")
+			link(rel="stylesheet" href="#{cdn}/css/#{version}/font-awesome.min.css")
 
 	body
 		include ../inc/flash
@@ -73,14 +73,14 @@ html(ng-app="nodeGearAdmin")
 							br
 		
 		block js
-			script(src="/js/#{version}/jquery.min.js" defer)
-			script(src="/js/#{version}/bootstrap.min.js" defer)
-			script(src="/js/#{version}/jquery.metisMenu.js" defer)
-			script(src="/js/#{version}/sb-admin.js" defer)
-			script(src="/js/#{version}/angular.min.js" defer)
-			script(src="/js/#{version}/moment.min.js" defer)
-			script(src="/js/#{version}/highcharts.js" defer)
-			script(src="/js/#{version}/angular-admin.js" defer)
+			script(src="#{cdn}/js/#{version}/jquery.min.js" defer)
+			script(src="#{cdn}/js/#{version}/bootstrap.min.js" defer)
+			script(src="#{cdn}/js/#{version}/jquery.metisMenu.js" defer)
+			script(src="#{cdn}/js/#{version}/sb-admin.js" defer)
+			script(src="#{cdn}/js/#{version}/angular.min.js" defer)
+			script(src="#{cdn}/js/#{version}/moment.min.js" defer)
+			script(src="#{cdn}/js/#{version}/highcharts.js" defer)
+			script(src="#{cdn}/js/#{version}/angular-admin.js" defer)
 			
 		//- page-specific js
 		block addonjs
