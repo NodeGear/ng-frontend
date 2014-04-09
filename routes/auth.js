@@ -246,7 +246,7 @@ function doRegister (req, res) {
 		emailVerification.generateCode(function(code) {
 			emailVerification.save();
 
-			user.sendEmail('NodeGear Registrations <registration@nodegear.com>', 'Confirm Your NodeGear Account', 'emails/forgot.jade', {
+			user.sendEmail('NodeGear Registrations <registration@nodegear.com>', 'Confirm Your NodeGear Account', 'emails/register.jade', {
 				user: user,
 				code: code,
 				host: req.host
