@@ -1,10 +1,13 @@
 module.exports = function(grunt) {
+	var files = ['package.json', 'public/js/ng.js', 'public/js/ng_auth.js'];
+
 	grunt.initConfig({
 		pkg: grunt.file.readJSON('package.json'),
 		bump: {
 			options: {
-				files: ['package.json', 'public/js/ng.js', 'public/js/ng_auth.js'],
-				pushTo: "origin"
+				files: files,
+				pushTo: 'origin',
+				commitFiles: files
 			}
 		}
 	});
