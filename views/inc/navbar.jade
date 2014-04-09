@@ -19,10 +19,10 @@ mixin navbar(active)
 								i.fa.fa-caret-down
 							ul.dropdown-menu(ng-cloak)
 								li.dropdown-header(ng-show="apps.length") Online Applications
-								li(ng-repeat="a in apps | filter:{ a.isRunning: true }" ng-class="{ active: app._id == a._id }")
+								li(ng-repeat="a in apps | filter:{ isRunning: true }" ng-class="{ active: app._id == a._id }")
 									a(ui-sref="app.dashboard({id:a._id})") {{ a.name }}
 								li.dropdown-header(ng-show="apps.length") Offline Applications
-								li(ng-repeat="a in apps | filter:{ a.isRunning: false }" ng-class="{ active: app._id == a._id }")
+								li(ng-repeat="a in apps | filter:{ isRunning: false }" ng-class="{ active: app._id == a._id }")
 									a(ui-sref="app.dashboard({id:a._id})") {{ a.name }}
 								
 								li.dropdown-header(ng-hide="apps.length")

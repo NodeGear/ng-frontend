@@ -3,7 +3,7 @@
 		h1.page-header Application Logs
 			.btn-group.pull-right
 				a.btn.btn-default.btn-md(ng-click="watchLog(log)" title="Stream Log File")
-					i.fa.fa-fw(ng-class="{ 'fa-eye-slash': log.watching, 'fa-eye': !log.watching }")
+					i.fa.fa-fw(ng-class="{ 'fa-eye-slash': !log.watching, 'fa-eye': log.watching }")
 				a.btn.btn-success.btn-md(ng-disabled="log == null", target="_blank", href="/app/"+app._id+"/log/{{ log._id }}/download?partial=true")
 					i.fa.fa-download.fa-fw
 					|  Download Selected
