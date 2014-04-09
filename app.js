@@ -77,6 +77,10 @@ app.set('view cache', true); // Cache views
 app.set('app version', config.version); // App version
 app.locals.pretty = process.env.NODE_ENV != 'production' // Pretty HTML outside production mode
 
+if (!process.env.NG_TEST) {
+	app.use(express.logger('dev')); // Pretty log
+}
+
 app.use(monitor());
 
 // Toobusy middleware..
@@ -102,9 +106,6 @@ app.use(function(req, res, next) {
 });
 
 app.use(bugsnag.requestHandler);
-if (!process.env.NG_TEST) {
-	app.use(express.logger('dev')); // Pretty log
-}
 app.use(express.limit('30mb')); // File upload limit
 app.use(staticVersioning());
 app.use(function(req, res, next) {
