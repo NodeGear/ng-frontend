@@ -14,6 +14,7 @@ var express = require('express')
 	, redis = require("redis")
 	, backend = redis.createClient()
 	, toobusy = require('toobusy')
+	, staticVersioning = require('./staticVersioning')
 
 var app = exports.app = express();
 
@@ -75,14 +76,13 @@ app.set('view cache', true); // Cache views
 app.set('app version', config.version); // App version
 app.locals.pretty = process.env.NODE_ENV != 'production' // Pretty HTML outside production mode
 
-app.use(bugsnag.requestHandler);
-if (!process.env.NG_TEST) {
-	app.use(express.logger('dev')); // Pretty log
-}
-app.use(express.limit('30mb')); // File upload limit
-app.use("/", express.static(path.join(__dirname, 'public'))); // serve static files
 // Toobusy middleware..
 app.use(function(req, res, next) {
+	if (process.env.NODE_ENV != 'production') {
+		next();
+		return;
+	}
+
 	if (toobusy()) {
 		res.format({
 			html: function() {
@@ -97,6 +97,20 @@ app.use(function(req, res, next) {
 		next();
 	}
 });
+
+app.use(bugsnag.requestHandler);
+if (!process.env.NG_TEST) {
+	app.use(express.logger('dev')); // Pretty log
+}
+app.use(express.limit('30mb')); // File upload limit
+app.use(staticVersioning());
+app.use(function(req, res, next) {
+	res.set('X-Powered-By', 'NodeGear');
+	next();
+})
+app.use("/", express.static(path.join(__dirname, 'public'), {
+	maxAge: 7 * 24 * 60 * 60
+})); // serve static files
 app.use(express.bodyParser()); // Parse the request body
 app.use(express.multipart());
 app.use(express.cookieParser()); // Parse cookies from header
@@ -175,8 +189,6 @@ io.set('authorization', socketPassport.authorize({
 	store: sessionStore,
 	passport: passport,
 	fail: function(data, message, error, accept) {
-		bugsnag.notify(error);
-		
 		accept(false);
 	}
 }))

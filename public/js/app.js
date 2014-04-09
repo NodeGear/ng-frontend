@@ -12,7 +12,7 @@ define([
 
 			$rootScope.$on('$stateChangeStart', function (event, toState, toParams, fromState, fromParams) { 
 				if (toState.pageTitle) {
-					$rootScope.pageTitle = "Loading.. " + toState.pageTitle;
+					$rootScope.pageTitle = "Loading " + toState.pageTitle;
 				} else {
 					$rootScope.pageTitle = "Loading..";
 				}

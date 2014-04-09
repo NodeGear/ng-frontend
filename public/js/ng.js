@@ -1,5 +1,9 @@
+var conf = {
+	version: "0.3.1"
+};
+
 require.config({
-   baseUrl: '/js',
+   baseUrl: '/js/'+conf.version,
 	paths: {
 		angular: 'vendor/angular',
 		uiRouter: 'vendor/angular-ui-router',

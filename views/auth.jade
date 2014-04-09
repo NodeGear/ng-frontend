@@ -9,10 +9,10 @@ html
 		link(href="/favicon.ico" type="image/x-icon" rel="icon")
 		link(href="/favicon.ico" type="image/x-icon" rel="shortcut icon")
 		
-		link(rel="stylesheet" href="/css/bootstrap.min.css")
-		link(rel="stylesheet" href="/css/bootstrap-theme.min.css")
-		link(rel="stylesheet" href="/css/font-awesome.min.css")
-		link(rel="stylesheet" href="/css/nodegear.css")
+		link(rel="stylesheet" href="/css/#{version}/bootstrap.min.css")
+		link(rel="stylesheet" href="/css/#{version}/bootstrap-theme.min.css")
+		link(rel="stylesheet" href="/css/#{version}/font-awesome.min.css")
+		link(rel="stylesheet" href="/css/#{version}/nodegear.css")
 
 	body(style="background-color:#fff;")
 		include inc/navbar
@@ -36,4 +36,4 @@ html
 							span.text-muted v#{version}-##{versionHash}
 						br
 		
-		script(src="/js/vendor/require.min.js" data-main="/js/ng_auth.js")
+		script(src="/js/#{version}/vendor/require.min.js" data-main="/js/#{version}/ng_auth.js")

@@ -11,10 +11,10 @@ html
 		
 		//- all css goes here
 		block css
-			link(rel="stylesheet" href="/css/bootstrap.min.css")
-			link(rel="stylesheet" href="/css/bootstrap-theme.min.css")
-			link(rel="stylesheet" href="/css/font-awesome.min.css")
-			link(rel="stylesheet" href="/css/nodegear.css")
+			link(rel="stylesheet" href="/css/#{version}/bootstrap.min.css")
+			link(rel="stylesheet" href="/css/#{version}/bootstrap-theme.min.css")
+			link(rel="stylesheet" href="/css/#{version}/font-awesome.min.css")
+			link(rel="stylesheet" href="/css/#{version}/nodegear.css")
 
 	body
 		include inc/navbar
@@ -46,7 +46,7 @@ html
 							br
 		
 		block js
-			script(src="/js/vendor/require.min.js" data-main="/js/ng.js")
+			script(src="/js/#{version}/vendor/require.min.js" data-main="/js/ng.js")
 			
 		//- page-specific js
 		block addonjs
