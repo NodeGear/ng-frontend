@@ -2,7 +2,7 @@
 
 var config = require('./config');
 var models = require('./models');
-var toobusy = require('toobusy');
+var toobusy = require('toobusy-js');
 
 module.exports = function() {
 	var self = this;

@@ -13,7 +13,7 @@ var express = require('express')
 	, socketPassport = require('passport.socketio')
 	, redis = require("redis")
 	, backend = redis.createClient()
-	, toobusy = require('toobusy')
+	, toobusy = require('toobusy-js')
 	, staticVersioning = require('./staticVersioning')
 	, monitor = require('./monitor')
 
