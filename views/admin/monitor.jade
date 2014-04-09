@@ -11,21 +11,27 @@ block content
 					tr
 						th UNIX Timestamp
 						th # Reqs
-						th Average (Byte)
-						th Min (Byte)
-						th Max (Byte)
-						th Total (Byte)
-						th Average (ms)
-						th Min (ms)
-						th Max (ms)
+						th Average ms
+						th Min ms
+						th Max ms
+						th Avg Loop Lag
+						th Min Loop Lag
+						th Max Loop Lag
+						th Average Bytes
+						th Min Bytes
+						th Max Bytes
+						th Total Bytes
 				tbody
 					tr(ng-repeat="perf in perfs")
 						td {{ perf._id }}
 						td {{ perf.totalRequests }}
+						td {{ perf.averageResponse }}
+						td {{ perf.responseMin }}
+						td {{ perf.responseMax }}
+						td {{ perf.lagAverage }}
+						td {{ perf.lagMin }}
+						td {{ perf.lagMax }}
 						td {{ perf.averageLength }}
 						td {{ perf.minLength }}
 						td {{ perf.maxLength }}
 						td {{ perf.totalLength }}
-						td {{ perf.averageResponse }}
-						td {{ perf.responseMin }}
-						td {{ perf.responseMax }}

@@ -24,6 +24,15 @@ setInterval(function() {
 		totalRequests: {
 			$sum: 1
 		},
+		lagAverage: {
+			$avg: '$lag'
+		},
+		lagMin: {
+			$min: '$lag'
+		},
+		lagMax: {
+			$max: '$lag'
+		},
 		averageLength: {
 			$avg: '$responseLength'
 		},
