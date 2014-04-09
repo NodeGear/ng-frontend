@@ -1,5 +1,5 @@
 doctype
-html(ng-app="nodeGearAdmin")
+html(ng-app="nodegear")
 	head
 		meta(http-equiv="Content-Type", content="text/html; charset=utf-8;")
 		meta(name="_csrf", content="#{token}")
@@ -59,6 +59,9 @@ html(ng-app="nodeGearAdmin")
 							a(href="/admin/paymentMethods") Payment Methods
 						li
 							a(href="/admin/transactions") Transactions
+						li.divider
+						li
+							a(href="/admin/performance") System Performance
 			
 			#page-wrapper
 				block content
@@ -73,14 +76,13 @@ html(ng-app="nodeGearAdmin")
 							br
 		
 		block js
-			script(src="#{cdn}/js/#{version}/jquery.min.js" defer)
-			script(src="#{cdn}/js/#{version}/bootstrap.min.js" defer)
-			script(src="#{cdn}/js/#{version}/jquery.metisMenu.js" defer)
-			script(src="#{cdn}/js/#{version}/sb-admin.js" defer)
-			script(src="#{cdn}/js/#{version}/angular.min.js" defer)
-			script(src="#{cdn}/js/#{version}/moment.min.js" defer)
-			script(src="#{cdn}/js/#{version}/highcharts.js" defer)
-			script(src="#{cdn}/js/#{version}/angular-admin.js" defer)
+			script(src="#{cdn}/js/#{version}/vendor/jquery.js" defer)
+			script(src="#{cdn}/js/#{version}/vendor/bootstrap.js" defer)
+			script(src="#{cdn}/js/#{version}/vendor/sb-admin.js" defer)
+			script(src="#{cdn}/js/#{version}/vendor/angular.js" defer)
+			script(src="#{cdn}/js/#{version}/vendor/moment.js" defer)
+			script(src="/socket.io/socket.io.js" defer)
+			script(src="#{cdn}/js/#{version}/controllers/admin.js" defer)
 			
 		//- page-specific js
 		block addonjs

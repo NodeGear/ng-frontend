@@ -10,5 +10,6 @@ module.exports = {
 	PaymentMethod: require('./PaymentMethod'),
 	TFA: require('./TFA'),
 	EmailVerification: require('./EmailVerification'),
-	ForgotNotification: require('./ForgotNotification')
+	ForgotNotification: require('./ForgotNotification'),
+	NetworkPerformanceRaw: require('./NetworkPerformanceRaw')
 }

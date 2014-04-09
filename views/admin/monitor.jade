@@ -1,0 +1,31 @@
+extends layout
+
+block content
+	.row
+		.col-lg-12.col-md-12.col-sm-12
+			h1.page-header System Performance..
+	.row(ng-controller="PerformanceController")
+		.col-lg-12.col-md-12.col-sm-12
+			table.table.table-responsive
+				thead
+					tr
+						th UNIX Timestamp
+						th # Reqs
+						th Average (Byte)
+						th Min (Byte)
+						th Max (Byte)
+						th Total (Byte)
+						th Average (ms)
+						th Min (ms)
+						th Max (ms)
+				tbody
+					tr(ng-repeat="perf in perfs")
+						td {{ perf._id }}
+						td {{ perf.totalRequests }}
+						td {{ perf.averageLength }}
+						td {{ perf.minLength }}
+						td {{ perf.maxLength }}
+						td {{ perf.totalLength }}
+						td {{ perf.averageResponse }}
+						td {{ perf.responseMin }}
+						td {{ perf.responseMax }}

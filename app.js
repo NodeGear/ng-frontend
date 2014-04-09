@@ -15,6 +15,7 @@ var express = require('express')
 	, backend = redis.createClient()
 	, toobusy = require('toobusy')
 	, staticVersioning = require('./staticVersioning')
+	, monitor = require('./monitor')
 
 var app = exports.app = express();
 
@@ -75,6 +76,8 @@ app.set('view engine', 'jade'); // Templating engine
 app.set('view cache', true); // Cache views
 app.set('app version', config.version); // App version
 app.locals.pretty = process.env.NODE_ENV != 'production' // Pretty HTML outside production mode
+
+app.use(monitor());
 
 // Toobusy middleware..
 app.use(function(req, res, next) {
@@ -163,7 +166,7 @@ app.use(function(req, res, next) {
 	res.locals.versionHash = config.hash;
 
 	res.locals.cdn = (config.cdn && config.cdn.enabled) ? config.cdn.url : "";
-	
+
 	next();
 });
 
@@ -197,7 +200,7 @@ io.set('authorization', socketPassport.authorize({
 io.set('log level', 1);
 
 io.sockets.on('connection', function(socket) {
-	routes.socket(socket)
+	routes.socket(socket);
 	
 	socket.on('disconnect', function() {
 		routes.socketDisconnect(this)

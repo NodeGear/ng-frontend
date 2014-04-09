@@ -2,7 +2,7 @@
 exports.router = function (app) {
 	app.get('/admin', renderAdmin)
 	
-	var routes = ['./users', './apps', './tickets', './paymentMethods', './transactions']
+	var routes = ['./users', './apps', './tickets', './paymentMethods', './transactions', './requests']
 	routes.forEach(function(route) {
 		require(route).router(app);
 	});
