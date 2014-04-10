@@ -1,5 +1,5 @@
 var mongoose = require('mongoose')
-	, models = require('../../models')
+	, models = require('ng-models')
 	, fs = require('fs')
 	, config = require('../../config')
 	, drone = require('./drone')

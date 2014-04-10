@@ -16,6 +16,7 @@ var express = require('express')
 	, toobusy = require('toobusy-js')
 	, staticVersioning = require('./staticVersioning')
 	, monitor = require('./monitor')
+	, models = require('ng-models').init(mongoose, config)
 
 var app = exports.app = express();
 

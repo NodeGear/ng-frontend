@@ -1,5 +1,5 @@
 var mongoose = require('mongoose')
-	, models = require('../../models')
+	, models = require('ng-models')
 	, fs = require('fs')
 	, config = require('../../config')
 	, drone = require('./drone')
@@ -48,7 +48,7 @@ function getApp (req, res, next) {
 	}
 	
 	// get drone details
-	models.Drone.getDroneById(id, function(drone) {
+	models.App.getDroneById(id, function(drone) {
 		if (drone == null || (req.user.admin != true && !drone.user.equals(req.user._id))) {
 			res.send(404);
 			return;

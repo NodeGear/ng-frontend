@@ -1,5 +1,5 @@
 var mongoose = require('mongoose')
-	, models = require('../../models')
+	, models = require('ng-models')
 	, config = require('../../config')
 	, util = require('../../util')
 	, stripe = config.stripe

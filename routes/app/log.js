@@ -1,5 +1,5 @@
 var mongoose = require('mongoose')
-	, models = require('../../models')
+	, models = require('ng-models')
 	, fs = require('fs')
 	, config = require('../../config')
 	, drone = require('./drone')
@@ -87,7 +87,7 @@ function watchLog (data) {
 		return;
 	}
 	
-	models.Drone.findOne({
+	models.App.findOne({
 		_id: appId,
 		user: socket.handshake.user._id
 	}, function(err, drone) {

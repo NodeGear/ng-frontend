@@ -29,7 +29,8 @@
     "stripe": "~2.4.2",
     "grunt": "^0.4.4",
     "grunt-bump": "0.0.13",
-    "toobusy-js": "^0.3.0"
+    "toobusy-js": "^0.3.0",
+    "ng-models": "git+ssh://git@lab.castawaydev.org:nodecloud/ng-models.git"
   },
   "devDependencies": {
     "should": "^3.1.4",

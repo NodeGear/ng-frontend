@@ -1,5 +1,5 @@
 var mongoose = require('mongoose')
-	, models = require('../../models')
+	, models = require('ng-models')
 	, fs = require('fs')
 	, config = require('../../config')
 	, drone = require('./drone')
@@ -25,7 +25,7 @@ exports.socketDisconnect = function (socket) {
 function getApps (req, res, next) {
 	var self = this;
 	
-	models.Drone.getDronesByUserId(req.user._id, function(drones) {
+	models.App.getDronesByUserId(req.user._id, function(drones) {
 		res.locals.apps = drones;
 		
 		next();
@@ -85,7 +85,7 @@ function doAddApp (req, res) {
 	}
 	
 	// Create a new drone..
-	var drone = new models.Drone({
+	var drone = new models.App({
 		name: name,
 		user: req.user._id,
 		env: [{

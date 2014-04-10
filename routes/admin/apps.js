@@ -1,4 +1,4 @@
-var models = require('../../models')
+var models = require('ng-models')
 
 exports.router = function (app) {
 	app.get('/admin/apps', getApps)
@@ -6,7 +6,7 @@ exports.router = function (app) {
 }
 
 function getApps (req, res) {
-	models.Drone.find({}).populate('user').exec(function(err, apps) {
+	models.App.find({}).populate('user').exec(function(err, apps) {
 		res.locals.apps = apps;
 		
 		res.render('admin/apps')
@@ -16,7 +16,7 @@ function getApps (req, res) {
 function getApp (req, res, next) {
 	var id = req.params.id;
 	
-	models.Drone.findById(id).populate('user').exec(function(err, app) {
+	models.App.findById(id).populate('user').exec(function(err, app) {
 		res.locals.app = app;
 		next();
 	})

@@ -1,4 +1,4 @@
-var models = require('../../models')
+var models = require('ng-models')
 
 exports.router = function (app) {
 	app.get('/admin/transactions', getTransactions)

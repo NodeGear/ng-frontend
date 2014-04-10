@@ -4,7 +4,7 @@ var app = require('../app');
 var request = require('supertest').agent(app.app)
 
 var should = require('should')
-	, models = require('../models')
+	, models = require('ng-models')
 
 describe('Authentication', function() {
 	var password, user;

@@ -39,14 +39,6 @@ exports.redis_key = credentials.redis_key;
 exports.stripe_keys = credentials.stripe_keys
 exports.stripe = stripe(exports.stripe_keys.secret);
 
-exports.db_options = {
-	auto_reconnect: true,
-	native_parser: true,
-	server: {
-		auto_reconnect: true
-	}
-};
-
 exports.db = credentials.db;
 exports.networkDb = credentials.networkDb;
 

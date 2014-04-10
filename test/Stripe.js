@@ -6,7 +6,7 @@ var request = require('supertest').agent(app.app)
 var stripe = require('../config').stripe
 
 var should = require('should')
-	, models = require('../models')
+	, models = require('ng-models')
 
 describe('Stripe & Payment', function() {
 	var password, user;

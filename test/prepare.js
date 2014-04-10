@@ -3,7 +3,7 @@ var app = require('../app');
 var request = require('supertest').agent(app.app)
 
 var should = require('should'),
-	models = require('../models')
+	models = require('ng-models')
 
 if (!process.env.NG_TEST) {
 	console.log("\nNot in TEST environment. Please export NG_TEST variable\n");
@@ -17,7 +17,7 @@ it('clean the database', function(done) {
 			models.Analytic.remove(cb)
 		},
 		function(cb) {
-			models.Drone.remove(cb)
+			models.App.remove(cb)
 		},
 		function(cb) {
 			models.Event.remove(cb)

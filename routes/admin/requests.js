@@ -1,4 +1,4 @@
-var models = require('../../models')
+var models = require('ng-models')
 var app = require('../../app')
 
 exports.router = function (app) {

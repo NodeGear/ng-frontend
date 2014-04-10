@@ -1,5 +1,5 @@
 var mongoose = require('mongoose')
-	, models = require('../../models')
+	, models = require('ng-models')
 	, config = require('../../config')
 	, util = require('../../util')
 
@@ -100,7 +100,7 @@ function createTicket (req, res) {
 			return cb(errs);
 		}
 		
-		models.Drone.findOne({
+		models.App.findOne({
 			_id: id,
 			user: req.user._id
 		}, function(err, drone) {

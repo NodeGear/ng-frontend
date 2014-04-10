@@ -1,7 +1,7 @@
 // Inspiration: http://www.senchalabs.org/connect/logger.html, newrelic & co.
 
 var config = require('./config');
-var models = require('./models');
+var models = require('ng-models');
 var toobusy = require('toobusy-js');
 
 module.exports = function() {

@@ -1,5 +1,5 @@
 var passport = require('passport')
-	, models = require('./models')
+	, models = require('ng-models')
 
 passport.serializeUser(function(user, done) {
 	done(null, user._id);

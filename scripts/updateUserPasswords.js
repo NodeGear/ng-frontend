@@ -1,5 +1,5 @@
 require('../app')
-var models = require('../models')
+var models = require('ng-models')
 var async = require('async')
 
 // Warning Do NOT execute twice, as it would render all users' passwords unusable.

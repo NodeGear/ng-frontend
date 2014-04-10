@@ -1,5 +1,5 @@
 var passport = require('passport')
-	, models = require('../models')
+	, models = require('ng-models')
 	, Validator = require('validator').Validator
 	, buildFlash = require('../util').buildFlash
 	, util = require('../util')
