@@ -1,44 +1,30 @@
 var mongoose = require('mongoose')
-	, schema = mongoose.Schema
-	, ObjectId = schema.ObjectId
+	, ObjectId = mongoose.Schema.ObjectId
 	, Usage = require('./Usage')
 	, async = require('async')
 	, ansi2html = new (require('ansi-to-html'))
 	, fs = require('fs')
 
-var droneSchema = schema({
+var schema = mongoose.Schema({
 	name: String,
+	nameUrl: String, //URL-friendly name, such as for git
 	user: {
 		type: ObjectId,
 		ref: "User"
 	},
-	deleted: { type: Boolean, default: false },
-	location: String,
-	isRunning: Boolean,
-	isInstalled: { type: Boolean, default: false },
-	installedOn: String, // label of the nodecloud instance looking after this drone
-	pid: Number,
-	logs: [{
-		created: Date,
-		location: String,
-		content: String
-	}],
-	env: [{
-		name: String,
-		value: String,
-		created: { type: Date, default: Date.now() },
-	}],
-	events: [{
-		type: ObjectId,
-		ref: 'Event'
-	}],
-	domains: [String],
-	subdomain: String,
+	deleted: {
+		type: Boolean,
+		default: false
+	},
 	script: String,
-	processes: { type: Number, default: 1, min: 1 }
+	processes: {
+		type: Number,
+		default: 1,
+		min: 1
+	}
 })
 
-droneSchema.methods.pullDroneDetails = function (cb) {
+schema.methods.pullDroneDetails = function (cb) {
 	var self = this;
 	
 	async.parallel({
@@ -54,7 +40,7 @@ droneSchema.methods.pullDroneDetails = function (cb) {
 	})
 }
 
-droneSchema.methods.getLog = function (log, length, parse, cb) {
+schema.methods.getLog = function (log, length, parse, cb) {
 	if (typeof length === "function") {
 		cb = length;
 		length = 100;
@@ -116,7 +102,7 @@ droneSchema.methods.getLog = function (log, length, parse, cb) {
 	})
 }
 
-droneSchema.statics.getDronesByUserId = function (userID, cb) {
+schema.statics.getDronesByUserId = function (userID, cb) {
 	if (!userID) {
 		cb([])
 		return;
@@ -131,7 +117,7 @@ droneSchema.statics.getDronesByUserId = function (userID, cb) {
 		})
 }
 
-droneSchema.statics.getDroneById = function (id, cb) {
+schema.statics.getDroneById = function (id, cb) {
 	module.exports.findById(id)
 		.populate('events')
 		.exec(function(err, drone) {
@@ -141,4 +127,4 @@ droneSchema.statics.getDroneById = function (id, cb) {
 	})
 }
 
-module.exports = mongoose.model("Drone", droneSchema);
+module.exports = mongoose.model("App", schema);

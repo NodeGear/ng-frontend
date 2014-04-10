@@ -10,17 +10,16 @@ function getPerformance (req, res) {
 }
 
 setInterval(function() {
-	var now = new Date;
+	var now = Math.round(new Date / 1000) - 1;
 
 	models.NetworkPerformanceRaw.aggregate(
 		{
 			$match: {
-				seconds: Math.round(now / 1000),
-				responseStatus: 200
+				unix_seconds: now
 			}
 		}
 	).group({
-		_id: '$seconds',
+		_id: null,
 		totalRequests: {
 			$sum: 1
 		},
@@ -56,16 +55,10 @@ setInterval(function() {
 		}
 	}).exec(function(err, result) {
 		if (err) throw err;
-
-		models.NetworkPerformanceRaw.remove({
-			seconds: {
-				$lte: Math.round(now / 1000)
-			}
-		}, function(err) {
-			if (err) throw err;
-		})
-
+		
 		if (result.length == 0) return;
+		
+		result[0]._id = now;
 		
 		var socks = app.io.sockets.clients();
 		for (var sock in socks) {

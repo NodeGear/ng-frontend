@@ -11,7 +11,6 @@
     "jade": "latest",
     "mongoose": "latest",
     "csv": "latest",
-    "crypto": "latest",
     "async": "latest",
     "validator": "2.1.0",
     "session-mongoose": "latest",
@@ -30,7 +29,7 @@
     "stripe": "~2.4.2",
     "grunt": "^0.4.4",
     "grunt-bump": "0.0.13",
-    "toobusy-js": "*"
+    "toobusy-js": "^0.3.0"
   },
   "devDependencies": {
     "should": "^3.1.4",

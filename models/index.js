@@ -1,15 +1,24 @@
-module.exports = {
-	User: require('./User'),
-	Drone: require('./Drone'),
-	Analytic: require('./Analytic'),
-	Usage: require('./Usage'),
-	PublicKey: require('./PublicKey'),
-	Event: require('./Event'),
-	Ticket: require('./Ticket'),
-	Transaction: require('./Transaction'),
-	PaymentMethod: require('./PaymentMethod'),
-	TFA: require('./TFA'),
-	EmailVerification: require('./EmailVerification'),
-	ForgotNotification: require('./ForgotNotification'),
-	NetworkPerformanceRaw: require('./NetworkPerformanceRaw')
-}
+module.exports = {};
+
+[
+	'Analytic',
+	'App',
+	'AppDomain',
+	'AppEnvironment',
+	'AppEvent',
+	'AppLog',
+	'AppProcess',
+	'EmailVerification',
+	'ForgotNotification',
+	'NetworkPerformanceRaw',
+	'PaymentMethod',
+	'PublicKey',
+	'Server',
+	'TFA',
+	'Ticket',
+	'Transaction',
+	'Usage',
+	'User'
+].forEach(function(model) {
+	module.exports[model] = require('./'+model);
+});

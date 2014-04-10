@@ -48,15 +48,17 @@ exports.db_options = {
 };
 
 exports.db = credentials.db;
-	
+exports.networkDb = credentials.networkDb;
+
+exports.db_options = credentials.db_options;
+exports.networkDb_options = credentials.networkDb_options;
+
 exports.port = credentials.port;
 exports.droneLocation = credentials.droneLocation;
 exports.gitolite = credentials.gitolite;
 exports.gitoliteKeys = credentials.gitoliteKeys;
 exports.gitoliteConfig = credentials.gitoliteConfig;
 exports.cdn = credentials.cdn;
-
-exports.db_options = credentials.db_options;
 
 exports.path = __dirname;
 exports.tmp = "/tmp/nodegear/";
