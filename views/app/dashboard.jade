@@ -1,26 +1,43 @@
-div(ng-init="setCsrf('#{token}')")
+div(ng-controller="AppDashboardController" ng-init="setCsrf('#{token}')")
+	h1.page-header {{app.name}} Dashboard
+		.pull-right
+			.btn-group
+				button.btn.btn-md.btn-success(ui-sref="app.dashboard.addProcess({ id: app.nameUrl })") Add Process
+	p.lead You have {{ _app.processes.length }} processes
+	table.table
+		thead
+			tr
+				th.col-md-3.col-lg-3.col-sm-3 Process Name
+				th.col-md-2.col-lg-2.col-sm-2 Server
+				th.col-md-4.col-lg-4.col-sm-4 Running
+				th.col-md-3.col-lg-3.col-sm-3 &nbsp;
+		tbody
+			tr(ng-repeat="process in _app.processes")
+				td {{ process.name }}
+				td {{ process.server.name }}
+				td
+					span(ng-show="!process.status || process.status.length == 0") {{ process.running }}
+					a.text-muted(ng-show="process.status.length > 0" ng-click="showLog()" style="text-overflow: ellipsis;")
+						i.fa.fa-spinner.fa-spin
+						| &nbsp;
+						| {{ process.status }}
+				td
+					.pull-right
+						.btn-group
+							a.btn.btn-sm.btn-success(ng-click="startProcess(process)" ng-disabled="process.running" title="Start Process")
+								i.fa.fa-play.fa-fw
+							a.btn.btn-sm.btn-danger(ng-click="stopProcess(process)" ng-disabled="!process.running" title="Stop Process")
+								i.fa.fa-pause.fa-fw
+						.btn-group
+							a.btn.btn-sm.btn-default(title="[Un]Watch Process Log" ng-click="watchLog(process)")
+								i.fa.fa-fw(ng-class="{ 'fa-eye-slash': !process.log_to_status, 'fa-eye': process.log_to_status }")
+							a.btn.btn-sm.btn-info(title="Edit Process" ui-sref="app.dashboard.editProcess({ id: app.nameUrl, pid: process._id })")
+								i.fa.fa-edit.fa-fw
 
-h1.page-header {{app.name}} Dashboard
-	.pull-right
-		.btn-group
-			a.btn.btn-md.btn-success(process-startup ng-disabled="app.isRunning || app.deleted" title="Start")
-				i.fa.fa-play.fa-fw
-			a.btn.btn-md.btn-danger(process-stop ng-disabled="!app.isRunning || app.deleted" title="Pause")
-				i.fa.fa-pause.fa-fw
-			a.btn.btn-md.btn-warning(process-restart ng-disabled="!app.isRunning || app.deleted" title="Restart")
-				i.fa.fa-retweet.fa-fw
+	table.table
+		tr(ng-repeat="ev in app.events")
+			td.text-right.col-md-2.col-lg-2.col-sm-2: strong {{ ev.name }}
+			td.col-md-8.col-lg-8.col-sm-8 {{ ev.message }}
+			td.col-md-2.col-lg-2.col-sm-2(title="{{ev.created.format('DD/MM/YYYY HH:mm:ss')}}") {{ ev.created.fromNow() }}
 
-p.lead Process Scaling: {{app.processes}}
-	.btn-group
-		a.btn.btn-md.btn-danger(process-scale-up ng-disabled="app.processes <= 1" title="Reduce Process")
-			i.fa.fa-level-down.fa-fw
-			|  Remove
-		a.btn.btn-md.btn-success(process-scale-down ng-disabled="app.processes >= 10" title="Add A Process" ng-click="addProcess()")
-			i.fa.fa-level-up.fa-fw
-			|  Add
-
-table.table
-	tr(ng-repeat="ev in app.events")
-		td.text-right.col-md-2.col-lg-2.col-sm-2: strong {{ ev.name }}
-		td.col-md-8.col-lg-8.col-sm-8 {{ ev.message }}
-		td.col-md-2.col-lg-2.col-sm-2(title="{{ev.created.format('DD/MM/YYYY HH:mm:ss')}}") {{ ev.created.fromNow() }}
+	ui-view(autoscroll="false")

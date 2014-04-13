@@ -2,7 +2,6 @@ var mongoose = require('mongoose')
 	, models = require('ng-models')
 	, fs = require('fs')
 	, config = require('../../config')
-	, drone = require('./drone')
 	, util = require('../../util')
 
 exports.router = function (app) {

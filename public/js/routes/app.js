@@ -2,11 +2,13 @@ define([
 	'angular',
 	'app',
 	'../controllers/apps',
-	'../controllers/addApp'
+	'../controllers/addApp',
+	'../controllers/appDashboard',
+	'../services/app'
 ], function(angular, app) {
 	app.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
 		$stateProvider.state('add', {
-			url: '/app/add',
+			url: '/apps/add',
 			pageTitle: "Add Application",
 			templateUrl: "/app/add?partial=true",
 			controller: "AddAppController"
@@ -23,23 +25,60 @@ define([
 			abstract: true,
 			templateUrl: "/app?partial=true",
 			resolve: {
-				data: function($q, $http, $stateParams) {
+				data: function($q, app, $stateParams) {
 					var deferred = $q.defer();
 				
-					$http.get('/app/'+$stateParams.id).success(function(data, status) {
-						deferred.resolve(data)
+					app.getApp($stateParams.id, function(app) {
+						deferred.resolve(app);
 					})
 				
 					return deferred.promise;
 				}
-			},
-			controller: "AppController"
+			}
 		})
 		.state('app.dashboard', {
 			url: '',
 			pageTitle: "App Dashboard",
 			templateUrl: function($stateParams) {
 				return "/app/"+$stateParams.id+"/dashboard?partial=true"
+			}
+		})
+		.state('app.dashboard.addProcess', {
+			url: '/process/new',
+			pageTitle: 'Add Process',
+			templateUrl: function($stateParams) {
+				return "/app/"+$stateParams.id+"/process?partial=true"
+			},
+			controller: "AppProcessController",
+			resolve: {
+				process: function($q, $http, $stateParams) {
+					return {
+						process: {
+							running: false,
+							created: null
+						}
+					};
+				}
+			}
+		})
+		.state('app.dashboard.editProcess', {
+			url: '/process/:pid',
+			pageTitle: 'Edit Process',
+			templateUrl: function($stateParams) {
+				return "/app/"+$stateParams.id+"/process?partial=true"
+			},
+			controller: "AppProcessController",
+			resolve: {
+				process: function($q, $http, $stateParams) {
+					var def = $q.defer();
+
+					$http.get('/app/'+$stateParams.id+'/process/'+$stateParams.pid)
+					.success(function(data) {
+						def.resolve(data);
+					})
+
+					return def.promise;
+				}
 			}
 		})
 		.state('app.logs', {

@@ -18,12 +18,8 @@ mixin navbar(active)
 								| Apps 
 								i.fa.fa-caret-down
 							ul.dropdown-menu(ng-cloak)
-								li.dropdown-header(ng-show="apps.length") Online Applications
-								li(ng-repeat="a in apps | filter:{ isRunning: true }" ng-class="{ active: app._id == a._id }")
-									a(ui-sref="app.dashboard({id:a._id})") {{ a.name }}
-								li.dropdown-header(ng-show="apps.length") Offline Applications
-								li(ng-repeat="a in apps | filter:{ isRunning: false }" ng-class="{ active: app._id == a._id }")
-									a(ui-sref="app.dashboard({id:a._id})") {{ a.name }}
+								li(ng-repeat="a in apps" ng-class="{ active: app._id == a._id }")
+									a(ui-sref="app.dashboard({ id: a.nameUrl })") {{ a.name }}
 								
 								li.dropdown-header(ng-hide="apps.length")
 									| No Applications

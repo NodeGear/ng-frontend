@@ -5,6 +5,7 @@ var util = require('../util')
 	, profile = require('./profile/profile')
 	, admin = require('./admin')
 	, tickets = require('./tickets')
+	, models = require('ng-models')
 
 exports.router = function(app) {
 	app.get('/', login, viewApps);
@@ -38,6 +39,8 @@ exports.router = function(app) {
 	//analytics.router(app)
 	profile.router(app)
 	tickets.router(app)
+
+	app.get('/servers', getServers)
 }
 
 // webSocket routing stuff
@@ -62,4 +65,16 @@ function viewApps (req, res) {
 
 function gettingStarted (req, res) {
 	res.render('gettingStarted')
+}
+
+function getServers (req, res) {
+	models.Server.find({
+	}, function(err, servers) {
+		if (err) throw err;
+
+		res.send({
+			status: 200,
+			servers: servers
+		})
+	})
 }

@@ -17,6 +17,7 @@ var express = require('express')
 	, staticVersioning = require('./staticVersioning')
 	, monitor = require('./monitor')
 	, models = require('ng-models').init(mongoose, config)
+	, redis_channel = require('./redis_channel')
 
 var app = exports.app = express();
 

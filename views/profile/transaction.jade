@@ -1,52 +1,52 @@
 #transactionDetailsModal.modal.fade
-		.modal-dialog
-			.modal-content
-				.modal-header
-					button.close(type="button" data-dismiss="modal") &times;
-					h4.modal-title Transaction on {{ transaction.created }}
-				.modal-body
-					dl.dl-horizontal
-						dt Created
-						dd {{ transaction.created }}
-						dt Details
-						dd {{ transaction.details }}
-						dt Amount
-						dd {{ transaction.total }}
-						dt Currency
-						dd GBP
-						dt Status
-						dd {{ transaction.status }}
-						dt Type
-						dd {{ transaction.type }}
-						dt Card
-						dd {{ transaction.card }}
-						dt: abbr(title="Balance on Account Before Transaction Occured") Balance Before
-						dd {{ transaction.old_balance }}
-						dt: abbr(title="Balance on Account After Transaction Occured") Balance After
-						dd {{ transaction.new_balance }}
+	.modal-dialog
+		.modal-content
+			.modal-header
+				button.close(type="button" data-dismiss="modal") &times;
+				h4.modal-title Transaction on {{ transaction.created }}
+			.modal-body
+				dl.dl-horizontal
+					dt Created
+					dd {{ transaction.created }}
+					dt Details
+					dd {{ transaction.details }}
+					dt Amount
+					dd {{ transaction.total }}
+					dt Currency
+					dd GBP
+					dt Status
+					dd {{ transaction.status }}
+					dt Type
+					dd {{ transaction.type }}
+					dt Card
+					dd {{ transaction.card }}
+					dt: abbr(title="Balance on Account Before Transaction Occured") Balance Before
+					dd {{ transaction.old_balance }}
+					dt: abbr(title="Balance on Account After Transaction Occured") Balance After
+					dd {{ transaction.new_balance }}
 
-					hr
-					h4 Breakdown of Charges
-					table.table
-						thead
-							tr
-								th App
-								th Name
-								th Description
-								th Total
-								th Hours
-								th Price Per Hour
-						tbody
-							tr(ng-repeat="charge in transaction.charges")
-								td
-									a(ng-show="charge.is_app" ui-sref="app.dashboard({ id: charge.app._id })") {{ charge.app.name }}
-									span(ng-hide="charge.is_app"): i n/a
-								td {{ charge.name }}
-								td {{ charge.description }}
-								td {{ charge.total }}
-								td
-									span(ng-show="charge.has_hours") {{ charge.hours.number }}
-									span(ng-hide="charge.has_hours"): i n/a
-								td
-									span(ng-show="charge.has_hours") {{ charge.hours.price }}
-									span(ng-hide="charge.has_hours"): i n/a
+				hr
+				h4 Breakdown of Charges
+				table.table
+					thead
+						tr
+							th App
+							th Name
+							th Description
+							th Total
+							th Hours
+							th Price Per Hour
+					tbody
+						tr(ng-repeat="charge in transaction.charges")
+							td
+								a(ng-show="charge.is_app" ui-sref="app.dashboard({ id: charge.app._id })") {{ charge.app.name }}
+								span(ng-hide="charge.is_app"): i n/a
+							td {{ charge.name }}
+							td {{ charge.description }}
+							td {{ charge.total }}
+							td
+								span(ng-show="charge.has_hours") {{ charge.hours.number }}
+								span(ng-hide="charge.has_hours"): i n/a
+							td
+								span(ng-show="charge.has_hours") {{ charge.hours.price }}
+								span(ng-hide="charge.has_hours"): i n/a

@@ -2,7 +2,7 @@ doctype
 html
 	head
 		meta(http-equiv="Content-Type", content="text/html; charset=utf-8;")
-		meta(name="_csrf", content="#{token}")
+		meta(name="_csrf" content="#{token}")
 		meta(name="viewport" content="width=device-width, initial-scale=1.0")
 		block meta
 		title(ng-bind-template="{{ pageTitle }} - NodeGear") NodeGear
@@ -15,6 +15,7 @@ html
 			link(rel="stylesheet" href="#{cdn}/css/#{version}/bootstrap-theme.min.css")
 			link(rel="stylesheet" href="#{cdn}/css/#{version}/font-awesome.min.css")
 			link(rel="stylesheet" href="#{cdn}/css/#{version}/nodegear.css")
+			link(rel="stylesheet" href="#{cdn}/css/#{version}/spinner.css")
 
 	body
 		include inc/navbar

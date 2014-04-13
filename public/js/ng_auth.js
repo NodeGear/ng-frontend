@@ -1,7 +1,3 @@
-var conf = {
-	version: "0.3.3"
-};
-
 require.config({
 	paths: {
 		angular: 'vendor/angular',

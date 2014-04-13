@@ -2,7 +2,6 @@ var mongoose = require('mongoose')
 	, models = require('ng-models')
 	, fs = require('fs')
 	, config = require('../../config')
-	, drone = require('./drone')
 	, util = require('../../util')
 	, app = require('./app')
 	, server = require('../../app')
@@ -16,7 +15,7 @@ exports.router = function (_app) {
 }
 
 exports.socket = function (socket) {
-	app.socket(socket)
+	app.socket(socket);
 }
 exports.socketDisconnect = function (socket) {
 	app.socketDisconnect(socket)
@@ -25,8 +24,8 @@ exports.socketDisconnect = function (socket) {
 function getApps (req, res, next) {
 	var self = this;
 	
-	models.App.getDronesByUserId(req.user._id, function(drones) {
-		res.locals.apps = drones;
+	req.user.getApps(function(apps) {
+		res.locals.apps = apps;
 		
 		next();
 	})
@@ -49,7 +48,7 @@ function doAddApp (req, res) {
 	if (!template || template.length == 0) {
 		errs.push("Template Does not Exist");
 	} else {
-		var templates = ["ghost", "apostrophe"];
+		var templates = ["ghost"];
 		
 		var found = false;
 		for (var i = 0; i < templates.length; i++) {
