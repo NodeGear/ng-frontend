@@ -252,8 +252,6 @@ function doRegister (req, res) {
 				host: req.host
 			});
 			user.save();
-			
-			user.createIDs();
 
 			// log in now
 			req.login(user, function(err) {

@@ -18,7 +18,7 @@ module.exports = function() {
 		var status = res.statusCode;
 		var method = req.method;
 		var lag = toobusy.lag();
-
+		
 		var user = req.user;
 		if (!req.user) user = null;
 		else user = user._id;
