@@ -6,16 +6,7 @@ var mongoose = require('mongoose')
 	, fs = require('fs')
 
 exports.router = function (app) {
-	app.get('/profile/ssh', util.authorized, getKeys)
-		.post('/profile/ssh', util.authorized, postKey)
-}
-
-function getKeys (req, res) {
-	req.user.getPublicKey(function(key) {
-		res.locals.key = key;
-		console.log(key)
-		res.render('profile/ssh')
-	})
+	app.post('/profile/ssh', util.authorized, postKey)
 }
 
 function postKey (req, res) {

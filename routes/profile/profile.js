@@ -6,23 +6,32 @@ var mongoose = require('mongoose')
 	, billing = require('./billing')
 	, async = require('async')
 
-exports.router = function (app) {
-	app.get('/profile', util.authorized, viewProfile)
-		.get('/profile/profile', util.authorizedPassEmail, getProfile)
-		.put('/profile/profile', util.authorized, updateProfile)
+exports.unauthorized = function (app, template) {
+	// Unrestricted -- non-authorized people can access!
+	template([
+		{
+			route: 'profile',
+			view: 'profile/profile'
+		}, {
+			route: 'profile/settings',
+			view: 'profile/profileView'
+		},
+		'profile/ssh'
+	]);
+
+	billing.unauthorized(template);
+
+	app.get('/profile/profile', util.authorizedPassEmail, getProfile)
+}
+
+exports.router = function (app, template) {
+	app.put('/profile/profile', updateProfile)
 	
 	sshkeys.router(app)
 	billing.router(app)
 }
 
-function viewProfile (req, res) {
-	res.render('profile/profile')
-}
-
 function getProfile (req, res) {
-	if (req.query.partial)
-		return res.render('profile/profileView')
-
 	var u = req.user.toObject();
 	res.send({
 		status: 200,

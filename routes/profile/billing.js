@@ -5,13 +5,22 @@ var mongoose = require('mongoose')
 	, stripe = config.stripe
 	, bugsnag = require('bugsnag')
 
-exports.router = function (app) {
-	app.get('/profile/billing', util.authorized, viewBilling)
-		.get('/profile/billing/paymentMethods', util.authorized, viewPaymentMethods)
-		.get('/profile/billing/history', util.authorized, viewHistory)
-		.get('/profile/billing/credits', util.authorized, viewCredits)
+exports.unauthorized = function (template) {
+	template('profile/billing');
 
-		.get('/profile/billing/transaction', util.authorized, getTransactionView)
+	template([
+		['history', 'profile/history'],
+		['transaction', 'profile/transaction'],
+		['credits', 'profile/credits'],
+		['paymentMethods', 'profile/paymentMethods']
+	], {
+		prefix: 'profile/billing'
+	});
+}
+
+exports.router = function (app) {
+	app.get('/profile/billing/history', util.authorized, viewHistory)
+
 		.get('/profile/billing/transaction/:tid', util.authorized, getTransaction)
 
 		// Makes a payment..
@@ -113,24 +122,7 @@ function getTransaction (req, res) {
 	})
 }
 
-function getTransactionView (req, res) {
-	res.render('profile/transaction')
-}
-
-function viewPaymentMethods (req, res) {
-	res.render('profile/paymentMethods');
-}
-
-function viewBilling (req, res) {
-	res.render('profile/billing');
-}
-
 function viewHistory (req, res) {
-	if (req.query.partial) {
-		res.render('profile/history');
-		return;
-	}
-
 	models.Transaction.find({
 		user: req.user._id
 	}).select('created details total status type old_balance new_balance payment_method').sort('-created').populate('payment_method').exec(function(err, transactions) {
@@ -163,10 +155,6 @@ function getBalance (req, res) {
 		status: 200,
 		balance: req.user.balance
 	})
-}
-
-function viewCredits (req, res) {
-	res.render('profile/credits');
 }
 
 function addCredits (req, res) {

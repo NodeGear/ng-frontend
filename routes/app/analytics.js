@@ -5,7 +5,7 @@ var mongoose = require('mongoose')
 	, util = require('../../util')
 
 exports.router = function (app) {
-	app.get('/app/:id/traffic', getAnalytics, viewAnalytics)
+	app.get('/app/:id/traffic', getAnalytics)
 }
 
 function getAnalytics (req, res, next) {
@@ -15,8 +15,4 @@ function getAnalytics (req, res, next) {
 		
 		next()
 	})
-}
-
-function viewAnalytics (req, res) {
-	res.render('app/analytics')
 }

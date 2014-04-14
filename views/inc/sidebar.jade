@@ -25,22 +25,30 @@ nav.navbar-default.navbar-static-side(role="navigation" ng-cloak)
 					a(ui-sref="tickets.tickets") Support Tickets
 				li.divider(style="height:20px;" ng-hide="app == null")
 				li(ng-hide="app == null")
-					a(ui-sref="app.dashboard({id: app._id})")
+					a(ui-sref="app.dashboard({ id: app.nameUrl })")
 						i.fa.fa-dashboard.fa-fw
 						|  {{ app.name }}
 				li(ng-hide="app == null")
-					a(ui-sref="app.logs({id: app._id})")
+					a(ui-sref="app.dashboard({ id: app.nameUrl })")
+						i.fa.fa-fw
+						|  Domains
+				li(ng-hide="app == null")
+					a(ui-sref="app.dashboard({ id: app.nameUrl })")
+						i.fa.fa-fw
+						|  Environment Variables
+				li(ng-hide="app == null")
+					a(ui-sref="app.logs({ id: app.nameUrl })")
 						i.fa.fa-files-o.fa-fw
 						|  Logs
 				li(ng-hide="app == null")
-					a(ui-sref="app.traffic({id: app._id})")
+					a(ui-sref="app.traffic({ id: app.nameUrl })")
 						i.fa.fa-bolt.fa-fw
 						|  Traffic
 				li(ng-hide="app == null")
-					a(ui-sref="app.usage({id: app._id})")
+					a(ui-sref="app.usage({ id: app.nameUrl })")
 						i.fa.fa-eye.fa-fw
 						|  Usage
 				li(ng-hide="app == null")
-					a(ui-sref="app.settings({id: app._id})")
+					a(ui-sref="app.settings({ id: app.nameUrl })")
 						i.fa.fa-wrench.fa-fw
 						|  Settings

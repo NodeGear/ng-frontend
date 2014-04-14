@@ -10,20 +10,20 @@ define([
 		$stateProvider.state('add', {
 			url: '/apps/add',
 			pageTitle: "Add Application",
-			templateUrl: "/app/add?partial=true",
+			templateUrl: "/view/app/add",
 			controller: "AddAppController"
 		})
 		.state('apps', {
 			url: '/apps',
 			pageTitle: "Applications",
-			templateUrl: "/apps?partial=true",
+			templateUrl: "/view/apps",
 			controller: "AppsController"
 		})
 		.state('app', {
 			url: '/app/:id',
 			pageTitle: "Application",
 			abstract: true,
-			templateUrl: "/app?partial=true",
+			templateUrl: "/view/app",
 			resolve: {
 				data: function($q, app, $stateParams) {
 					var deferred = $q.defer();
@@ -39,16 +39,12 @@ define([
 		.state('app.dashboard', {
 			url: '',
 			pageTitle: "App Dashboard",
-			templateUrl: function($stateParams) {
-				return "/app/"+$stateParams.id+"/dashboard?partial=true"
-			}
+			templateUrl: "/view/app/dashboard"
 		})
 		.state('app.dashboard.addProcess', {
 			url: '/process/new',
 			pageTitle: 'Add Process',
-			templateUrl: function($stateParams) {
-				return "/app/"+$stateParams.id+"/process?partial=true"
-			},
+			templateUrl: "/view/app/process",
 			controller: "AppProcessController",
 			resolve: {
 				process: function($q, $http, $stateParams) {
@@ -64,12 +60,10 @@ define([
 		.state('app.dashboard.editProcess', {
 			url: '/process/:pid',
 			pageTitle: 'Edit Process',
-			templateUrl: function($stateParams) {
-				return "/app/"+$stateParams.id+"/process?partial=true"
-			},
+			templateUrl: "/view/app/process",
 			controller: "AppProcessController",
 			resolve: {
-				process: function($q, $http, $stateParams) {
+				process: function($q, $http, $stateParams, app) {
 					var def = $q.defer();
 
 					$http.get('/app/'+$stateParams.id+'/process/'+$stateParams.pid)
@@ -82,32 +76,24 @@ define([
 			}
 		})
 		.state('app.logs', {
-			url: '/log',
+			url: '/logs',
 			pageTitle: "App Logs",
-			templateUrl: function($stateParams) {
-				return "/app/"+$stateParams.id+"/log?partial=true"
-			}
+			templateUrl: "/view/app/logs"
 		})
 		.state('app.traffic', {
 			url: '/traffic',
 			pageTitle: "App Traffic",
-			templateUrl: function($stateParams) {
-				return "/app/"+$stateParams.id+"/traffic?partial=true"
-			}
+			templateUrl: "/view/app/traffic"
 		})
 		.state('app.usage', {
 			url: '/usage',
 			pageTitle: "App Usage",
-			templateUrl: function($stateParams) {
-				return "/app/"+$stateParams.id+"/usage?partial=true"
-			}
+			templateUrl: "/view/app/usage"
 		})
 		.state('app.settings', {
 			url: '/settings',
 			pageTitle: "App Settings",
-			templateUrl: function($stateParams) {
-				return "/app/"+$stateParams.id+"/settings?partial=true"
-			}
+			templateUrl: "/view/app/settings"
 		})
 	});
 });

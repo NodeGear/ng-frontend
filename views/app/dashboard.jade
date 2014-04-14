@@ -17,25 +17,26 @@ div(ng-controller="AppDashboardController" ng-init="setCsrf('#{token}')")
 				td {{ process.server.name }}
 				td
 					span(ng-show="!process.status || process.status.length == 0") {{ process.running }}
-					a.text-muted(ng-show="process.status.length > 0" ng-click="showLog()" style="text-overflow: ellipsis;")
-						i.fa.fa-spinner.fa-spin
-						| &nbsp;
+					a.text-muted(ng-show="process.status.length > 0" ng-click="showLog()")
 						| {{ process.status }}
 				td
 					.pull-right
 						.btn-group
-							a.btn.btn-sm.btn-success(ng-click="startProcess(process)" ng-disabled="process.running" title="Start Process")
+							a.btn.btn-sm.btn-success(ng-click="startProcess(process)" ng-disabled="process.startStopDisabled || process.running" title="Start Process")
 								i.fa.fa-play.fa-fw
-							a.btn.btn-sm.btn-danger(ng-click="stopProcess(process)" ng-disabled="!process.running" title="Stop Process")
+							a.btn.btn-sm.btn-danger(ng-click="stopProcess(process)" ng-disabled="process.startStopDisabled || !process.running" title="Stop Process")
 								i.fa.fa-pause.fa-fw
 						.btn-group
 							a.btn.btn-sm.btn-default(title="[Un]Watch Process Log" ng-click="watchLog(process)")
 								i.fa.fa-fw(ng-class="{ 'fa-eye-slash': !process.log_to_status, 'fa-eye': process.log_to_status }")
 
 	table.table
-		tr(ng-repeat="ev in app.events")
-			td.text-right.col-md-2.col-lg-2.col-sm-2: strong {{ ev.name }}
-			td.col-md-8.col-lg-8.col-sm-8 {{ ev.message }}
-			td.col-md-2.col-lg-2.col-sm-2(title="{{ev.created.format('DD/MM/YYYY HH:mm:ss')}}") {{ ev.created.fromNow() }}
+		tr(ng-repeat="ev in _app.events track by $index")
+			td: i(title="{{ ev.created }}") {{ ev.timeFormatted }}
+			td
+				span(ng-show="ev.processObject"): strong {{ ev.processObject.name }}
+				span(ng-hide="ev.processObject"): i Deleted Process
+			td.text-right: strong {{ ev.name }}
+			td {{ ev.message }}
 
 	ui-view(autoscroll="false")

@@ -8,35 +8,44 @@ var util = require('../util')
 	, models = require('ng-models')
 
 exports.router = function(app) {
-	app.get('/', login, viewApps);
-	auth.router(app)
-	
-	app.all('/admin', util.mustBeAdmin)
-	app.all('/admin/*', util.mustBeAdmin)
-	admin.router(app)
-	
+	var templates = require('../templates')(app);
+	templates.route([
+		auth,
+		apps,
+		profile,
+		tickets
+	]);
+
+	templates.add('gettingStarted');
+	templates.setup();
+
+	app.get('/', login, layout);
+
+	app.all('*', util.authorized);
+
+	app.all('/admin', util.mustBeAdmin);
+	app.all('/admin/*', util.mustBeAdmin);
+	admin.router(app);
+
+	// No HTML requests beyond this point
+
 	app.get('*', function(req, res, next) {
 		res.format({
 			json: function() {
 				next()
 			},
 			html: function() {
-				if (req.query.partial) {
-					next()
-				} else {
-					if (res.locals.loggedIn)
-						res.render('layout')
-					else
-						res.render('auth')
-				}
+				if (res.locals.loggedIn)
+					res.render('layout')
+				else
+					res.render('auth')
 			}
-		})
-	})
-	
-	app.get('/gettingStarted', gettingStarted)
+		});
+	});
+
+	auth.router(app);
 	
 	apps.router(app)
-	//analytics.router(app)
 	profile.router(app)
 	tickets.router(app)
 
@@ -59,12 +68,8 @@ function login (req, res, next) {
 	}
 }
 
-function viewApps (req, res) {
+function layout (req, res) {
 	res.render('layout')
-}
-
-function gettingStarted (req, res) {
-	res.render('gettingStarted')
 }
 
 function getServers (req, res) {

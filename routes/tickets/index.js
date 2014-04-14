@@ -3,12 +3,18 @@ var mongoose = require('mongoose')
 	, config = require('../../config')
 	, util = require('../../util')
 
+exports.unauthorized = function (app, template) {
+	// Unrestricted -- non-authorized people can access!
+	template([
+		['tickets', 'tickets/tickets'],
+		['ticket', 'tickets/ticket'],
+		'tickets/add'
+	])
+}
+
 exports.router = function (app) {
 	app.get('/tickets', util.authorized, viewTickets)
 		.all('/tickets/*', util.authorized)
-		.get('/tickets/tickets', viewTicketsTemplate)
-		.get('/tickets/ticket', viewTicketTemplate)
-		.get('/tickets/add', addTicket)
 		.post('/tickets/add', createTicket)
 		.get('/tickets/:tid', getTicket, showTicket)
 		.put('/tickets/:tid', getTicket, updateTicket)
@@ -24,16 +30,6 @@ function viewTickets (req, res) {
 			tickets: tickets
 		})
 	})
-}
-function viewTicketsTemplate (req, res) {
-	res.render('tickets/tickets')
-}
-function viewTicketTemplate (req, res) {
-	res.render('tickets/ticket')
-}
-
-function addTicket (req, res) {
-	res.render('tickets/add')
 }
 
 function createTicket (req, res) {

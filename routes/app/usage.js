@@ -18,11 +18,6 @@ function getUsage (req, res, next) {
 }
 
 function viewUsage (req, res) {
-	if (req.query.partial) {
-		res.render('app/usage')
-		return;
-	}
-	
 	res.send({
 		usage: res.locals.usage
 	})

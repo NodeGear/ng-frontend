@@ -14,7 +14,11 @@ define([
 
 		app.getProcesses(function() {
 			$scope.reloadScope();
-		})
+
+			app.getEvents(function() {
+				$scope.reloadScope();
+			});
+		});
 
 		socket.on('process_log', function(data) {
 			for (var i = 0; i < $scope._app.processes.length; i++) {
@@ -37,6 +41,34 @@ define([
 					return;
 				}
 			}
+		})
+
+		socket.on('app_event', function(data) {
+			if (data.app != $scope.app._id) {
+				// Not for my eyes..
+				return;
+			}
+
+			app.addEvent(data);
+
+			$scope.reloadScope();
+		});
+
+		socket.on('app_running', function(data) {
+			if (data.app != $scope.app_id) {
+				// Not in this app
+				return;
+			}
+
+			for (var i = 0; i < app.processes.length; i++) {
+				if (app.processes[i]._id == data._id) {
+					app.processes[i].startStopDisabled = false;
+					app.processes[i].running = data.running;
+					break;
+				}
+			}
+
+			$scope.reloadScope();
 		})
 
 		$scope.reloadScope = function() {
@@ -122,9 +154,6 @@ define([
 		$scope.process = process.process;
 		$scope.addProcess = false;
 		$scope.status = "";
-		if ($scope.process.running) {
-			$scope.status = "Please Stop Process to change Server ";
-		}
 
 		if (!$scope.process._id) {
 			$scope.addProcess = true;
@@ -153,7 +182,10 @@ define([
 				if (data.status == 200) {
 					$scope.status = "Process Deleted.";
 					
-					$("#processModal").modal('hide');
+					app.getProcesses(function() {
+						app.formatEvents();
+						$("#processModal").modal('hide');
+					})
 				} else {
 					$scope.status = data.message;
 				}
@@ -194,9 +226,12 @@ define([
 						$scope.status = "Process Saved ";
 					}
 
-					$("#processModal").modal('hide');
+					app.getProcesses(function() {
+						app.formatEvents();
+						$("#processModal").modal('hide');
+					})
 				} else {
-					$scoep.status = data.message;
+					$scope.status = data.message;
 				}
 
 				if (!$scope.$$phase) {

@@ -15,31 +15,31 @@ define([
 		$stateProvider.state('login', {
 			url: '/',
 			pageTitle: "Sign In",
-			templateUrl: "/auth/page/login?partial=true",
+			templateUrl: "/view/auth/login",
 			controller: "SignInController"
 		})
 		.state('register', {
 			url: '/register',
 			pageTitle: "Register",
-			templateUrl: "/auth/page/register?partial=true",
+			templateUrl: "/view/auth/register",
 			controller: "SignUpController"
 		})
 		.state('verifyEmail', {
 			url: '/register/verify',
 			pageTitle: "Verify Email",
-			templateUrl: "/auth/page/verifyEmail?partial=true",
+			templateUrl: "/view/auth/verifyEmail",
 			controller: "VerifyEmailController"
 		})
 		.state('forgot', {
 			url: '/forgot',
 			pageTitle: "Forgotten Password",
-			templateUrl: "/auth/page/forgot?partial=true",
+			templateUrl: "/view/auth/forgot",
 			controller: "ForgotController"
 		})
 		.state('tfa', {
 			url: '/tfa',
 			pageTitle: "Two Factor Authentication",
-			templateUrl: "/auth/page/tfa?partial=true",
+			templateUrl: "/view/auth/tfa",
 			controller: "TFAController"
 		})
 	});

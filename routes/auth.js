@@ -8,15 +8,24 @@ var passport = require('passport')
 	, speakeasy = require('speakeasy')
 	, async = require('async')
 
-exports.router = function (app) {
+exports.unauthorized = function (app, template) {
+	// Unrestricted -- non-authorized people can access!
+	template([
+		'login',
+		'forgot',
+		'register',
+		'tfa',
+		'verifyEmail'
+	], {
+		prefix: 'auth'
+	})
+
 	app.post('/auth/password', doLogin)
 		.post('/auth/register', doRegister)
 		.post('/auth/forgot', doForgot)
 		.get('/auth/forgot', showForgot)
 		.post('/auth/forgot/reset', performReset)
-		.put('/auth/tfa', util.authorized, getTFA, enableTFA)
-		.delete('/auth/tfa', util.authorized, getTFA, disableTFA)
-		.get('/auth/tfa', util.authorized, getTFA, checkTFAEnabled)
+
 		.post('/auth/tfa', util.authorizedPassTFA, getTFA, checkTFA)
 		.post('/auth/verifyEmail', function (req, res, next) {
 			if (req.user && !req.user.email_verified) {
@@ -27,15 +36,16 @@ exports.router = function (app) {
 
 			util.authorized(req, res, next);
 		}, doVerifyEmail)
+}
+
+exports.router = function (app, templates) {
+	// Restricted -- only authorized people can access!
+	app.put('/auth/tfa', getTFA, enableTFA)
+		.delete('/auth/tfa', getTFA, disableTFA)
+		.get('/auth/tfa', getTFA, checkTFAEnabled)
 
 		.get('/logout', doLogout)
-
 		.get('/auth/loggedin', isLoggedIn)
-		.get('/auth/page/login', getLoginPage)
-		.get('/auth/page/forgot', getForgotPage)
-		.get('/auth/page/register', getRegisterPage)
-		.get('/auth/page/tfa', getTFAPage)
-		.get('/auth/page/verifyEmail', getVerifyEmailPage)
 }
 
 function isLoggedIn (req, res) {
@@ -43,26 +53,6 @@ function isLoggedIn (req, res) {
 		isLoggedIn: res.locals.loggedIn,
 		requiresTFA: res.locals.requiresTFA
 	});
-}
-
-function getLoginPage (req, res) {
-	res.render('auth/login');
-}
-
-function getForgotPage (req, res) {
-	res.render('auth/forgot');
-}
-
-function getRegisterPage (req, res) {
-	res.render('auth/register');
-}
-
-function getTFAPage (req, res) {
-	res.render('auth/tfa')
-}
-
-function getVerifyEmailPage (req, res) {
-	res.render('auth/verifyEmail')
 }
 
 function doLogin (req, res) {

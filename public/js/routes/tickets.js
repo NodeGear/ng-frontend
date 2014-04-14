@@ -25,12 +25,12 @@ define([
 		.state('tickets.tickets', {
 			url: '',
 			pageTitle: 'Support Tickets',
-			templateUrl: "/tickets/tickets?partial=true"
+			templateUrl: "/view/tickets"
 		})
 		.state('tickets.add', {
 			url: '/add',
 			pageTitle: 'Create Support Ticket',
-			templateUrl: "/tickets/add?partial=true",
+			templateUrl: "/view/tickets/add",
 			controller: "TicketController",
 			resolve: {
 				data: function($q) {
@@ -43,7 +43,7 @@ define([
 		.state('tickets.ticket', {
 			url: '/:id',
 			pageTitle: 'Support Ticket',
-			templateUrl: "/tickets/ticket?partial=true",
+			templateUrl: "/view/ticket",
 			controller: "TicketController",
 			resolve: {
 				data: function($q, $http, $stateParams) {

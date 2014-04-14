@@ -8,24 +8,37 @@ var mongoose = require('mongoose')
 	, usage = require('./usage')
 	, settings = require('./settings')
 	, app = require('../../app')
-	
+
+exports.unauthorized = function (template) {
+	template([
+		['app', 'app/app'],
+		'app/dashboard',
+		['app/process', 'app/processModal'],
+		'app/logs',
+		'app/traffic',
+		'app/usage',
+		'app/settings'
+	])
+}
+
 exports.router = function (app) {
-	app.get('/app', util.authorized, viewApp)
-	app.all('/app/:id', util.authorized, getApp)
-		.all('/app/:id/*', util.authorized, getApp)
+	app.all('/app/:id', getApp)
+		.all('/app/:id/*', getApp)
 	
 		.get('/app/:id', viewApp)
-		.get('/app/:id/dashboard', viewDashboard)
+		.get('/app/:id/events', getEvents)
 
 		.get('/app/:id/processes', getProcesses)
-		.get('/app/:id/process', viewProcessModal)
-		.get('/app/:id/process/:pid', getProcess, viewProcess)
-		.put('/app/:id/process/:pid', getProcess, saveProcess)
-		.post('/app/:id/process/:pid/start', getProcess, startProcess)
-		.post('/app/:id/process/:pid/stop', getProcess, stopProcess)
-		
+
+		.all('/app/:id/process/:pid', getProcess)
+		.all('/app/:id/process/:pid/*', getProcess)
+
 		.post('/app/:id/process', saveProcess)
-		.delete('/app/:id/process/:pid', getProcess, deleteProcess)
+		.get('/app/:id/process/:pid', viewProcess)
+		.put('/app/:id/process/:pid', saveProcess)
+		.post('/app/:id/process/:pid/start', startProcess)
+		.post('/app/:id/process/:pid/stop', stopProcess)
+		.delete('/app/:id/process/:pid', deleteProcess)
 	
 	log.router(app)
 	analytics.router(app)
@@ -72,24 +85,22 @@ function getApp (req, res, next) {
 }
 
 function viewApp (req, res) {
-	if (req.query.partial) {
-		res.render('app/app')
-		return;
-	}
-	
 	res.send({
+		status: 200,
 		app: res.locals.app
 	})
 }
 
-function viewDashboard (req, res) {
-	res.render('app/dashboard')
-}
-
 function getProcesses (req, res) {
-	models.AppProcess.find({
+	var query = {
 		app: res.locals.app._id
-	}, function(err, processes) {
+	};
+
+	if (req.query.includeDeleted != true) {
+		query.deleted = false;
+	}
+
+	models.AppProcess.find(query).sort('name').exec(function(err, processes) {
 		res.send({
 			status: 200,
 			processes: processes
@@ -97,8 +108,14 @@ function getProcesses (req, res) {
 	})
 }
 
-function viewProcessModal(req, res) {
-	res.render('app/processModal');
+function getEvents (req, res) {
+	models.AppEvent.find({
+		app: res.locals.app._id
+	}).sort('-created').limit(10).exec(function(err, events) {
+		res.send({
+			events: events
+		})
+	})
 }
 
 function getProcess (req, res, next) {
@@ -116,7 +133,8 @@ function getProcess (req, res, next) {
 	}
 
 	models.AppProcess.findOne({
-		_id: pid
+		_id: pid,
+		deleted: false
 	}, function(err, process) {
 		if (err) throw err;
 
@@ -141,6 +159,14 @@ function viewProcess (req, res) {
 }
 
 function saveProcess (req, res) {
+	if (res.locals.process && res.locals.process.deleted) {
+		// Process was deleted
+		res.send({
+			status: 400
+		});
+		return;
+	}
+
 	if (!req.body.process) {
 		res.send(400, {
 			status: 400,
@@ -193,7 +219,10 @@ function saveProcess (req, res) {
 				app: res.locals.app._id
 			});
 		}
-		process.server = server._id;
+
+		if (!process.running) {
+			process.server = server._id;
+		}
 		process.name = name;
 
 		process.save();
@@ -205,10 +234,41 @@ function saveProcess (req, res) {
 }
 
 function deleteProcess (req, res) {
+	if (res.locals.process.deleted) {
+		// Process was deleted
+		res.send({
+			status: 400
+		});
+		return;
+	}
 
+	var process = res.locals.process;
+	if (process.running) {
+		res.send({
+			status: 400,
+			message: "Cannot delete a running process!"
+		});
+		return;
+	}
+
+	process.deleted = true;
+	process.save();
+
+	res.send({
+		status: 200,
+		message: ""
+	});
 }
 
 function stopProcess (req, res) {
+	if (res.locals.process.deleted) {
+		// Process was deleted
+		res.send({
+			status: 400
+		});
+		return;
+	}
+
 	var process = res.locals.process;
 	process.populate('server', function(err) {
 		if (err) throw err;
@@ -225,6 +285,14 @@ function stopProcess (req, res) {
 }
 
 function startProcess (req, res) {
+	if (res.locals.process.deleted) {
+		// Process was deleted
+		res.send({
+			status: 400
+		});
+		return;
+	}
+
 	var process = res.locals.process;
 	process.populate('server', function(err) {
 		if (err) throw err;

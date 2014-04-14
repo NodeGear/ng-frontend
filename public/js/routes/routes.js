@@ -17,12 +17,7 @@ define([
 		.state('gettingStarted', {
 			url: '/',
 			pageTitle: 'Getting Started',
-			templateUrl: "/gettingStarted?partial=true"
-		})
-		.state('analytics', {
-			url: '/analytics',
-			pageTitle: 'Analytics',
-			templateUrl: "/analytics?partial=true"
+			templateUrl: "/view/gettingStarted"
 		})
 		
 		.state('logout', {

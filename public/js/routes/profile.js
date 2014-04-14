@@ -14,33 +14,33 @@ define([
 			url: '/profile',
 			pageTitle: 'Profile',
 			abstract: true,
-			templateUrl: "/profile?partial=true"
+			templateUrl: "/view/profile"
 		})
 		.state('profile.view', {
 			url: '',
 			pageTitle: 'Profile Settings',
-			templateUrl: "/profile/profile?partial=true"
+			templateUrl: "/view/profile/settings"
 		})
 		.state('profile.ssh', {
 			url: '/ssh',
 			pageTitle: 'Profile SSH Key',
-			templateUrl: "/profile/ssh?partial=true"
+			templateUrl: "/view/profile/ssh"
 		})
 		.state('profile.billing', {
 			url: '/billing',
 			pageTitle: 'Billing',
 			abstract: true,
-			templateUrl: "/profile/billing?partial=true"
+			templateUrl: "/view/profile/billing"
 		})
 		.state('profile.billing.history', {
 			url: '',
 			pageTitle: 'Billing History',
-			templateUrl: "/profile/billing/history?partial=true"
+			templateUrl: "/view/profile/billing/history"
 		})
 		.state('profile.billing.history.transaction', {
 			url: '/transaction/:transaction_id',
 			pageTitle: 'Billing Transactions',
-			templateUrl: "/profile/billing/transaction?partial=true",
+			templateUrl: "/view/profile/billing/transaction",
 			controller: "TransactionController",
 			resolve: {
 				transaction: function($q, $http, $stateParams) {
@@ -51,13 +51,13 @@ define([
 		.state('profile.billing.addCredits', {
 			url: '/credits/add',
 			pageTitle: 'Add Credits',
-			templateUrl: "/profile/billing/credits?partial=true",
+			templateUrl: "/view/profile/billing/credits",
 			controller: 'BillingCreditsController'
 		})
 		.state('profile.billing.paymentMethods', {
 			url: '/paymentMethods',
 			pageTitle: 'Payment Methods',
-			templateUrl: "/profile/billing/paymentMethods?partial=true"
+			templateUrl: "/view/profile/billing/paymentMethods"
 		})
 	});
 });

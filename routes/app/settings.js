@@ -5,12 +5,7 @@ var mongoose = require('mongoose')
 	, util = require('../../util')
 
 exports.router = function (app) {
-	app.get('/app/:id/settings', viewSettings)
-		.put('/app/:id', saveSettings)
-}
-
-function viewSettings (req, res) {
-	res.render('app/settings')
+	app.put('/app/:id', saveSettings)
 }
 
 function saveSettings (req, res) {

@@ -7,8 +7,7 @@ var mongoose = require('mongoose')
 	, ansi2html = new (require('ansi-to-html'))
 
 exports.router = function (app) {
-	app.get('/app/:id/log', viewLogs)
-		.get('/app/:id/log/:lid', getLog)
+	app.get('/app/:id/log/:lid', getLog)
 		.get('/app/:id/log/:lid/*', getLog)
 		.get('/app/:id/log/:lid', viewLog)
 		.get('/app/:id/log/:lid/download', downloadLog)
@@ -46,10 +45,6 @@ function getLog (req, res, next) {
 	res.locals.log = log;
 	
 	next()
-}
-
-function viewLogs (req, res) {
-	res.render('app/logs')
 }
 
 function viewLog (req, res) {

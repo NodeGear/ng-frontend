@@ -6,8 +6,21 @@ var mongoose = require('mongoose')
 	, app = require('./app')
 	, server = require('../../app')
 
+exports.unauthorized = function (_app, template) {
+	// Unrestricted -- non-authorized people can access!
+	template([
+		{
+			route: 'apps',
+			view: 'app/apps'
+		},
+		'app/add'
+	]);
+
+	app.unauthorized(template);
+}
+
 exports.router = function (_app) {
-	_app.get('/app/add', util.authorized, addApp)
+	_app
 		.post('/app/add', util.authorized, doAddApp)
 		.get('/apps', util.authorized, getApps, viewApps)
 	
@@ -29,10 +42,6 @@ function getApps (req, res, next) {
 		
 		next();
 	})
-}
-
-function addApp (req, res) {
-	res.render('app/add')
 }
 
 function doAddApp (req, res) {
@@ -112,8 +121,5 @@ function doAddApp (req, res) {
 }
 
 function viewApps (req, res) {
-	if (req.query.partial)
-		res.render('app/apps')
-	else
-		res.send({ apps: res.locals.apps });
+	res.send({ apps: res.locals.apps });
 }
