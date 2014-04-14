@@ -1,8 +1,7 @@
 define([
 	'angular',
 	'app',
-	'moment',
-	'https://js.stripe.com/v2/'
+	'moment'
 ], function(angular, app, moment) {
 	app.controller('PaymentMethodsController', function ($scope, $http, $rootScope) {
 		$scope.cards = [];
@@ -13,7 +12,9 @@ define([
 		
 		$scope.init = function (csrf, key) {
 			$scope.csrf = csrf;
-			Stripe.setPublishableKey(key);
+			require(['https://js.stripe.com/v2/'], function() {
+				Stripe.setPublishableKey(key);
+			})
 			
 			// get cards
 			$scope.getCards()

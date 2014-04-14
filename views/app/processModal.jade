@@ -14,7 +14,7 @@
 					.form-group
 						label.control-label.col-md-4.col-lg-3.col-sm-3 Server
 						.col-md-7.col-lg-8.col-sm-7
-							select.form-control(ng-options="server._id as server.name for server in servers" ng-model="process.server" required)
+							select.form-control(ng-disabled="process.running" ng-options="server._id as server.name for server in servers" ng-model="process.server" required)
 								option(value="") -- Pick a Server --
 					.form-group(ng-hide="addProcess")
 						label.control-label.col-md-4.col-lg-3.col-sm-3 Created

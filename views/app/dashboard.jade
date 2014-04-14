@@ -13,7 +13,7 @@ div(ng-controller="AppDashboardController" ng-init="setCsrf('#{token}')")
 				th.col-md-3.col-lg-3.col-sm-3 &nbsp;
 		tbody
 			tr(ng-repeat="process in _app.processes")
-				td {{ process.name }}
+				td: a(ui-sref="app.dashboard.editProcess({ id: app.nameUrl, pid: process._id })" title="Edit Process") {{ process.name }}
 				td {{ process.server.name }}
 				td
 					span(ng-show="!process.status || process.status.length == 0") {{ process.running }}
@@ -31,8 +31,6 @@ div(ng-controller="AppDashboardController" ng-init="setCsrf('#{token}')")
 						.btn-group
 							a.btn.btn-sm.btn-default(title="[Un]Watch Process Log" ng-click="watchLog(process)")
 								i.fa.fa-fw(ng-class="{ 'fa-eye-slash': !process.log_to_status, 'fa-eye': process.log_to_status }")
-							a.btn.btn-sm.btn-info(title="Edit Process" ui-sref="app.dashboard.editProcess({ id: app.nameUrl, pid: process._id })")
-								i.fa.fa-edit.fa-fw
 
 	table.table
 		tr(ng-repeat="ev in app.events")

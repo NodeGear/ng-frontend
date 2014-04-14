@@ -112,6 +112,8 @@ define([
 					id: app.app._id,
 					pid: process._id
 				});
+
+				process.status = "Watching Process Log";
 			}
 		}
 	});
@@ -119,7 +121,10 @@ define([
 	app.controller('AppProcessController', function ($scope, process, csrf, $http, $state, app, servers) {
 		$scope.process = process.process;
 		$scope.addProcess = false;
-		$scope.status = "abcd ";
+		$scope.status = "";
+		if ($scope.process.running) {
+			$scope.status = "Please Stop Process to change Server ";
+		}
 
 		if (!$scope.process._id) {
 			$scope.addProcess = true;
