@@ -5,6 +5,8 @@ define([
 	'../controllers/addApp',
 	'../controllers/appDashboard',
 	'../controllers/appDomains',
+	'../controllers/appEnvironment',
+	'../controllers/appLogs',
 	'../services/app'
 ], function(angular, app) {
 	app.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
@@ -80,22 +82,10 @@ define([
 			url: '/domains',
 			pageTitle: 'App Domains',
 			templateUrl: "/view/app/domains",
-			controller: "AppDomainsController",
-			resolve: {
-				domains: function($q, $http, $stateParams) {
-					var def = $q.defer();
-
-					$http.get('/app/'+$stateParams.id+'/domains/')
-					.success(function(data) {
-						def.resolve(data);
-					})
-
-					return def.promise;
-				}
-			}
+			controller: "AppDomainsController"
 		})
 		.state('app.domains.addDomain', {
-			url: '/domain/add',
+			url: '/add',
 			pageTitle: 'Add App Domain',
 			templateUrl: "/view/app/domain",
 			controller: "AppDomainController",
@@ -106,12 +96,12 @@ define([
 			}
 		})
 		.state('app.domains.editDomain', {
-			url: '/domain/:did',
+			url: '/:did',
 			pageTitle: 'Edit App Domain',
 			templateUrl: "/view/app/domain",
 			controller: "AppDomainController",
 			resolve: {
-				domain: function($q, $http, $stateParams, app) {
+				domain: function($q, $http, $stateParams) {
 					var def = $q.defer();
 
 					$http.get('/app/'+$stateParams.id+'/domain/'+$stateParams.did)
@@ -123,10 +113,46 @@ define([
 				}
 			}
 		})
+		.state('app.environment', {
+			url: '/environment',
+			pageTitle: 'App Environment',
+			templateUrl: "/view/app/environment",
+			controller: "AppEnvironmentController"
+		})
+		.state('app.environment.addEnv', {
+			url: '/add',
+			pageTitle: 'Add App Environment Variable',
+			templateUrl: "/view/app/editEnvironment",
+			controller: "AppEnvironmentVariableController",
+			resolve: {
+				env: function() {
+					return { env: {} };
+				}
+			}
+		})
+		.state('app.environment.editEnv', {
+			url: '/:eid',
+			pageTitle: 'Edit App Environment Variable',
+			templateUrl: "/view/app/editEnvironment",
+			controller: "AppEnvironmentVariableController",
+			resolve: {
+				env: function($q, $http, $stateParams) {
+					var def = $q.defer();
+
+					$http.get('/app/'+$stateParams.id+'/environment/'+$stateParams.eid)
+					.success(function(data) {
+						def.resolve(data);
+					})
+
+					return def.promise;
+				}
+			}
+		})
 		.state('app.logs', {
 			url: '/logs',
 			pageTitle: "App Logs",
-			templateUrl: "/view/app/logs"
+			templateUrl: "/view/app/logs",
+			controller: "AppLogsController"
 		})
 		.state('app.traffic', {
 			url: '/traffic',

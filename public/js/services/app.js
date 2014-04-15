@@ -15,6 +15,7 @@ define([
 		self.events = [];
 		self.processes = [];
 		self.domains = [];
+		self.environment = []; // many although sounds single
 
 		servers.getServers(function(servers) {
 		});
@@ -27,6 +28,7 @@ define([
 				self.events = [];
 				self.processes = [];
 				self.domains = [];
+				self.environment = [];
 
 				cb();
 			});
@@ -132,6 +134,14 @@ define([
 		self.getDomains = function (cb) {
 			$http.get(self.appRoute+'/domains').success(function (data) {
 				self.domains = data.domains;
+
+				cb();
+			})
+		}
+
+		self.getEnvironment = function (cb) {
+			$http.get(self.appRoute+'/environment').success(function (data) {
+				self.environment = data.environment;
 
 				cb();
 			})

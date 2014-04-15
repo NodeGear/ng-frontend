@@ -11,16 +11,17 @@
 					i.fa.fa-cloud-download.fa-fw
 					|  Download All
 
-if app.logs
-	.row
-		.col-sm-9.col-xs-9.col-md-9.col-lg-9
-			pre(ng-bind-html="log.content")
-		.col-sm-3.col-xs-3.col-md-3.col-lg-3
-			ul.list-unstyled
-				li(ng-repeat="l in app.logs")
-					a(href="", ng-click="selectLog(l)")
-						| {{ l.created.format('DD/MM/YYYY HH:mm:ss') }}
-					span(ng-show="l._id == log._id")
-						|  &#10003;
-else
-	h4 Your app has no logs available..
+.row
+	.col-sm-3.col-xs-3.col-md-3.col-lg-3
+		ul.list-unstyled
+			li(ng-repeat="process in _app.processes")
+				a(href="") {{ process.name }}
+	.col-sm-6.col-xs-6.col-md-6.col-lg-6
+		pre(ng-bind-html="log.content")
+	.col-sm-3.col-xs-3.col-md-3.col-lg-3
+		ul.list-unstyled
+			li(ng-repeat="l in app.logs")
+				a(href="", ng-click="selectLog(l)")
+					| {{ l.created.format('DD/MM/YYYY HH:mm:ss') }}
+				span(ng-show="l._id == log._id")
+					|  &#10003;
