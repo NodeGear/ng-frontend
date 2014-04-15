@@ -1,0 +1,26 @@
+#domainModal.modal.fade
+	.modal-dialog
+		.modal-content
+			.modal-header
+				button.close(type="button" data-dismiss="modal") &times;
+				h4.modal-title(ng-show="addDomain") Add new Domain
+				h4.modal-title(ng-hide="addDomain") Edit Domain - {{ domain.domain }}
+			.modal-body
+				form.form-horizontal
+					.form-group
+						label.control-label.col-md-4.col-lg-3.col-sm-3 Domain
+						.col-md-7.col-lg-8.col-sm-7
+							input.form-control(type="text" ng-model="domain.domain" placeholder="mydomain.com" required)
+					.form-group
+						.col-md-7.col-lg-8.col-sm-7.col-md-offset-4.col-lg-offset-3.col-sm-offset-3
+							.checkbox
+								label
+									input(type="checkbox" ng-model="domain.is_subdomain")
+									|  Is Subdomain (on {{domain.domain}}.ngapp.io)
+			.modal-footer
+				button.btn.btn-danger.pull-left(ng-hide="addDomain" ng-click="deleteDomain()") Delete Domain
+				span.text-muted(ng-class="{ 'pull-left': addDomain }" ng-bind="status") Loading..
+				button.btn.btn-default(data-dismiss="modal") Close
+				button.btn.btn-success(ng-click="saveDomain()" ng-disabled="!domain.domain || checking")
+					span(ng-show="addDomain") Create
+					span(ng-hide="addDomain") Save

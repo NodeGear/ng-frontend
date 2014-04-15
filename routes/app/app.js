@@ -17,7 +17,9 @@ exports.unauthorized = function (template) {
 		'app/logs',
 		'app/traffic',
 		'app/usage',
-		'app/settings'
+		'app/settings',
+		'app/domains',
+		'app/domain'
 	])
 }
 
@@ -26,12 +28,20 @@ exports.router = function (app) {
 		.all('/app/:id/*', getApp)
 	
 		.get('/app/:id', viewApp)
-		.get('/app/:id/events', getEvents)
 
+		.get('/app/:id/events', getEvents)
 		.get('/app/:id/processes', getProcesses)
 
+		.all('/app/:id/domain/:did', getDomain)
+		.all('/app/:id/domain/:did/*', getDomain)
 		.all('/app/:id/process/:pid', getProcess)
 		.all('/app/:id/process/:pid/*', getProcess)
+
+		.get('/app/:id/domains', getDomains)
+		.post('/app/:id/domain', saveDomain)
+		.get('/app/:id/domain/:did', viewDomain)
+		.put('/app/:id/domain/:did', saveDomain)
+		.delete('/app/:id/domain/:did', deleteDomain)
 
 		.post('/app/:id/process', saveProcess)
 		.get('/app/:id/process/:pid', viewProcess)
@@ -104,6 +114,132 @@ function getProcesses (req, res) {
 		res.send({
 			status: 200,
 			processes: processes
+		});
+	})
+}
+
+function getDomains (req, res) {
+	models.AppDomain.find({
+		app: res.locals.app._id
+	}, function(err, domains) {
+		if (err) throw err;
+
+		res.send({
+			status: 200,
+			domains: domains
+		})
+	})
+}
+
+function getDomain (req, res, next) {
+	var did = req.params.did;
+
+	try {
+		did = mongoose.Types.ObjectId(did);
+	} catch (e) {
+		res.send({
+			status: 400,
+			message: "Invalid ID"
+		});
+		return;
+	}
+
+	models.AppDomain.findOne({
+		_id: did
+	}, function(err, domain) {
+		if (err) throw err;
+
+		if (!domain) {
+			res.send({
+				status: 404,
+				message: "Not found"
+			});
+			return;
+		}
+
+		res.locals.domain = domain;
+		next();
+	})
+}
+
+function saveDomain (req, res) {
+	if (!req.body.domain) {
+		res.send(400, {
+			status: 400,
+			message: "Invalid Request"
+		});
+
+		return;
+	}
+
+	var domain = req.body.domain.domain;
+	var is_subdomain = req.body.domain.is_subdomain;
+
+	if (domain && (domain.length == 0 || domain.length >= 253)) {
+		res.send({
+			status: 400,
+			message: "Invalid Domain Name"
+		});
+
+		return;
+	}
+
+	var query = {
+		domain: domain,
+		is_subdomain: is_subdomain
+	};
+	// Subdomains are individual
+	if (is_subdomain) {
+		query.user = req.user._id
+	}
+
+	models.AppDomain.findOne(query, function(err, aDomain) {
+		if (err) throw err;
+
+		if (aDomain) {
+			res.send({
+				status: 400,
+				message: "Domain Name Taken"
+			});
+			return;
+		}
+
+		var d = res.locals.domain;
+		if (!d) {
+			// Creating a process
+			d = new models.AppDomain({
+				app: res.locals.app._id,
+				user: req.user._id
+			});
+		}
+
+		d.domain = domain;
+		d.is_subdomain = is_subdomain;
+
+		d.save();
+
+		res.send({
+			status: 200
+		});
+	})
+}
+function viewDomain (req, res) {
+	res.send({
+		status: 200,
+		domain: res.locals.domain
+	})
+}
+function deleteDomain (req, res) {
+	var domain = res.locals.domain;
+	
+	models.AppDomain.remove({
+		_id: domain._id
+	}, function(err) {
+		if (err) throw err;
+
+		res.send({
+			status: 200,
+			message: ""
 		});
 	})
 }

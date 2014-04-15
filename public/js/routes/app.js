@@ -4,6 +4,7 @@ define([
 	'../controllers/apps',
 	'../controllers/addApp',
 	'../controllers/appDashboard',
+	'../controllers/appDomains',
 	'../services/app'
 ], function(angular, app) {
 	app.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
@@ -63,10 +64,57 @@ define([
 			templateUrl: "/view/app/process",
 			controller: "AppProcessController",
 			resolve: {
-				process: function($q, $http, $stateParams, app) {
+				process: function($q, $http, $stateParams) {
 					var def = $q.defer();
 
 					$http.get('/app/'+$stateParams.id+'/process/'+$stateParams.pid)
+					.success(function(data) {
+						def.resolve(data);
+					})
+
+					return def.promise;
+				}
+			}
+		})
+		.state('app.domains', {
+			url: '/domains',
+			pageTitle: 'App Domains',
+			templateUrl: "/view/app/domains",
+			controller: "AppDomainsController",
+			resolve: {
+				domains: function($q, $http, $stateParams) {
+					var def = $q.defer();
+
+					$http.get('/app/'+$stateParams.id+'/domains/')
+					.success(function(data) {
+						def.resolve(data);
+					})
+
+					return def.promise;
+				}
+			}
+		})
+		.state('app.domains.addDomain', {
+			url: '/domain/add',
+			pageTitle: 'Add App Domain',
+			templateUrl: "/view/app/domain",
+			controller: "AppDomainController",
+			resolve: {
+				domain: function() {
+					return { domain: {} };
+				}
+			}
+		})
+		.state('app.domains.editDomain', {
+			url: '/domain/:did',
+			pageTitle: 'Edit App Domain',
+			templateUrl: "/view/app/domain",
+			controller: "AppDomainController",
+			resolve: {
+				domain: function($q, $http, $stateParams, app) {
+					var def = $q.defer();
+
+					$http.get('/app/'+$stateParams.id+'/domain/'+$stateParams.did)
 					.success(function(data) {
 						def.resolve(data);
 					})

@@ -13,6 +13,8 @@ define([
 		self.app = {};
 		self.appRoute = '';
 		self.events = [];
+		self.processes = [];
+		self.domains = [];
 
 		servers.getServers(function(servers) {
 		});
@@ -22,34 +24,15 @@ define([
 			$http.get(self.appRoute).success(function(data, status) {
 				self.app = data.app;
 				$rootScope.app = self.app
+				self.events = [];
+				self.processes = [];
+				self.domains = [];
 
 				cb();
 			});
 		}
 
-		self.getProcesses = function (cb) {
-			$http.get(self.appRoute+'/processes').success(function (data) {
-				self.processes = [];
-
-				for (var i = 0; i < data.processes.length; i++) {
-					var proc = data.processes[i];
-
-					for (var x = 0; x < servers.servers.length; x++) {
-						if (proc.server == servers.servers[x]._id) {
-							proc.server = servers.servers[x];
-							break;
-						}
-					}
-
-					self.processes.push(proc)
-				}
-
-				self.formatEvents();
-
-				cb();
-			})
-		}
-
+		// Events
 		self.getEvents = function(cb) {
 			$http.get(self.appRoute+'/events').success(function (data) {
 				self.events = [];
@@ -79,7 +62,6 @@ define([
 				self.events = self.events.slice(0, 9);
 			}
 		}
-
 		self.formatEvents = function() {
 			for (var i = 0; i < self.events.length; i++) {
 				var ev = self.events[i];
@@ -95,6 +77,7 @@ define([
 			}
 		}
 
+		// Process
 		self.startProcess = function (process, cb) {
 			$http.post(self.appRoute+'/process/'+process._id+'/start', {
 				_csrf: csrf.csrf
@@ -120,6 +103,37 @@ define([
 				}
 			}).error(function() {
 				cb(false, "Request Failed");
+			})
+		}
+
+		self.getProcesses = function (cb) {
+			$http.get(self.appRoute+'/processes').success(function (data) {
+				self.processes = [];
+
+				for (var i = 0; i < data.processes.length; i++) {
+					var proc = data.processes[i];
+
+					for (var x = 0; x < servers.servers.length; x++) {
+						if (proc.server == servers.servers[x]._id) {
+							proc.server = servers.servers[x];
+							break;
+						}
+					}
+
+					self.processes.push(proc)
+				}
+
+				self.formatEvents();
+
+				cb();
+			})
+		}
+
+		self.getDomains = function (cb) {
+			$http.get(self.appRoute+'/domains').success(function (data) {
+				self.domains = data.domains;
+
+				cb();
 			})
 		}
 	});
