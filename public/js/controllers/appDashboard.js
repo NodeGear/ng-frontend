@@ -20,7 +20,7 @@ define([
 			});
 		});
 
-		socket.on('process_log', function(data) {
+		$scope.processLog = function(data) {
 			for (var i = 0; i < $scope._app.processes.length; i++) {
 				if ($scope._app.processes[i]._id == data.pid) {
 					var proc = $scope._app.processes[i];
@@ -41,9 +41,9 @@ define([
 					return;
 				}
 			}
-		})
+		}
 
-		socket.on('app_event', function(data) {
+		$scope.app_event = function(data) {
 			if (data.app != $scope.app._id) {
 				// Not for my eyes..
 				return;
@@ -52,9 +52,9 @@ define([
 			app.addEvent(data);
 
 			$scope.reloadScope();
-		});
+		}
 
-		socket.on('app_running', function(data) {
+		$scope.app_running = function(data) {
 			if (data.app != $scope.app_id) {
 				// Not in this app
 				return;
@@ -69,6 +69,16 @@ define([
 			}
 
 			$scope.reloadScope();
+		}
+
+		socket.on('process_log', $scope.processLog);
+		socket.on('app_event', $scope.app_event);
+		socket.on('app_running', $scope.app_running);
+
+		$scope.$on('$destroy', function() {
+			socket.removeListener('process_log', $scope.processLog);
+			socket.removeListener('app_event', $scope.app_event);
+			socket.removeListener('app_running', $scope.app_running);
 		})
 
 		$scope.reloadScope = function() {

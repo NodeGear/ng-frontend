@@ -27,6 +27,9 @@ exports.router = function(app) {
 	app.all('/admin/*', util.mustBeAdmin);
 	admin.router(app);
 
+	// Handle HTTP reqs
+	apps.httpRouter(app);
+
 	// No HTML requests beyond this point
 
 	app.get('*', function(req, res, next) {
@@ -35,10 +38,7 @@ exports.router = function(app) {
 				next()
 			},
 			html: function() {
-				if (res.locals.loggedIn)
-					res.render('layout')
-				else
-					res.render('auth')
+				res.render('layout');
 			}
 		});
 	});

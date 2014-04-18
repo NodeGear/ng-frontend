@@ -18,12 +18,14 @@ exports.router = function(_app) {
 		.delete('/app/:id/process/:pid', deleteProcess)
 }
 
+exports.getProcess = getProcess;
+
 function getProcesses (req, res) {
 	var query = {
 		app: res.locals.app._id
 	};
 
-	if (req.query.includeDeleted != true) {
+	if (req.query.includeDeleted != 'true') {
 		query.deleted = false;
 	}
 

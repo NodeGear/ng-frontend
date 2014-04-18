@@ -6,6 +6,10 @@ var mongoose = require('mongoose')
 	, app = require('./app')
 	, server = require('../../app')
 
+exports.httpRouter = function(_app) {
+	app.httpRouter(_app);
+}
+
 exports.unauthorized = function (_app, template) {
 	// Unrestricted -- non-authorized people can access!
 	template([

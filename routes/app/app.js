@@ -13,12 +13,20 @@ var mongoose = require('mongoose')
 	, process = require('./process')
 	, environment = require('./environment')
 
+exports.httpRouter = function(app) {
+	app.all('/app/:id', getApp)
+		.all('/app/:id/*', getApp)
+	
+	log.httpRouter(app);
+}
+
 exports.unauthorized = function (template) {
 	template([
 		['app', 'app/app'],
 		'app/dashboard',
 		['app/process', 'app/processModal'],
 		'app/logs',
+		'app/log',
 		'app/traffic',
 		'app/usage',
 		'app/settings',
@@ -30,10 +38,7 @@ exports.unauthorized = function (template) {
 }
 
 exports.router = function (app) {
-	app.all('/app/:id', getApp)
-		.all('/app/:id/*', getApp)
-	
-		.get('/app/:id', viewApp)
+	app.get('/app/:id', viewApp)
 
 		.get('/app/:id/events', getEvents)
 	
@@ -117,7 +122,7 @@ function authorize_socket (socket, data, cb) {
 	}
 
 	getApp(req, res, function() {
-		getProcess(req, res, function() {
+		process.getProcess(req, res, function() {
 			cb(locals);
 		});
 	});

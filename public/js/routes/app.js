@@ -151,8 +151,30 @@ define([
 		.state('app.logs', {
 			url: '/logs',
 			pageTitle: "App Logs",
-			templateUrl: "/view/app/logs",
+			template: "<ui-view autoscroll='false'></ui-view>",
 			controller: "AppLogsController"
+		})
+		.state('app.logs.process', {
+			url: '/:pid',
+			pageTitle: "App Log from Process",
+			templateUrl: "/view/app/logs",
+			controller: "AppLogProcessController",
+			resolve: {
+				process: function($stateParams) {
+					return $stateParams.pid;
+				}
+			}
+		})
+		.state('app.logs.process.log', {
+			url: '/:lid',
+			pageTitle: "App Log from Process",
+			templateUrl: "/view/app/log",
+			controller: "AppLogController",
+			resolve: {
+				log: function($stateParams) {
+					return $stateParams.lid;
+				}
+			}
 		})
 		.state('app.traffic', {
 			url: '/traffic',

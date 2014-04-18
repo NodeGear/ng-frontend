@@ -5,170 +5,119 @@ var mongoose = require('mongoose')
 	, util = require('../../util')
 	, Tail = require('tail').Tail
 	, ansi2html = new (require('ansi-to-html'))
+	, app = require('../../app')
+
+exports.httpRouter = function (app) {
+	app.get('/app/:id/logs/:pid/:lid/download', getProcess, getLogId, downloadLog);
+}
 
 exports.router = function (app) {
-	app.get('/app/:id/log/:lid', getLog)
-		.get('/app/:id/log/:lid/*', getLog)
-		.get('/app/:id/log/:lid', viewLog)
-		.get('/app/:id/log/:lid/download', downloadLog)
+	app.get('/app/:id/logs/:pid', getProcess, getLogs)
+		.get('/app/:id/logs/:pid/*', getProcess)
+		.get('/app/:id/logs/:pid/:lid', getLogId, getLog)
+		.get('/app/:id/logs/:pid/:lid/download', getLogId, downloadLog)
 }
 
 exports.socket = function (socket) {
-	socket.on('app:watchLog', watchLog)
 }
 exports.socketDisconnect = function (socket) {
-	cleanupWatchers(socket);
 }
 
-function getLog (req, res, next) {
-	var app = res.locals.app
-	var lid = req.params.lid;
+function getProcess (req, res, next) {
+	var pid = req.params.pid;
 	
-	var log;
-	if (!lid || lid == 'latest') {
-		log = app.logs[0]
-	} else {
-		try {
-			lid = mongoose.Types.ObjectId(lid);
-			for (var i = 0; i < app.logs.length; i++) {
-				if (app.logs[i]._id.equals(lid)) {
-					log = app.logs[i]
-					break;
-				}
-			}
-		} catch (ex) {
-			res.redirect('/app/'+res.locals.app._id+'/logs')
+	try {
+		pid = mongoose.Types.ObjectId(pid);
+	} catch (ex) {
+		res.send({
+			status: 400,
+			logs: []
+		});
+		return;
+	}
+
+	models.AppProcess.findOne({
+		_id: pid,
+		app: res.locals.app._id
+	}, function(err, process) {
+		if (err) throw err;
+
+		if (!process) {
+			res.send({
+				status: 404,
+				message: "Not Found"
+			});
 			return;
 		}
-	}
-	
-	res.locals.log = log;
-	
-	next()
+
+		res.locals.process = process;
+
+		next();
+	});
 }
 
-function viewLog (req, res) {
-	res.locals.app.getLog(res.locals.log, -1, function(log) {
+function getLogs (req, res) {
+	var pid = res.locals.process._id;
+
+	app.backend.lrange('pm:app_process_logs_'+pid, 0, -1, function(err, logs) {
+		if (err) throw err;
+
 		res.send({
-			log: log
+			status: 200,
+			logs: logs
 		})
-	});
+	})
+}
+
+function getLogId (req, res, next) {
+	var lid = req.params.lid;
+	var pid = req.params.pid;
+
+	// Gets the log id for Latest.. Also checks if the log belongs to the process.
+
+	if (lid == 'Latest') {
+		app.backend.lindex('pm:app_process_logs_'+pid, 0, function(err, latest) {
+			if (err) throw err;
+
+			res.locals.lid = latest;
+			next();
+		});
+
+		return;
+	}
+
+	if (lid.indexOf(pid+'_') == -1) {
+		// Not this process' log file
+		res.send({
+			status: 400
+		});
+
+		return;
+	}
+
+	res.locals.lid = lid;
+	next();
+}
+
+function getLog (req, res) {
+	app.backend.lrange('pm:app_process_log_'+res.locals.lid, 0, 100, function(err, entries) {
+		if (err) throw err;
+
+		res.send({
+			status: 200,
+			entries: entries
+		})
+	})
 }
 
 function downloadLog (req, res) {
-	console.log(res.locals.log)
-	res.locals.app.getLog(res.locals.log, -1, false, function(log) {
-		console.log(log)
+	app.backend.lrange('pm:app_process_log_'+res.locals.lid, 0, -1, function(err, entries) {
+		if (err) throw err;
+
 		res.set({
 			'Content-Type': 'application/octet-stream',
-			'Content-Disposition': 'attachment; filename="'+res.locals.app.name+' - '+log.created+'".log'
+			'Content-Disposition': 'attachment; filename="'+res.locals.app.nameUrl+'-'+res.locals.lid+'.log"'
 		})
-		res.send(log.content)
+		res.send(entries.reverse().join(''));
 	});
-}
-
-function watchLog (data) {
-	var socket = this;
-	
-	var appId = data.app;
-	var lid = data.log;
-	var watch = Boolean(data.watch);
-	try {
-		appId = mongoose.Types.ObjectId(appId);
-		lid = mongoose.Types.ObjectId(lid)
-	} catch (e) {
-		// invalid app id
-		return;
-	}
-	
-	models.App.findOne({
-		_id: appId,
-		user: socket.handshake.user._id
-	}, function(err, drone) {
-		if (err) throw err;
-		
-		if (!drone) {
-			// user doesn't have privileges
-			return;
-		}
-		
-		var found = false;
-		for (var i = 0; i < drone.logs.length; i++) {
-			if (drone.logs[i]._id.equals(lid)) {
-				found = drone.logs[i];
-				break;
-			}
-		}
-		
-		if (!found) return;
-		
-		socket.get('app_logWatchers', function(err, watchers) {
-			if (err) throw err;
-			
-			if (!watchers) {
-				watchers = [];
-			}
-			
-			var watcher = false;
-			for (var i = 0; i < watchers.length; i++) {
-				if (watchers[i].app.equals(appId) && watchers[i].log.equals(lid)) {
-					watcher = i;
-					break;
-				}
-			}
-			
-			if (watch) {
-				// Start watching
-				
-				if (watcher === false) {
-					console.log(found.location)
-					
-					var tail = new Tail(found.location);
-					tail.on("line", function(data) {
-						socket.emit('app:logdata', {
-							app: appId,
-							log: lid,
-							data: ansi2html.toHtml(data)+"<br/>"
-						});
-					});
-					
-					watchers.push({
-						app: appId,
-						log: lid,
-						tail: tail
-					});
-					
-				} else {
-					console.log("Already watching??")
-				}
-			} else {
-				if (watcher === false) {
-					console.log("not Watching??")
-					return;
-				}
-				
-				watchers[watcher].tail.unwatch();
-				watchers.splice(watcher, 1);
-			}
-			
-			socket.set('app_logWatchers', watchers);
-		})
-	})
-}
-
-function cleanupWatchers(socket) {
-	socket.get('app_logWatchers', function(err, watchers) {
-		if (err) throw err;
-		
-		if (!watchers) {
-			return;
-		}
-		
-		for (var i = 0; i < watchers.length; i++) {
-			watchers[i].tail.unwatch();
-		}
-		
-		watchers = [];
-		return;
-	})
 }
