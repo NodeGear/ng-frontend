@@ -1,0 +1,43 @@
+#paymentMethodModal.modal.fade(ng-init="init('#{stripe_pub}')")
+	.modal-dialog
+		.modal-content
+			.modal-header
+				button.close(type="button" data-dismiss="modal") &times;
+				h4.modal-title(ng-show="card._id.length == 0") Add a Card
+				h4.modal-title(ng-hide="card._id.length == 0") Edit Card
+			.modal-body
+				p {{ status }}
+				form.form-horizontal(name="editCard")
+					.form-group
+						label.col-md-4.col-lg-4.col-sm-4.control-label(for="card_name") Card Name
+						.col-lg-6.col-md-6.col-sm-6
+							input#card_name.form-control(type="text" placeholder="e.g. Primary Card, or Credit Card" required ng-model="card.name" ng-disabled="cardFormDisabled")
+					br
+					.form-group
+						label.col-md-4.col-lg-4.col-sm-4.control-label(for="cardholder" ng-style="{ color: card.errors.name }") Cardholder Name
+						.col-lg-6.col-md-6.col-sm-6
+							input#cardholder.form-control(type="text" placeholder="Cardholder Name" required ng-model="card.cardholder" ng-disabled="cardFormDisabled")
+					.form-group
+						label.col-md-4.col-lg-4.col-sm-4.control-label(for="card_number" ng-style="{ color: card.errors.number }") Card Number
+						.col-lg-6.col-md-6.col-sm-6
+							input#card_number.form-control(type="text" placeholder="Your 16 Digit Card Number" required ng-model="card.number" ng-disabled="cardFormDisabled || card._id.length > 0")
+					.form-group
+						label.col-md-4.col-lg-4.col-sm-4.control-label(for="expiry_date" ng-style="{ color: card.errors.expiry }") Expiry Date
+						.col-lg-6.col-md-6.col-sm-6
+							input#expiry_date.form-control(type="text" placeholder="Expiration Date | MM/YYYY" required ng-model="card.expiry" ng-disabled="cardFormDisabled || card._id.length > 0")
+					.form-group
+						label.col-md-4.col-lg-4.col-sm-4.control-label(for="cvc" ng-style="{ color: card.errors.cvc }") CVC
+						.col-lg-6.col-md-6.col-sm-6
+							input#cvc.form-control(type="text" placeholder="CVC Number (on the back your card)" required ng-model="card.cvc" ng-disabled="cardFormDisabled || card._id.length > 0")
+					.form-group
+						.col-lg-7.col-md-7.col-sm-7.col-lg-offset-4.col-md-offset-4.col-sm-offset-4
+							.checkbox
+								label
+									input#default(type="checkbox" ng-model="card.default" ng-disabled="cardFormDisabled")
+									| Set as Default Payment Method
+			.modal-footer
+				button.btn.btn-danger.pull-left(ng-show="card._id.length > 0" ng-click="deleteCard()") Delete Card
+				button.btn.btn-default(data-dismiss="modal" ng-disabled="cardFormDisabled") Close
+				button.btn.btn-success(ng-click="saveCard()" ng-disabled="cardFormDisabled || editCard.$invalid")
+					span(ng-show="card._id.length == 0") Create Card
+					span(ng-show="card._id.length > 0") Save Card

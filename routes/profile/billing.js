@@ -12,27 +12,29 @@ exports.unauthorized = function (template) {
 		['history', 'profile/history'],
 		['transaction', 'profile/transaction'],
 		['credits', 'profile/credits'],
-		['paymentMethods', 'profile/paymentMethods']
+		['paymentMethods', 'profile/paymentMethods'],
+		['paymentMethod', 'profile/paymentMethod']
 	], {
 		prefix: 'profile/billing'
 	});
 }
 
 exports.router = function (app) {
-	app.get('/profile/billing/history', util.authorized, viewHistory)
+	app.get('/profile/billing/history', viewHistory)
 
-		.get('/profile/billing/transaction/:tid', util.authorized, getTransaction)
+		.get('/profile/billing/transaction/:tid', getTransaction)
 
 		// Makes a payment..
-		.post('/profile/billing/addCredits', util.authorized, createStripeCustomer, getUserCard, addCredits)
+		.post('/profile/billing/addCredits', createStripeCustomer, getUserCard, addCredits)
 
-		.get('/profile/balance', util.authorized, getBalance)
+		.get('/profile/balance', getBalance)
 
 		// Card API
-		.get('/profile/cards', util.authorized, getUserCards, getCards)
-		.post('/profile/card', util.authorized, createStripeCustomer, getUserCards, createCard)
-		.put('/profile/card', util.authorized, createStripeCustomer, getUserCard, updateCard)
-		.delete('/profile/card', util.authorized, getUserCard, deleteCard)
+		.get('/profile/cards', getUserCards, getCards)
+		.get('/profile/card/:card', getUserCard, getCard)
+		.post('/profile/card', createStripeCustomer, getUserCards, createCard)
+		.put('/profile/card', createStripeCustomer, getUserCard, updateCard)
+		.delete('/profile/card', createStripeCustomer, getUserCard, deleteCard)
 }
 
 function getUserCards (req, res, next) {
@@ -63,6 +65,12 @@ function getUserCards (req, res, next) {
 
 function getUserCard (req, res, next) {
 	var card = req.body.card;
+	if (!card) {
+		card = req.params.card;
+	}
+	if (!card) {
+		card = req.query._id;
+	}
 
 	try {
 		card = mongoose.Types.ObjectId(card);
@@ -263,6 +271,21 @@ function getCards (req, res) {
 		status: 200,
 		cards: res.locals.paymentMethods
 	});
+}
+
+function getCard (req, res) {
+	var card = res.locals.card.toObject();
+
+	if (req.user.default_payment_method && req.user.default_payment_method.equals(card._id)) {
+		card.default = true;
+	} else {
+		card.default = false;
+	}
+
+	res.send({
+		status: 200,
+		paymentMethod: card
+	})
 }
 
 function createStripeCustomer (req, res, next) {

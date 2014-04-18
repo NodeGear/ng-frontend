@@ -59,5 +59,37 @@ define([
 			pageTitle: 'Payment Methods',
 			templateUrl: "/view/profile/billing/paymentMethods"
 		})
+		.state('profile.billing.paymentMethods.add', {
+			url: '/add',
+			pageTitle: 'Add Payment Method',
+			templateUrl: "/view/profile/billing/paymentMethod",
+			controller: 'PaymentMethodController',
+			resolve: {
+				paymentMethod: function() {
+					return {
+						paymentMethod: {
+							_id: ''
+						}
+					};
+				}
+			}
+		})
+		.state('profile.billing.paymentMethods.edit', {
+			url: '/:card',
+			pageTitle: 'Edit Payment Methods',
+			templateUrl: "/view/profile/billing/paymentMethod",
+			controller: 'PaymentMethodController',
+			resolve: {
+				paymentMethod: function($http, $q, $stateParams) {
+					var promise = $q.defer();
+
+					$http.get('/profile/card/'+$stateParams.card).success(function(data, status) {
+						promise.resolve(data);
+					})
+
+					return promise.promise;
+				}
+			}
+		})
 	});
 });

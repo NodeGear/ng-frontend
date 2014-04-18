@@ -1,43 +1,15 @@
 define([
 	'angular',
 	'app',
-	'moment'
+	'moment',
+	'../services/csrf'
 ], function(angular, app, moment) {
-	app.controller('PaymentMethodsController', function ($scope, $http, $rootScope) {
+	app.controller('PaymentMethodsController', function ($scope, $http, $rootScope, csrf) {
 		$scope.cards = [];
-		$scope.cardFormDisabled = false;
-		$scope.csrf = "";
-		$scope.card = {};
-		$scope.showEditCard = false;
 		
-		$scope.init = function (csrf, key) {
-			$scope.csrf = csrf;
-			require(['https://js.stripe.com/v2/'], function() {
-				Stripe.setPublishableKey(key);
-			})
-			
+		$scope.init = function () {
 			// get cards
 			$scope.getCards()
-			
-			$scope.card = $scope.getNewCard();
-		}
-		
-		$scope.getNewCard = function () {
-			return {
-				_id: '',
-				name: '',
-				cardholder: '',
-				number: '',
-				expiry: '',
-				cvc: '',
-				default: true,
-				errors: {
-					name: 'inherit',
-					number: 'inherit',
-					cvc: 'inherit',
-					expiry: 'inherit'
-				}
-			};
 		}
 		
 		$scope.addCard = function () {
@@ -56,121 +28,55 @@ define([
 				}
 			})
 		}
+	})
 
-		$scope.makeDefault = function (card) {
-			for (var i = 0; i < $scope.cards.length; i++) {
-				$scope.cards[i].default = false;
-			}
+	.controller('PaymentMethodController', function($scope, $http, $state, csrf, paymentMethod) {
+		$("#paymentMethodModal").modal('show')
+		.on('hidden.bs.modal', function() {
+			$state.transitionTo('profile.billing.paymentMethods');
+		});
 
-			card.default = true;
-			
-			$http.put('/profile/card', {
-				_csrf: $scope.csrf,
-				_id: card._id,
-				cardholder: card.cardholder,
-				name: card.name,
-				default: card.default
-			}).success(function(data, status) {
-				if (data.status == 200) {
-					$scope.getCards()
-				} else {
-					alert("Could not card as default: "+data.message);
-				}
-			}).error(function(data, status) {
-				alert("Request to save a new default card has failed. Please Try Again later");
-			});
-		}
-		
-		$scope.cancelSave = function () {
-			$scope.card = $scope.getNewCard();
-			$scope.showEditCard = false;
-			$scope.status = "";
-		}
-		
-		$scope.selectCard = function (card) {
-			$scope.card = {
-				_id: card._id,
-				number: 'XXXX XXXX XXXX '+card.last4,
-				name: card.name,
-				cardholder: card.cardholder,
-				cvc: 'XXX',
-				expiry: 'XX/XXXX',
-				default: card.default,
+		$scope.cardFormDisabled = false;
+		$scope.card = paymentMethod.paymentMethod;
+
+		$scope.getNewCard = function () {
+			return {
+				_id: '',
+				name: '',
+				cardholder: '',
+				number: '',
+				expiry: '',
+				cvc: '',
+				default: true,
 				errors: {
 					name: 'inherit',
 					number: 'inherit',
 					cvc: 'inherit',
 					expiry: 'inherit'
 				}
-			}
-			$scope.showEditCard = true;
-			$scope.status = "";
+			};
 		}
-		
-		$scope.saveCard = function () {
-			if ($scope.cardFormDisabled) return;
-			
-			if ($scope.validateCard()) {
-				$scope.status = "Validating Card..."
-				$scope.cardFormDisabled = true;
-				
-				if ($scope.card._id.length > 0) {
-					// Update the card
-					return $scope.updateCard();
-				}
-				
-				var expiry = $scope.card.expiry;
-				var split = expiry.split('/');
-				
-				Stripe.card.createToken({
-					number: $scope.card.number,
-					cvc: $scope.card.cvc,
-					exp_month: split[0],
-					exp_year: split[1],
-					name: $scope.card.cardholder
-				}, $scope.cardResponse);
-			}
-		}
-		
-		$scope.updateCard = function () {
-			$http.put('/profile/card', {
-				_csrf: $scope.csrf,
-				card: $scope.card._id,
-				cardholder: $scope.card.cardholder,
-				name: $scope.card.name,
-				default: $scope.card.default
-			}).success(function(data, status) {
-				if (data.status == 200) {
-					$scope.status = "Saved.";
-					$scope.getCards()
-					$scope.showEditCard = false;
-					$scope.status = "";
-				} else {
-					$scope.status = data.message;
-				}
-				
-				$scope.cardFormDisabled = false;
-			}).error(function(data, status) {
-				$scope.status = "Request Failed. Please Try Again";
-				$scope.cardFormDisabled = false;
 
-				if (!$scope.$$phase) {
-					$scope.$digest();
-				}
+		$scope.init = function (stripe_pub) {
+			require(['https://js.stripe.com/v2/'], function() {
+				Stripe.setPublishableKey(stripe_pub);
 			})
 		}
-		
-		$scope.deleteCard = function (card) {
-			$http.delete('/profile/card?_csrf='+$scope.csrf+'&_id='+card._id)
-			.success(function(data, status) {
-				if (data.status == 200) {
-					$scope.getCards();
-				} else {
-					alert(data.message);
-				}
-			})
+
+		if ($scope.card._id == '') {
+			$scope.card = $scope.getNewCard();
+		} else {
+			$scope.card.number = 'XXXX XXXX XXXX '+$scope.card.last4;
+			$scope.card.cvc = 'XXX';
+			$scope.card.expiry = 'XX/XXXX';
+			$scope.card.errors = {
+				name: 'inherit',
+				number: 'inherit',
+				cvc: 'inherit',
+				expiry: 'inherit'
+			}
 		}
-		
+
 		$scope.cardResponse = function (status, response) {
 			if (response.error) {
 				$scope.status = response.error.message;
@@ -179,7 +85,7 @@ define([
 				$scope.status = "Saving Card...";
 				
 				var data = {
-					_csrf: $scope.csrf,
+					_csrf: csrf.csrf,
 					card_id: response.id,
 					name: $scope.card.name,
 					default: $scope.card.default
@@ -195,8 +101,8 @@ define([
 						
 						$scope.status = "Card Saved";
 						$scope.getCards();
-						$scope.showEditCard = false;
-						$scope.status = "";
+						$scope.$parent.getCards();
+						$("#paymentMethodModal").modal('hide');
 					} else {
 						$scope.status = data.message;
 					}
@@ -260,6 +166,70 @@ define([
 			}
 		
 			return valid;
+		}
+
+		$scope.saveCard = function () {
+			if ($scope.cardFormDisabled) return;
+			
+			if ($scope.validateCard()) {
+				$scope.status = "Validating Card..."
+				$scope.cardFormDisabled = true;
+				
+				if ($scope.card._id.length > 0) {
+					// Update the card
+					return $scope.updateCard();
+				}
+				
+				var expiry = $scope.card.expiry;
+				var split = expiry.split('/');
+				
+				Stripe.card.createToken({
+					number: $scope.card.number,
+					cvc: $scope.card.cvc,
+					exp_month: split[0],
+					exp_year: split[1],
+					name: $scope.card.cardholder
+				}, $scope.cardResponse);
+			}
+		}
+		
+		$scope.updateCard = function () {
+			$http.put('/profile/card', {
+				_csrf: csrf.csrf,
+				card: $scope.card._id,
+				cardholder: $scope.card.cardholder,
+				name: $scope.card.name,
+				default: $scope.card.default
+			}).success(function(data, status) {
+				if (data.status == 200) {
+					$scope.status = "Saved.";
+					$scope.$parent.getCards();
+					$("#paymentMethodModal").modal('hide');
+				} else {
+					$scope.status = data.message;
+				}
+				
+				$scope.cardFormDisabled = false;
+			}).error(function(data, status) {
+				$scope.status = "Request Failed. Please Try Again";
+				$scope.cardFormDisabled = false;
+
+				if (!$scope.$$phase) {
+					$scope.$digest();
+				}
+			})
+		}
+
+		$scope.deleteCard = function () {
+			$http.delete('/profile/card?_id='+$scope.card._id+'&_csrf='+csrf.csrf)
+			.success(function(data, status) {
+				if (data.status == 200) {
+					$scope.$parent.getCards();
+					$("#paymentMethodModal").modal('hide');
+				} else {
+					alert(data.message);
+				}
+			})
 		}
 	})
 });
