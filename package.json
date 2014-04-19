@@ -30,7 +30,8 @@
     "grunt": "^0.4.4",
     "grunt-bump": "0.0.13",
     "toobusy-js": "^0.3.0",
-    "ng-models": "git+ssh://git@lab.castawaydev.org:nodecloud/ng-models.git"
+    "ng-models": "git+ssh://git@lab.castawaydev.org:nodecloud/ng-models.git",
+    "moment": "^2.6.0"
   },
   "devDependencies": {
     "should": "^3.1.4",

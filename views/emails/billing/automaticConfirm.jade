@@ -1,0 +1,23 @@
+h3 Invoice Notification
+
+p This is a written confirmation that NodeGear has deducted £#{transaction.total} from your Account Balance for:
+table
+	thead
+		tr
+			th Charge Name
+			th Description
+			th Amount
+			th Hours
+			th Price Per Hour
+	tbody
+		for charge in transaction.charges
+			tr
+				td= charge.name
+				td= charge.description
+				td= charge.total.toFixed(2)
+				td= charge.hours.number.toFixed(2)
+				td= charge.hours.price.toFixed(2)
+
+p Best Regards,
+	br
+	| NodeGear

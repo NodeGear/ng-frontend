@@ -25,6 +25,7 @@ define([
 		$scope.reload = function() {
 			$http.get('/profile/balance').success(function(data, status) {
 				$scope.balance = data.balance;
+
 				if ($scope.balance >= 0) {
 					$scope.balanceStyle = {
 						color: positive
@@ -37,7 +38,7 @@ define([
 					$scope.balanceStatus = "You owe";
 				}
 
-				$scope.used = 0.00;
+				$scope.used = data.usage;
 				$scope.usageStyle = {
 					color: negative
 				};
@@ -47,5 +48,40 @@ define([
 				}
 			});
 		};
-	});
+	})
+
+	.controller('BillingUsageController', function($scope, $http, $state) {
+		$scope.usages = [];
+
+		$http.get('/profile/billing/usage').success(function(data) {
+			if (data.status == 200) {
+				$scope.usages = data.usages;
+			}
+
+			for (var i = 0; i < $scope.usages.length; i++) {
+				var minutes = $scope.usages[i].minutes;
+
+				var start = $scope.usages[i].start;
+				$scope.usages[i].startFormatted = moment(start).format('DD/MM/YYYY hh:mm:ss');
+
+				var end = $scope.usages[i].end;
+				if (!end) {
+					end = Date.now();
+
+					$scope.usages[i].endFormatted = 'Now';
+					minutes = ((new Date(end)).getTime() - (new Date(start)).getTime()) / 1000 / 60;
+					$scope.usages[i].minutes = Math.round(minutes);
+				} else {
+					$scope.usages[i].endFormatted = moment(end).format('DD/MM/YYYY hh:mm:ss');
+				}
+
+				var total = ((minutes / 60) * $scope.usages[i].price_per_hour);
+				$scope.usages[i].totalPrice = (Math.round(total * 100) / 100).toFixed(2);
+			}
+
+			if (!$scope.$$phase) {
+				$scope.$digest();
+			}
+		})
+	})
 });

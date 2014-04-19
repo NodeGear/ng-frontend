@@ -27,26 +27,24 @@
 
 				hr
 				h4 Breakdown of Charges
-				table.table
-					thead
-						tr
-							th App
-							th Name
-							th Description
-							th Total
-							th Hours
-							th Price Per Hour
-					tbody
-						tr(ng-repeat="charge in transaction.charges")
-							td
-								a(ng-show="charge.is_app" ui-sref="app.dashboard({ id: charge.app._id })") {{ charge.app.name }}
-								span(ng-hide="charge.is_app"): i n/a
-							td {{ charge.name }}
-							td {{ charge.description }}
-							td {{ charge.total }}
-							td
-								span(ng-show="charge.has_hours") {{ charge.hours.number }}
-								span(ng-hide="charge.has_hours"): i n/a
-							td
-								span(ng-show="charge.has_hours") {{ charge.hours.price }}
-								span(ng-hide="charge.has_hours"): i n/a
+				.row
+					.col-md-12.col-lg-12.col-sm-12
+						table.table.table-responsive
+							thead
+								tr
+									th Name
+									th Description
+									th Total
+									th Hours
+									th Price Per Hour
+							tbody
+								tr(ng-repeat="charge in transaction.charges")
+									td {{ charge.name }}
+									td {{ charge.description }}
+									td {{ charge.total.toFixed(2) }}
+									td
+										span(ng-show="charge.has_hours") {{ charge.hours.number.toFixed(2) }}
+										span(ng-hide="charge.has_hours"): i n/a
+									td
+										span(ng-show="charge.has_hours") {{ charge.hours.price }}
+										span(ng-hide="charge.has_hours"): i n/a

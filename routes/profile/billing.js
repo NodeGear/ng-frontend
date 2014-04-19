@@ -13,7 +13,8 @@ exports.unauthorized = function (template) {
 		['transaction', 'profile/transaction'],
 		['credits', 'profile/credits'],
 		['paymentMethods', 'profile/paymentMethods'],
-		['paymentMethod', 'profile/paymentMethod']
+		['paymentMethod', 'profile/paymentMethod'],
+		['usage', 'profile/usage']
 	], {
 		prefix: 'profile/billing'
 	});
@@ -28,6 +29,8 @@ exports.router = function (app) {
 		.post('/profile/billing/addCredits', createStripeCustomer, getUserCard, addCredits)
 
 		.get('/profile/balance', getBalance)
+
+		.get('/profile/billing/usage', getRecentUsage)
 
 		// Card API
 		.get('/profile/cards', getUserCards, getCards)
@@ -159,9 +162,47 @@ function viewHistory (req, res) {
 }
 
 function getBalance (req, res) {
-	res.send({
-		status: 200,
-		balance: req.user.balance
+	// Get up to date usage..
+	models.AppProcessUptime.find({
+		paid: false,
+		user: req.user._id
+	}, function(err, usages) {
+		if (err) throw err;
+
+		var usage = 0;
+		for (var i = 0; i < usages.length; i++) {
+			var minutes = usages[i].minutes;
+			if (!minutes && !usages[i].end) {
+				minutes = (Date.now() - usages[i].start) / 1000 / 60;
+			}
+
+			var hours = minutes / 60;
+
+			usage += (usages[i].price_per_hour * hours);
+		}
+
+		// Just rounding..
+		usage = (Math.round(usage * 100) / 100).toFixed(2);
+		var balance = (Math.round(req.user.balance * 100) / 100).toFixed(2)
+
+		res.send({
+			status: 200,
+			balance: balance,
+			usage: usage
+		})
+	})
+}
+
+function getRecentUsage (req, res) {
+	models.AppProcessUptime.find({
+		user: req.user._id
+	}).populate('app process server').sort('-created').limit(10).exec(function(err, usages) {
+		if (err) throw err;
+
+		res.send({
+			status: 200,
+			usages: usages
+		})
 	})
 }
 

@@ -192,6 +192,15 @@ function stopProcess (req, res) {
 	process.populate('server', function(err) {
 		if (err) throw err;
 		
+		if (!process.server) {
+			res.send({
+				status: 400,
+				message: "Invalid Server"
+			});
+
+			return;
+		}
+
 		app.backend.publish('server_'+process.server.identifier, JSON.stringify({
 			id: process._id,
 			action: 'stop'

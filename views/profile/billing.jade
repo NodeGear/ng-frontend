@@ -14,6 +14,6 @@ div(ng-controller="CurrentUsageController" ng-init="init()")
 		.col-md-6.col-sm-6.col-lg-6
 			h3.text-center(ng-style="usageStyle")
 				| £{{ used }}
-			h4.text-center: a(href="#" target="_new") View usage and charges
+			h4.text-center: a(ui-sref="profile.billing.usage") Current Period Charges
 
 ui-view(autoscroll="false")

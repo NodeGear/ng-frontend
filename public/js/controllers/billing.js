@@ -24,7 +24,7 @@ define([
 			})
 		}
 	})
-
+	
 	.controller('PaymentMethodController', function($scope, $http, $state, csrf, paymentMethod) {
 		$("#paymentMethodModal").modal('show')
 		.on('hidden.bs.modal', function() {

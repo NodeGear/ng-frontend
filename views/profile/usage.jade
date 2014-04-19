@@ -1,0 +1,18 @@
+table.table.table-striped
+	thead
+		th App
+		th Process
+		th Server
+		th Minutes
+		th Cost
+		th Period
+		th Transacted
+	tbody
+		tr(ng-repeat="usage in usages")
+			td {{ usage.app.name }}
+			td {{ usage.process.name }}
+			td {{ usage.server.name }}
+			td {{ usage.minutes }}
+			td £{{ usage.totalPrice }}
+			td {{ usage.startFormatted }} - {{ usage.endFormatted }}
+			td {{ usage.paid }}

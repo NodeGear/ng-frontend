@@ -91,5 +91,11 @@ define([
 				}
 			}
 		})
+		.state('profile.billing.usage', {
+			url: '/usage',
+			pageTitle: 'Spend Analysis',
+			templateUrl: "/view/profile/billing/usage",
+			controller: "BillingUsageController"
+		})
 	});
 });
