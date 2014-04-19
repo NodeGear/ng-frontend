@@ -16,7 +16,9 @@
 							.checkbox
 								label
 									input(type="checkbox" ng-model="domain.is_subdomain")
-									|  Is Subdomain (on {{domain.domain}}.ngapp.io)
+									|  Is Subdomain (on 
+									small {{ domain.domain }}.{{ user.username }}.ngapp.io
+									| )
 			.modal-footer
 				button.btn.btn-danger.pull-left(ng-hide="addDomain" ng-click="deleteDomain()") Delete Domain
 				span.text-muted(ng-class="{ 'pull-left': addDomain }" ng-bind="status") Loading..

@@ -16,7 +16,7 @@ table.table
 			td
 				span(ng-show="domain.is_subdomain")
 					strong {{ domain.domain }}
-					| .username.ngapp.io
+					small .{{ user.username }}.ngapp.io
 				span(ng-hide="domain.is_subdomain")
 					strong {{ domain.domain }}
 

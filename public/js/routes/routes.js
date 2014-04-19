@@ -4,7 +4,8 @@ define([
 	'../app',
 	'./app',
 	'./tickets',
-	'./profile'
+	'./profile',
+	'../services/user'
 ], function(angular, io, app) {
 	app.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
 		$locationProvider.html5Mode(true);
@@ -28,9 +29,11 @@ define([
 			}
 		})
 	})
-	.run(function($rootScope, $state, $stateParams, $http) {
+	.run(function($rootScope, $state, $stateParams, $http, user) {
 		$rootScope.$state = $state
 		$rootScope.$stateParams = $stateParams
+
+		user.getUser(function() {})
 	
 		$http.get('/apps').success(function(data, status) {
 			$rootScope.apps = data.apps;

@@ -3,9 +3,9 @@ define([
 	'app',
 	'moment'
 ], function(angular, app, moment) {
-	app.controller('AddAppController', function ($scope, $http, $rootScope, $sce) {
+	app.controller('AddAppController', function ($scope, $http, $rootScope) {
 		$scope.creating = false;
-		$scope.creationLog = $sce.trustAsHtml("...");
+		$scope.status = "";
 		
 		$scope.create = function (csrf) {
 			$http.post('/app/add', {

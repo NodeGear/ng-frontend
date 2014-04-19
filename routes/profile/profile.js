@@ -26,19 +26,20 @@ exports.unauthorized = function (app, template) {
 
 exports.router = function (app, template) {
 	app.put('/profile/profile', updateProfile)
+		.get('/profile', getProfile)
 	
 	sshkeys.router(app)
 	billing.router(app)
 }
 
 function getProfile (req, res) {
-	var u = req.user.toObject();
 	res.send({
 		status: 200,
 		user: {
-			name: u.name,
-			username: u.username,
-			email: u.email
+			name: req.user.name,
+			username: req.user.username,
+			email: req.user.email,
+			admin: req.user.admin
 		}
 	})
 }
@@ -57,6 +58,11 @@ function updateProfile (req, res) {
 			if (username.length > 0) {
 				if (username === req.user.username) {
 					return cb(null);
+				}
+
+				if (!username.match(/^[a-z0-9_-]{3,15}$/)) {
+					// Errornous username
+					return cb(null, "Username Invalid");
 				}
 
 				models.User.find({

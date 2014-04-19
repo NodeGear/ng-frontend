@@ -173,6 +173,11 @@ function doRegister (req, res) {
 	v.check(username, 'Please enter a valid username').len(4);
 	v.check(name, 'Please enter a valid name').len(4);
 	
+	if (!username.match(/^[a-z0-9_-]{3,15}$/)) {
+		// Errornous username
+		errs.push('Please enter a valid username');
+	}
+
 	// validate password
 	v.check(password, 'Please enter a valid password').len(5);
 

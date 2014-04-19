@@ -9,7 +9,7 @@ include ../inc/flash
 		.col-lg-6.col-sm-6.col-md-6
 			p.lead Create a new <code>node.js</code> application from a template.
 			p.lead To create a custom application, please push your code to 
-				small git://git@nodegear.io:#{user.username}/{repo-name}.git
+				small git://git@nodegear.io:{{ user.username }}/{repo-name}.git
 		.col-lg-6.col-sm-6.col-md-6
 			form.form-horizontal(name="addApp" ng-init="template = 'ghost';")
 				.form-group

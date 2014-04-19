@@ -31,7 +31,7 @@ db.once('open', function callback () {
 // 2. For each user, find AppProcessUptime
 // 3. Mark AppProcessUptime as Paid
 // 4. send @PUBLISH via Redis to Backend. Backend starts a new AppProcessUptime for the process
-// 5. 
+// 5. Reduce user's balance..
 
 models.User.find({
 	disabled: false
@@ -97,7 +97,6 @@ models.User.find({
 				return;
 			}
 
-			console.log("Charging £", usage);
 			var transaction = new models.Transaction({
 				charges: charges,
 				user: user._id,
@@ -105,7 +104,7 @@ models.User.find({
 				total: usage,
 				payment_method: null,
 				status: 'complete',
-				details: "Monthly Charge for Month "+((new Date()).getMonth() + 1),
+				details: "Recurring Charge for "+moment().format('MM/YYYY'),
 				type: 'automatic',
 				old_balance: user.balance,
 			});
