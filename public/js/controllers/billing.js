@@ -12,11 +12,6 @@ define([
 			$scope.getCards()
 		}
 		
-		$scope.addCard = function () {
-			$scope.card = $scope.getNewCard();
-			$scope.showEditCard = true;
-		}
-		
 		$scope.getCards = function () {
 			$http.get('/profile/cards').success(function(data, status) {
 				if (data.status == 200) {
