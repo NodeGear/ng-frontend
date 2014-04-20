@@ -25,8 +25,8 @@ exports.unauthorized = function (_app, template) {
 
 exports.router = function (_app) {
 	_app
-		.post('/app/add', util.authorized, doAddApp)
-		.get('/apps', util.authorized, getApps, viewApps)
+		.post('/apps/add', doAddApp)
+		.get('/apps', getApps, viewApps)
 	
 	app.router(_app)
 }
@@ -51,22 +51,28 @@ function getApps (req, res, next) {
 function doAddApp (req, res) {
 	var name = req.body.name;
 	var template = req.body.template;
-	var subdomain = req.body.subdomain;
 	
 	var errs = [];
 	
 	if (!name || name.length == 0) {
-		errs.push("Name Empty");
+		errs.push("Name Invalid");
 	}
 	if (!template || template.length == 0) {
 		errs.push("Template Does not Exist");
 	} else {
-		var templates = ["ghost"];
+		var templates = [
+			{
+				name: "ghost",
+				location: "git@github.com:NodeGear/Ghost.git",
+				branch: '0.4.2-ng'
+			}
+		];
 		
 		var found = false;
 		for (var i = 0; i < templates.length; i++) {
-			if (templates[i] == template) {
+			if (templates[i].name == template) {
 				found = true;
+				template = templates[i];
 				break;
 			}
 		}
@@ -75,51 +81,34 @@ function doAddApp (req, res) {
 			errs.push("Template Does not Exist");
 		}
 	}
-	if (!subdomain || subdomain.length == 0) {
-		errs.push("Subdomain is Required");
-	}
 	
 	if (errs.length) {
-		res.format({
-			json: function() {
-				res.send({
-					status: 400,
-					message: errs.join(', '),
-					errs: errs
-				})
-			},
-			html: function() {
-				res.redirect('/app/add');
-			}
+		res.send({
+			status: 400,
+			message: errs.join(', '),
+			errs: errs
 		})
 		
 		return;
 	}
 	
-	// Create a new drone..
-	var drone = new models.App({
+	var nameUrl = name.replace(/\W+/, '-').trim().toLowerCase();
+
+	var app = new models.App({
 		name: name,
 		user: req.user._id,
-		env: [{
-			name: "DOMAIN",
-			value: "http://"+subdomain+".app.nodegear.com/"
-		}],
-		subdomain: subdomain,
 		script: "index.js",
-		isInstalled: false,
-		isRunning: false
+		nameUrl: nameUrl,
+		location: template.location,
+		branch: template.branch
 	})
-	drone.save(function(err) {
+	app.save(function(err) {
 		if (err) throw err;
-		
-		server.backend.publish("app_create", JSON.stringify({
-			id: drone._id,
-			template: template
-		}));
 		
 		res.send(200, {
 			status: 200,
-			id: drone._id
+			id: app._id,
+			nameUrl: nameUrl
 		})
 	})
 }

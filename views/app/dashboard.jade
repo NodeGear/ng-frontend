@@ -4,7 +4,7 @@ div(ng-controller="AppDashboardController" ng-init="setCsrf('#{token}')")
 			.btn-group
 				button.btn.btn-md.btn-success(ui-sref="app.dashboard.addProcess({ id: app.nameUrl })") Add Process
 	p.lead You have {{ _app.processes.length }} processes
-	table.table.table-striped
+	table.table.table-striped(ng-hide="_app.processes.length == 0")
 		thead
 			tr
 				th.col-md-3.col-lg-3.col-sm-3 Process Name
@@ -30,7 +30,7 @@ div(ng-controller="AppDashboardController" ng-init="setCsrf('#{token}')")
 							a.btn.btn-sm.btn-default(title="[Un]Watch Process Log" ng-click="watchLog(process)")
 								i.fa.fa-fw(ng-class="{ 'fa-eye-slash': !process.log_to_status, 'fa-eye': process.log_to_status }")
 
-	table.table
+	table.table(ng-hide="_app.events.length == 0")
 		tr(ng-repeat="ev in _app.events track by $index")
 			td: i(title="{{ ev.created }}") {{ ev.timeFormatted }}
 			td
@@ -38,5 +38,14 @@ div(ng-controller="AppDashboardController" ng-init="setCsrf('#{token}')")
 				span(ng-hide="ev.processObject"): i Deleted Process
 			td.text-right: strong {{ ev.name }}
 			td {{ ev.message }}
+
+	div(ng-show="_app.processes.length == 0")
+		h3 Get your app running!
+		ol(style="font-size: 15px;")
+			li Add a 
+				a(ui-sref="app.domains.addDomain({ id: app.nameUrl })") Domain/Subdomain
+			li Add at least one 
+				a(ui-sref="app.dashboard.addProcess({ id: app.nameUrl })") Process
+
 
 	ui-view(autoscroll="false")

@@ -1,22 +1,23 @@
 define([
 	'angular',
 	'app',
-	'moment'
+	'moment',
+	'../services/csrf'
 ], function(angular, app, moment) {
-	app.controller('AddAppController', function ($scope, $http, $rootScope) {
+	app.controller('AddAppController', function ($scope, $http, $rootScope, csrf) {
 		$scope.creating = false;
 		$scope.status = "";
 		
-		$scope.create = function (csrf) {
-			$http.post('/app/add', {
-				_csrf: csrf,
+		$scope.create = function () {
+			$http.post('/apps/add', {
+				_csrf: csrf.csrf,
 				name: $scope.name,
 				template: $scope.template,
-				subdomain: $scope.subdomain
 			}).success(function(data, status) {
 				if (data.status == 200) {
 					$scope.creating = true;
-					$scope.drone = data.id;
+					$scope.app_id = data.id;
+					$scope.app_url = data.nameUrl;
 				}
 			})
 		}

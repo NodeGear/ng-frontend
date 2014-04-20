@@ -18,15 +18,9 @@ include ../inc/flash
 				
 				.form-group
 					.col-lg-12.col-md-12.col-xs-12.col-sm-12
-						.input-group
-							input.form-control(type="text" placeholder="App Subdomain" ng-model="subdomain" required)
-							span.input-group-addon .ngapp.io
-				
-				.form-group
-					.col-lg-12.col-md-12.col-xs-12.col-sm-12
 						select.form-control(ng-model="template")
 							option(value="ghost") Ghost.js
-				
+
 				.form-group
 					.col-lg-12.col-md-12.col-xs-12.col-sm-12
 						button.btn.btn-success(ng-disabled="addApp.$invalid" ng-click="create('#{token}')") Next
@@ -37,6 +31,6 @@ include ../inc/flash
 			p.lead Watch the install log on the right 
 				i.fa.fa-hand-o-right.fa-fw
 			p (^ thats the future).. For now, just go ahead and click the continue button.
-			button.btn.btn-success(ui-sref="app.dashboard({ id: drone })") Continue
+			button.btn.btn-success(ui-sref="app.dashboard({ id: app_url })") Continue
 		.col-lg-6.col-sm-6.col-md-6
-			pre(ng-bind-html="creationLog")
+			pre ...

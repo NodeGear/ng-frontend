@@ -50,6 +50,8 @@ exports.router = function(app) {
 	tickets.router(app)
 
 	app.get('/servers', getServers)
+
+	
 }
 
 // webSocket routing stuff
