@@ -63,8 +63,13 @@ function doAddApp (req, res) {
 		var templates = [
 			{
 				name: "ghost",
-				location: "git@github.com:NodeGear/Ghost.git",
+				location: "git://github.com/NodeGear/Ghost.git",
 				branch: '0.4.2-ng'
+			},
+			{
+				name: "custom",
+				location: req.body.custom_location,
+				branch: req.body.custom_branch
 			}
 		];
 		
@@ -75,6 +80,10 @@ function doAddApp (req, res) {
 				template = templates[i];
 				break;
 			}
+		}
+
+		if (template.location.length == 0 || template.branch.length == 0) {
+			errs.push("Template Location|Branch Invalid");
 		}
 		
 		if (!found) {
@@ -92,7 +101,7 @@ function doAddApp (req, res) {
 		return;
 	}
 	
-	var nameUrl = name.replace(/\W+/, '-').trim().toLowerCase();
+	var nameUrl = name.replace(/\W+/g, '-').trim().toLowerCase();
 
 	var app = new models.App({
 		name: name,

@@ -1,9 +1,7 @@
-include ../inc/flash
-
 .row
-	+flash()
 	.col-lg-12.col-sm-12.col-md-12.col-xs-12
 		h1.page-header Add Application
+			small  {{ status }}
 .row
 	div(ng-hide="creating")
 		.col-lg-6.col-sm-6.col-md-6
@@ -20,6 +18,15 @@ include ../inc/flash
 					.col-lg-12.col-md-12.col-xs-12.col-sm-12
 						select.form-control(ng-model="template")
 							option(value="ghost") Ghost.js
+							option(value="custom") Custom
+
+				.form-group(ng-show="template=='custom'")
+					.col-lg-12.col-md-12.col-xs-12.col-sm-12
+						input.form-control(type="text" placeholder="Publicly Accessible Git URL" ng-init="custom_location='git://github.com/NodeGear/node-js-sample.git'" ng-model="custom_location" ng-required="template=='custom'")
+
+				.form-group(ng-show="template=='custom'")
+					.col-lg-12.col-md-12.col-xs-12.col-sm-12
+						input.form-control(type="text" placeholder="Git Branch (e.g. 'master')" ng-init="custom_branch='master'" ng-model="custom_branch" ng-required="template=='custom'")
 
 				.form-group
 					.col-lg-12.col-md-12.col-xs-12.col-sm-12
@@ -27,10 +34,12 @@ include ../inc/flash
 	
 	div(ng-show="creating")
 		.col-lg-6.col-sm-6.col-md-6
-			p.lead Creating <strong>{{ name }}</strong>, your new <strong>{{ template }}</strong> application
+			p.lead Created <strong>{{ name }}</strong>, your new <strong>{{ template }}</strong> application
 			p.lead Watch the install log on the right 
 				i.fa.fa-hand-o-right.fa-fw
-			p (^ thats the future).. For now, just go ahead and click the continue button.
-			button.btn.btn-success(ui-sref="app.dashboard({ id: app_url })") Continue
+			button.btn(ng-class="{ 'btn-success': is_running, 'btn-default': !is_running }" ui-sref="app.dashboard({ id: app_url })" title="Click to continue to app.")
+				span(ng-show="is_running") App is Running. Continue!
+				span(ng-hide="is_running") .. waiting ..
 		.col-lg-6.col-sm-6.col-md-6
-			pre ...
+			pre
+				span(ng-repeat="log in logs track by $index") {{ log }}

@@ -147,7 +147,8 @@ function saveProcess (req, res) {
 		process.save();
 
 		res.send({
-			status: 200
+			status: 200,
+			process: process._id
 		});
 	})
 }
