@@ -22,7 +22,7 @@ var express = require('express')
 var app = exports.app = express();
 
 exports.backend = backend;
-if (config.env == 'production') {
+if (config.production) {
 	backend.auth(config.credentials.redis_key)
 }
 

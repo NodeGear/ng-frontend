@@ -7,7 +7,7 @@ var models = require('ng-models');
 var client = redis.createClient();
 var dog = redis.createClient(); // Dogs fetch and retrieve messages
 
-if (config.env == 'production') {
+if (config.production) {
 	client.auth(config.credentials.redis_key)
 	dog.auth(config.credentials.redis_key)
 }

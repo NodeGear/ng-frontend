@@ -9,7 +9,7 @@ var config = require('../config')
 
 var models = require('ng-models').init(mongoose, config)
 
-if (config.env == 'production') {
+if (config.production) {
 	client.auth(config.credentials.redis_key)
 }
 
