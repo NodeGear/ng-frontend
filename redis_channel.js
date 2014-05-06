@@ -8,8 +8,8 @@ var client = redis.createClient();
 var dog = redis.createClient(); // Dogs fetch and retrieve messages
 
 if (config.env == 'production') {
-	client.auth(config.redis_key)
-	dog.auth(config.redis_key)
+	client.auth(config.credentials.redis_key)
+	dog.auth(config.credentials.redis_key)
 }
 
 dog.subscribe("pm:app_log_entry");

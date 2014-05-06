@@ -10,15 +10,15 @@ var config = require('../config')
 var models = require('ng-models').init(mongoose, config)
 
 if (config.env == 'production') {
-	client.auth(config.redis_key)
+	client.auth(config.credentials.redis_key)
 }
 
-bugsnag.register("c0c7568710bb46d4bf14b3dad719dbbe", {
-//	notifyReleaseStages: ["production"],
-//	releaseStage: config.env
+bugsnag.register(config.credentials.bugsnag_key, {
+	notifyReleaseStages: ["production"],
+	releaseStage: config.production ? "production" : "development"
 });
 
-mongoose.connect(config.db, config.db_options);
+mongoose.connect(config.credentials.db, config.credentials.db_options);
 
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'Mongodb Connection Error:'));

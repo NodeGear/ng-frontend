@@ -113,11 +113,8 @@ function doLogin (req, res) {
 		}
 		
 		if (errs.length > 0) {
-			var err = buildFlash(errs, { title: "Login Failed..", class: "danger" });
-			
 			res.format({
 				html: function() {
-					req.session.flash = [err];
 					res.redirect('/')
 				},
 				json: function() {

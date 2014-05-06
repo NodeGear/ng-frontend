@@ -18,6 +18,8 @@ try {
 	process.exit(1);
 }
 
+exports.credentials = credentials;
+
 // Create SMTP transport method
 if (process.env.NG_TEST) {
 	exports.transport_enabled = false;
@@ -31,43 +33,10 @@ exports.transport = mailer.createTransport("SMTP", {
 
 exports.version = require('./package.json').version;
 exports.hash = '';
-exports.env = process.env.NODE_ENV == "production" ? "production" : "development";
+exports.production = process.env.NODE_ENV == "production";
 
-exports.redis_key = credentials.redis_key;
+exports.stripe = stripe(credentials.stripe.secret);
 
-// before prod. release, convert all these *secret* strings to process.env.____;
-exports.stripe_keys = credentials.stripe_keys
-exports.stripe = stripe(exports.stripe_keys.secret);
-
-exports.db = credentials.db;
-exports.networkDb = credentials.networkDb;
-
-exports.db_options = credentials.db_options;
-exports.networkDb_options = credentials.networkDb_options;
-
-exports.port = credentials.port;
-exports.droneLocation = credentials.droneLocation;
-exports.gitolite = credentials.gitolite;
-exports.gitoliteKeys = credentials.gitoliteKeys;
-exports.gitoliteConfig = credentials.gitoliteConfig;
-exports.cdn = credentials.cdn;
+exports.port = process.env.PORT || credentials.port;
 
 exports.path = __dirname;
-exports.tmp = "/tmp/nodegear/";
-
-fs.exists(exports.tmp, function(exists) {
-	if (!exists) {
-		console.log("Creating tmp dir")
-		fs.mkdir(exports.tmp, function(err) {
-			if (err) throw err;
-		})
-	}
-})
-fs.exists(exports.droneLocation, function(exists) {
-	if (!exists) {
-		console.log("Creating drone location dir")
-		fs.mkdir(exports.droneLocation, function(err) {
-			if (err) throw err;
-		})
-	}
-})

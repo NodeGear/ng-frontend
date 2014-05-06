@@ -23,11 +23,11 @@ var app = exports.app = express();
 
 exports.backend = backend;
 if (config.env == 'production') {
-	backend.auth(config.redis_key)
+	backend.auth(config.credentials.redis_key)
 }
 
 if (!process.env.NG_TEST) {
-	var releaseStage = config.env;
+	var releaseStage = config.production ? "production" : "development";
 
 	bugsnag.register("c0c7568710bb46d4bf14b3dad719dbbe", {
 		notifyReleaseStages: ["production"],
@@ -51,7 +51,7 @@ if (process.platform.match(/^win/) == null) {
 	}
 }
 
-mongoose.connect(config.db, config.db_options);
+mongoose.connect(config.credentials.db, config.credentials.db_options);
 var sessionStore = new MongoStore({
 	connection: mongoose.connection,
 	interval: 120000
@@ -163,12 +163,12 @@ app.use(function(req, res, next) {
 		res.locals.loggedIn = !(res.locals.requiresTFA || !req.user.email_verified);
 	}
 	
-	res.locals.stripe_pub = config.stripe_keys.pub;
+	res.locals.stripe_pub = config.credentials.stripe.pub;
 	
 	res.locals.version = config.version;
 	res.locals.versionHash = config.hash;
 
-	res.locals.cdn = (config.cdn && config.cdn.enabled) ? config.cdn.url : "";
+	res.locals.cdn = (config.credentials.cdn && config.credentials.cdn.enabled) ? config.credentials.cdn.url : "";
 
 	next();
 });
