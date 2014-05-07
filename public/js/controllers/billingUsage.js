@@ -47,6 +47,8 @@ define([
 					$scope.$digest();
 				}
 			});
+			
+			$rootScope.reloadBalance = $scope.reload;
 		};
 	})
 

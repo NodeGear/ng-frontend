@@ -32,7 +32,7 @@ define([
 			
 			$http.post('/auth/verifyEmail', {
 				_csrf: $scope.csrf,
-				code: $scope.code
+				code: $scope.code.toUpperCase()
 			}).success(function(data, status) {
 				if (data.status == 200) {
 					$scope.status = "Verification Successful"

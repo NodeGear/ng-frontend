@@ -21,7 +21,7 @@ div(ng-controller="AppDashboardController" ng-init="setCsrf('#{token}')")
 						| {{ process.status }}
 				td
 					.pull-right
-						.btn-group
+						.btn-group(style="padding-right:5px;")
 							a.btn.btn-sm.btn-success(ng-click="startProcess(process)" ng-disabled="process.startStopDisabled || process.running" title="Start Process")
 								i.fa.fa-play.fa-fw
 							a.btn.btn-sm.btn-danger(ng-click="stopProcess(process)" ng-disabled="process.startStopDisabled || !process.running" title="Stop Process")

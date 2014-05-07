@@ -7,6 +7,7 @@ define([
 	'../controllers/appDomains',
 	'../controllers/appEnvironment',
 	'../controllers/appLogs',
+	'../controllers/appSettings',
 	'../services/app'
 ], function(angular, app) {
 	app.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
@@ -189,7 +190,8 @@ define([
 		.state('app.settings', {
 			url: '/settings',
 			pageTitle: "App Settings",
-			templateUrl: "/view/app/settings"
+			templateUrl: "/view/app/settings",
+			controller: "AppSettingsController"
 		})
 	});
 });

@@ -86,7 +86,7 @@ if (!process.env.NG_TEST) {
 app.use(monitor());
 
 // Toobusy middleware..
-app.use(function(req, res, next) {
+/*app.use(function(req, res, next) {
 	if (process.env.NODE_ENV != 'production') {
 		next();
 		return;
@@ -105,7 +105,7 @@ app.use(function(req, res, next) {
 	} else {
 		next();
 	}
-});
+});*/
 
 app.use(bugsnag.requestHandler);
 app.use(express.limit('30mb')); // File upload limit

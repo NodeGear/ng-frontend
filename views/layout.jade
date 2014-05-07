@@ -17,12 +17,8 @@ html
 			link(rel="stylesheet" href="#{cdn}/css/#{version}/nodegear.css")
 
 	body
-		include inc/navbar
-		include inc/flash
-		
 		#wrapper
-			+navbar(0)
-			+flash
+			include inc/navbar
 			include inc/sidebar
 			
 			#page-wrapper

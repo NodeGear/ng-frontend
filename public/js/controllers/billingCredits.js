@@ -1,9 +1,10 @@
 define([
 	'angular',
 	'app',
-	'moment'
+	'moment',
+	'../services/csrf'
 ], function(angular, app, moment) {
-	app.controller('BillingCreditsController', function ($scope, $http, $rootScope) {
+	app.controller('BillingCreditsController', function ($scope, $http, $rootScope, csrf) {
 		$scope.cards = [];
 		$scope.paymentOptions = [{
 			name: "Pay £5 GBP",
@@ -32,14 +33,18 @@ define([
 			$scope.status = "Processing...";
 
 			$http.post('/profile/billing/addCredits', {
-				_csrf: $scope.csrf,
+				_csrf: csrf.csrf,
 				card: $scope.card,
 				value: $scope.selectedOption
 			}).success(function(data, status) {
 				$scope.payEnabled = true;
 
 				$scope.status = data.message;
-				
+
+				if (typeof $rootScope.reloadBalance === 'function') {
+					$rootScope.reloadBalance();
+				}
+
 				if (!$scope.$$phase) {
 					$scope.$digest();
 				}
@@ -75,9 +80,8 @@ define([
 			})
 		}
 
-		$scope.init = function (csrf) {
+		$scope.init = function () {
 			$scope.reload()
-			$scope.csrf = csrf;
 
 			$scope.selectedOption = $scope.paymentOptions[0].value;
 			$scope.card = "";

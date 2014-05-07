@@ -1,9 +1,0 @@
-mixin flash()
-	- emptyFlash()
-	for f in flash
-		.alert(class="alert-#{f.class}" + (f.dismissable ? " alert-dismissable" : ""))
-			if f.dismissable
-				button.close(type="button", data-dismiss="alert", aria-hidden="true") &times;
-			strong= f.title
-			|  
-			= f.message

@@ -2,54 +2,22 @@
 	.col-xs-12.col-sm-12.col-md-12.col-lg-12
 		h1.page-header Getting Started Guide
 		p.lead This document is designed to get you started on NodeGear <small>PaaS</small>
-		h3 Welcome to NodeGear <sup><small>ßeta</small></sup>
-		p If there are <strong>any</strong> issues, feedback or bugs, please 
-			a(ui-sref="tickets.add") create a new ticket
-			|  or let us know at 
-			a(href="mailto:support@nodegear.com") support@nodegear.com
-			| .
-		hr
 		h2 Creating an Application
-		p Currently, the only way to create (or update existing) applications is via <code>git</code>.
+		p Click <a ui-sref="add">here</a> to create an application. To create an application which isn't on public git hosting, use the steps below.
 		ol
 			li
 				a(ui-sref="profile.ssh") Add an SSH Key
 				|  to your profile
-			li
-				a(href="#package") Update
-				|  your <code>package.json</code> to match our requirements
-			li Push to <code>git@nodegear.io:#{user.username}/myrepository.git</code>
+			li Push to <code>git@nodegear.io:<span ng-bind="user.username">username</span>/project.git</code>
 				ul
-					li Please replace <code>myrepository</code> with the name of your project. Prior to pushing to the remote depository, make sure your package.json is valid.
-					li Watch the output of the <code>git push</code> command. It may tell you useful information regarding your app.
-		h2#package package.json requirements
-		p Example <code>package.json</code>
-		dl.dl-horizontal
-			dt start:
-			dd "app.js"
-			dt &nbsp;
-			dd This property in your package.json tells us which file is used to launch your application.
-			dt subdomain:
-			dd "myapp"
-			dt &nbsp;
-			dd The Subdomain property gives you a unique subdomain within nodegear. For example, if you subdomain is <code>myapp</code> then you can access your web application through <code>myapp.app.nodegear.com</code>
-			dt domains:
-			dd ["myapp.com", "www.myapp.com", "test.myapp.com"]
-			dt &nbsp;
-			dd The domains array lets us know that you've set up A records in your 
-				a(href="#dns") DNS to our servers
-				|  and when a request goes to any of these, we will proxy them to your application
-		h4 Why these are required
-		p We have to know how to launch your app and what web requests go to your application. We have plans to make them optional and enable you to set them from your control panel.
+					li Replace <code>project</code> with the name of your project.
 		h2#dns DNS Settings
-		p You automatically receive a subdomain on <code>X.ngapp.io</code>. However, it is recommended you have your own domain name routed to your application. To do that, create <code>CNAME</code>/<code>A</code> records in your DNS provider and enter the following records (depending on the location of your application):
-		p: small <strong>Note:</strong> The Current Default geographical location for all apps is <strong>Canada</strong>. As our infrastructure grows, you will have a wide choice of servers to deploy to.
+		p You automatically receive a subdomain on <code>app.<span ng-bind="user.username">username</span>.ngapp.io</code>. However, it is recommended you have your own domain name routed to your application. To do that, create <code>CNAME</code>/<code>A</code> records in your DNS and set the following records:
+		p: small <strong>Note:</strong> You can choose which server you deploy to for each process of your app. One app can run on multiple servers. It is advised you use a DNS provider that can determine the latency for the user to the host, and provide A records based on that.
 		dl.dl-horizontal
+			dt: abbr(title="(routes users based on geographical location)") CNAME
+			dd: i ngapp.io
 			dt Canada
-			dd CNAME ngapp.io
-			dd A 198.50.168.250
-			dd AAAA (coming soon)
-			dt France
-			dd Not there yet
-			dt Amsterdam
-			dd Not there yet
+			dd: i 198.50.168.250
+			dt Northern France
+			dd: i 5.39.78.156

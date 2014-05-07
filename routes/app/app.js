@@ -41,6 +41,7 @@ exports.router = function (app) {
 	app.get('/app/:id', viewApp)
 
 		.get('/app/:id/events', getEvents)
+		.delete('/app/:id', deleteApp)
 	
 	domain.router(app);
 	process.router(app);
@@ -67,7 +68,8 @@ function getApp (req, res, next) {
 	var id = req.params.id;
 	
 	var query = {
-		user: req.user._id
+		user: req.user._id,
+		deleted: false
 	};
 
 	try {
@@ -106,6 +108,38 @@ function getEvents (req, res) {
 		})
 	})
 }
+
+function deleteApp (req, res) {
+	// Check for running processes
+	models.AppProcess.find({
+		app: res.locals.app._id,
+		running: true
+	}).select('running').limit(1).exec(function(err, processes) {
+		if (err) throw err;
+
+		if (processes.length > 0) {
+			// There are running processes. Cannot delete
+			res.send({
+				status: 400,
+				message: "Running Processes. Stop them before deleting"
+			});
+			return;
+		}
+		
+		res.locals.app.deleted = true;
+		res.locals.app.save();
+
+		req.user.sendEmail("NodeGear App Manager <app_manager@nodegear.com>", "Application Deleted", "emails/appDeleted.jade", {
+			app: res.locals.app
+		});
+
+		res.send({
+			status: 200
+		})
+	})
+}
+
+// websocket stuff
 
 function authorize_socket (socket, data, cb) {
 	var locals = {};
