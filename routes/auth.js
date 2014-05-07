@@ -1,7 +1,6 @@
 var passport = require('passport')
 	, models = require('ng-models')
 	, Validator = require('validator').Validator
-	, buildFlash = require('../util').buildFlash
 	, util = require('../util')
 	, exec = require('child_process').exec
 	, config = require('../config')
@@ -77,11 +76,8 @@ function doLogin (req, res) {
 	v.check(req.body.password, 'Please enter a valid password').len(4)
 	
 	if (errs.length > 0) {
-		var err = buildFlash(errs, { title: "Login Failed..", class: "danger" });
-
 		res.format({
 			html: function() {
-				req.session.flash = [err];
 				res.redirect('/')
 			},
 			json: function() {
@@ -179,8 +175,6 @@ function doRegister (req, res) {
 	v.check(password, 'Please enter a valid password').len(5);
 
 	if (errs.length > 0) {
-		var err = buildFlash(errs, { title: "Registration Failed..", class: "danger" });
-		
 		res.format({
 			html: function() {
 				req.session.flash = [err];
@@ -251,7 +245,6 @@ function doRegister (req, res) {
 				
 				res.format({
 					html: function() {
-						req.session.flash.push(buildFlash(["Thank you for Registering with NodeGear"], { title: "Registration Success!", class: "info" }));
 						res.redirect('/apps');
 					},
 					json: function() {

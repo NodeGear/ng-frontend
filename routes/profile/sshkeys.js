@@ -26,7 +26,6 @@ function postKey (req, res) {
 		
 		var lines = key.split("\n")
 		if (lines.length !== 1) {
-			req.session.flash = [util.buildFlash(["Must not contain newlines"], { class: "danger", title: "Invalid SSH Key!" })];
 			res.redirect('/profile/ssh')
 			return;
 		}
@@ -34,7 +33,6 @@ function postKey (req, res) {
 		pubKey.key = key
 		pubKey.updateFile(function(err) {
 			if (err) {
-				req.session.flash = [util.buildFlash(err, { class: "danger", title: "Invalid SSH Key!" })];
 			} else {
 				pubKey.save()
 			}
