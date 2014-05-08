@@ -10,6 +10,8 @@ define([
 			password: ""
 		};
 		$scope.csrf = "";
+		$scope.loginFailed = false;
+		$scope.loginFailedReason = "";
 	
 		$scope.setCsrf = function (csrf) {
 			$scope.csrf = csrf;
@@ -20,6 +22,7 @@ define([
 		
 			var pwd = user.password;
 			user.password = "";
+			$scope.loginFailed = false;
 		
 			$http.post('/auth/password', {
 				_csrf: $scope.csrf,
@@ -37,11 +40,13 @@ define([
 						$state.transitionTo('verifyEmail');
 						return;
 					}
-				
+					
 					$scope.status = "Login Successful"
 					window.location = "/";
 				} else {
-					$scope.status = data.message;
+					$scope.status = "";
+					$scope.loginFailedReason = data.message;
+					$scope.loginFailed = true;
 				}
 			});
 		}
@@ -54,11 +59,10 @@ define([
 		}
 
 		if (isLocalStorageCapable && localStorage["login_auth"]) {
-			$scope.status = "Welcome Back!";
 			$scope.user.auth = localStorage["login_auth"];
 			$('form[name=login] input[type=password]').trigger('focus');
 		} else {
-			$('form[name=login] input[type=text]').trigger('focus');
+			$('form[name=login] input[type=email]').trigger('focus');
 		}
 
 		$scope.$watch('user.auth', function(auth) {
@@ -69,6 +73,9 @@ define([
 					localStorage["login_auth"] = "";
 				}
 			}
+		});
+		$scope.$watch('user.password', function(pwd) {
+			$scope.loginFailed = false;
 		})
 	});
 });

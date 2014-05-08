@@ -19,7 +19,7 @@ exports.router = function(app) {
 	templates.add('gettingStarted');
 	templates.setup();
 
-	app.get('/', login, layout);
+	app.get('/', layout);
 
 	app.all('*', util.authorized);
 
@@ -50,8 +50,6 @@ exports.router = function(app) {
 	tickets.router(app)
 
 	app.get('/servers', getServers)
-
-	
 }
 
 // webSocket routing stuff
@@ -62,16 +60,12 @@ exports.socketDisconnect = function (socket) {
 	apps.socketDisconnect(socket)
 }
 
-function login (req, res, next) {
+function layout (req, res) {
 	if (res.locals.loggedIn) {
-		next();
+		res.render('layout')
 	} else {
 		res.render('auth');
 	}
-}
-
-function layout (req, res) {
-	res.render('layout')
 }
 
 function getServers (req, res) {

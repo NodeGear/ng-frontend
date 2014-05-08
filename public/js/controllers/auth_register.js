@@ -21,6 +21,8 @@ define([
 
 		$scope.init = function (csrf) {
 			$scope.csrf = csrf;
+
+			$('form[name=register] input[name=full_name]').trigger('focus');
 		}
 
 		$scope.registerUser = function () {

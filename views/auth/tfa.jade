@@ -1,10 +1,10 @@
-.col-md-4.col-md-offset-4.col-lg-4.col-lg-offset-4.col-sm-6.col-sm-offset-3.col-xs-10.col-xs-offset-1
-	h3.text-center Enter TFA Token
+.col-md-4.col-md-offset-4.col-lg-4.col-lg-offset-4.col-sm-6.col-sm-offset-3.col-xs-10.col-xs-offset-1.authentication
+	h3.text-center NodeGear
 	form(ng-cloak name="confirm" ng-init="loginAction = true; init()")
 		fieldset
 			p.text-center(ng-show="tfa.status.length > 0") {{tfa.status}}
 			.form-group
-				input.form-control(placeholder="Two Factor Authentication Token" type="text" required ng-model="tfa.token")
+				input.form-control.text-center.input-lg(placeholder="6-Digit Token" type="text" required ng-model="tfa.token")
 			.form-group
 				button.btn.btn-lg.btn-success.btn-block(ng-disabled="tfa.hide || confirm.$invalid" ng-click="confirmTFA('#{token}')")
 					i.fa.fa-key.fa-fw

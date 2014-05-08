@@ -10,6 +10,7 @@ define([
 	
 		$scope.setCsrf = function (csrf) {
 			$scope.csrf = csrf;
+			$('form[name=forgot] input[type=email]').trigger('focus');
 		}
 	
 		$scope.submitForgot = function() {

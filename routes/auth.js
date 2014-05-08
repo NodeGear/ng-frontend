@@ -35,6 +35,8 @@ exports.unauthorized = function (app, template) {
 
 			util.authorized(req, res, next);
 		}, doVerifyEmail)
+		.get('/auth/loggedin', isLoggedIn)
+		.get('/logout', doLogout)
 }
 
 exports.router = function (app, templates) {
@@ -42,9 +44,6 @@ exports.router = function (app, templates) {
 	app.put('/auth/tfa', getTFA, enableTFA)
 		.delete('/auth/tfa', getTFA, disableTFA)
 		.get('/auth/tfa', getTFA, checkTFAEnabled)
-
-		.get('/logout', doLogout)
-		.get('/auth/loggedin', isLoggedIn)
 }
 
 function isLoggedIn (req, res) {

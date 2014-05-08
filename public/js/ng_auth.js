@@ -4,7 +4,6 @@ require.config({
 		uiRouter: 'vendor/angular-ui-router',
 		jquery: 'vendor/jquery',
 		moment: 'vendor/moment',
-		'sb-admin': 'vendor/sb-admin',
 		bootstrap: 'vendor/bootstrap'
 	},
 	shim: {
@@ -25,8 +24,8 @@ require([
 	'uiRouter',
 	'vendor/angular-sanitize',
 	'app',
-	'bootstrap',
-	'sb-admin',
+	'jquery',
+	'vendor/flat-ui.combined',
 	'routes/auth'
 ], function(angular) {
 	var $html = angular.element(document.getElementsByTagName('html')[0]);

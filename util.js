@@ -4,7 +4,7 @@ exports.authorized = function (req, res, next) {
 	} else {
 		res.format({
 			html: function() {
-				res.redirect('/')
+				res.render('auth');
 			},
 			json: function() {
 				res.send({

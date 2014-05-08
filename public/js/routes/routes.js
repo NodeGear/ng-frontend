@@ -25,7 +25,7 @@ define([
 			url: '/logout',
 			pageTitle: 'Log Out',
 			controller: function($scope) {
-				window.location = "/logout&no_router";
+				window.location = "/logout";
 			}
 		})
 	})

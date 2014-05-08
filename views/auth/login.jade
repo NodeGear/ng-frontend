@@ -1,18 +1,20 @@
 .col-md-4.col-md-offset-4.col-lg-4.col-lg-offset-4.col-sm-6.col-sm-offset-3.col-xs-10.col-xs-offset-1.authentication
 		h3.text-center NodeGear
+		p.text-center Welcome Back!
 		form(name="login" ng-init="setCsrf('#{token}')")
 			fieldset
 				p.text-center(ng-cloak ng-show="status.length > 0" ng-bind="status")
 				.form-group(style="margin-bottom:10px;")
-					input.form-control.text-center.input-lg(placeholder="Email Address" type="text" ng-model="user.auth")
-				.form-group
+					input.form-control.text-center.input-lg(placeholder="Email Address" type="email" ng-model="user.auth")
+				.form-group(ng-class="{ 'has-error': loginFailed }")
 					input.form-control.text-center.input-lg(placeholder="Password" type="password" ng-model="user.password")
+					span.input-icon.fui-question(ng-show="loginFailed" title="{{ loginFailedReason }}")
 				.form-group
 					button.btn.btn-lg.btn-success.btn-block(ng-click="authenticate(user)")
 						i.fa.fa-key.fa-fw
 						|  Authenticate
 		p.text-center: small
-			a.link-muted.link-black.link-underline(ui-sref="forgot") Forgot Password?
+			a.link-muted(ui-sref="forgot") Forgot Password?
 			br
 			| Don't have an account? 
-			a.link-black.link-underline(ui-sref="register") Sign Up
+			a(ui-sref="register") Sign Up
