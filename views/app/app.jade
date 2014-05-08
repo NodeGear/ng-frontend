@@ -1,4 +1,23 @@
-.row
-	.col-lg-12.col-sm-12.col-md-12
-		ui-view(autoscroll="false")
-	.clearfix
+.pagestyle
+	.row
+		.col-lg-12.col-sm-12.col-md-12
+			h4
+				i.fa.fa-gear.fa-fw
+				|  {{ app.name }}
+			.btn-group
+				a.btn.btn-primary(ui-sref="app.dashboard({ id: app.nameUrl })")
+					| Processes
+				a.btn.btn-primary(ui-sref="app.domains({ id: app.nameUrl })")
+					| Domains
+				a.btn.btn-primary(ui-sref="app.environment({ id: app.nameUrl })")
+					| Environment
+				a.btn.btn-primary(ui-sref="app.logs({ id: app.nameUrl })")
+					| Logs
+				a.btn.btn-primary(ui-sref="app.traffic({ id: app.nameUrl })")
+					| Traffic
+				a.btn.btn-primary(ui-sref="app.usage({ id: app.nameUrl })")
+					| Resources
+				a.btn.btn-primary(ui-sref="app.settings({ id: app.nameUrl })")
+					| Settings
+			ui-view(autoscroll="false")
+		.clearfix

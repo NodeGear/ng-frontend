@@ -46,6 +46,13 @@
 	padding-top: 20px;
 	background: #FFF;
 }
+.sidenav li.active a {
+	background: #EEE;
+}
+
+.sidenav li {
+	margin-bottom: 3px;
+}
 
 .pagestyle {
 	padding-top: 20px;
@@ -54,7 +61,7 @@
 .sidenav a {
 	color: #111;
 }
-.sidenav a:hover {
+.sidenav a:hover, .sidenav li.active a {
 	border-radius: 4px;
 	color: #16a085;
 }
