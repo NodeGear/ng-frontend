@@ -1,18 +1,17 @@
 br
-
 .row(ng-init="init()")
-	.col-md-8.col-sm-8.col-lg-8.col-xs-12.col-md-offset-2.col-sm-offset-2.col-lg-offset-2
+	.col-sm-8.col-sm-offset-2
 		.well
 			form.form-horizontal(name="addCredit")
 				p.lead Make a One Time Payment
 				.form-group
-					.col-sm-8.col-md-8.col-lg-8
+					.col-sm-8
 						select.form-control(ng-options="card._id as card.nameFormatted for card in cards" ng-model="card" required ng-disabled="!payEnabled")
 							option(value="") -- Select a Payment Method --
-					.col-sm-4.col-md-4.col-lg-4
+					.col-sm-4
 						select.form-control(ng-options="option.value as option.name for option in paymentOptions" ng-model="selectedOption" required ng-disabled="!payEnabled")
 				.form-group
-					.col-sm-8.col-md-8.col-lg-8
+					.col-sm-8
 						p {{ status }}
-					.col-sm-4.col-md-4.col-lg-4
+					.col-sm-4
 						button.pull-right.btn.btn-success(ng-disabled="addCredit.$invalid || !payEnabled" ng-click="pay()") Pay £{{ selectedOption }} Now

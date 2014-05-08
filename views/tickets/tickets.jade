@@ -1,26 +1,27 @@
-.row
-	.col-md-12.col-sm-12.col-lg-12.col-xs-12
-		h1.page-header Support Tickets
-			a.btn.btn-success.pull-right(ui-sref="tickets.add")
-				i.fa.fa-ticket.fa-fw
-				|  New Ticket
-.row
-	.col-md-12.col-sm-12.col-lg-12.col-xs-12
-		table.table
-			thead
-				tr
-					th Subject
-					th Created
-					th &nbsp;
-			tbody
-				tr(ng-repeat="ticket in tickets")
-					td {{ ticket.subject }}
-					td {{ ticket.created }}
-					td 
-						.btn-group.pull-right
-							a.btn.btn-xs.btn-default(ui-sref="tickets.ticket({ id: ticket._id })")
-								i.fa.fa-reply.fa-fw
-								|  Reply
-							a.btn.btn-xs.btn-default
-								i.fa.fa-times.fa-fw
-								|  Close Ticket
+.pagestyle
+	.row
+		.col-md-12.col-sm-12.col-lg-12.col-xs-12
+			h4 Support Tickets
+				a.btn.btn-success.pull-right(ui-sref="tickets.add")
+					i.fa.fa-ticket.fa-fw
+					|  New Ticket
+	.row
+		.col-md-12.col-sm-12.col-lg-12.col-xs-12
+			table.table
+				thead
+					tr
+						th Subject
+						th Created
+						th &nbsp;
+				tbody
+					tr(ng-repeat="ticket in tickets")
+						td {{ ticket.subject }}
+						td {{ ticket.created }}
+						td 
+							.btn-group.pull-right
+								a.btn.btn-xs.btn-default(ui-sref="tickets.ticket({ id: ticket._id })")
+									i.fa.fa-reply.fa-fw
+									|  Reply
+								a.btn.btn-xs.btn-default
+									i.fa.fa-times.fa-fw
+									|  Close Ticket

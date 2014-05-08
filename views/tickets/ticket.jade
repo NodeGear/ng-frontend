@@ -1,37 +1,38 @@
-.row
-	.col-sm-12.col-md-12.col-lg-12
-		h1.page-header Support Ticket '{{ ticket.subject }}'
-		
-.row
-	.col-sm-4.col-md-4.col-lg-4
-		| You
-		em.pull-right {{ ticket.created }}
-	.col-sm-8.col-md-8.col-lg-8
-		| {{ ticket.message }}
-.row(ng-repeat="message in ticket.messages")
-	.col-sm-4.col-md-4.col-lg-4
-		| {{ message.user.name }}
-		em.pull-right {{ message.created }}
-	.col-sm-8.col-md-8.col-lg-8
-		| {{ message.message }}
+.pagestyle
+	.row
+		.col-sm-12.col-md-12.col-lg-12
+			h4 Support Ticket '{{ ticket.subject }}'
+			
+	.row
+		.col-sm-4.col-md-4.col-lg-4
+			| You
+			em.pull-right {{ ticket.created }}
+		.col-sm-8.col-md-8.col-lg-8
+			| {{ ticket.message }}
+	.row(ng-repeat="message in ticket.messages")
+		.col-sm-4.col-md-4.col-lg-4
+			| {{ message.user.name }}
+			em.pull-right {{ message.created }}
+		.col-sm-8.col-md-8.col-lg-8
+			| {{ message.message }}
 
-br
+	br
 
-.row
-	.col-sm-4.col-md-4.col-lg-4
-	.col-sm-8.col-md-8.col-lg-8
-		form.form-horizontal(name="ticketReply" ng-init="setCsrf('#{token}')")
-			.form-group
-				.col-md-10.col-sm-10.col-lg-10
-					textarea.form-control(required ng-model="reply" placeholder="Reply to ticket {{ticket.subject}}")
-			.form-group
-				.col-md-10.col-sm-10.col-lg-10
-					.btn-group
-						a.btn.btn-success(ng-disabled="ticketReply.$invalid || disableSend" ng-click="submitReply()")
-							i.fa.fa-reply.fa-fw
-							|  Submit Reply
-						a.btn.btn-default
-							i.fa.fa-times.fa-fw
-							|  Close Ticket
-					| &nbsp;
-					em {{ status }}
+	.row
+		.col-sm-4.col-md-4.col-lg-4
+		.col-sm-8.col-md-8.col-lg-8
+			form.form-horizontal(name="ticketReply" ng-init="setCsrf('#{token}')")
+				.form-group
+					.col-md-10.col-sm-10.col-lg-10
+						textarea.form-control(required ng-model="reply" placeholder="Reply to ticket {{ticket.subject}}")
+				.form-group
+					.col-md-10.col-sm-10.col-lg-10
+						.btn-group
+							a.btn.btn-success(ng-disabled="ticketReply.$invalid || disableSend" ng-click="submitReply()")
+								i.fa.fa-reply.fa-fw
+								|  Submit Reply
+							a.btn.btn-default
+								i.fa.fa-times.fa-fw
+								|  Close Ticket
+						| &nbsp;
+						em {{ status }}

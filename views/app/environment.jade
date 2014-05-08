@@ -1,14 +1,15 @@
-h1.page-header App Environment
-	.btn-group.pull-right
-		button.btn.btn-success(ui-sref="app.environment.addEnv({ id: app.nameUrl })") Add Env Variable
+.pagestyle
+	h4 App Environment
+		.btn-group.pull-right
+			button.btn.btn-success(ui-sref="app.environment.addEnv({ id: app.nameUrl })") Add Env Variable
 
-table.table
-	thead
-		th Name
-		th Value
-	tbody
-		tr(ng-repeat="env in _app.environment")
-			td: a(ui-sref="app.environment.editEnv({ id: app.nameUrl, eid: env._id })") {{ env.name }}
-			td {{ env.value }}
+	table.table
+		thead
+			th Name
+			th Value
+		tbody
+			tr(ng-repeat="env in _app.environment")
+				td: a(ui-sref="app.environment.editEnv({ id: app.nameUrl, eid: env._id })") {{ env.name }}
+				td {{ env.value }}
 
-ui-view(autoscroll="off")
+	ui-view(autoscroll="off")

@@ -1,23 +1,22 @@
-.row
-	.col-xs-12.col-sm-12.col-md-12.col-lg-12
-		h1.page-header Getting Started Guide
-		p.lead This document is designed to get you started on NodeGear <small>PaaS</small>
-		h2 Creating an Application
-		p Click <a ui-sref="add">here</a> to create an application. To create an application which isn't on public git hosting, use the steps below.
-		ol
-			li
-				a(ui-sref="profile.ssh") Add an SSH Key
-				|  to your profile
-			li Push to <code>git@nodegear.io:<span ng-bind="user.username">username</span>/project.git</code>
-				ul
-					li Replace <code>project</code> with the name of your project.
-		h2#dns DNS Settings
-		p You automatically receive a subdomain on <code>app.<span ng-bind="user.username">username</span>.ngapp.io</code>. However, it is recommended you have your own domain name routed to your application. To do that, create <code>CNAME</code>/<code>A</code> records in your DNS and set the following records:
-		p: small <strong>Note:</strong> You can choose which server you deploy to for each process of your app. One app can run on multiple servers. It is advised you use a DNS provider that can determine the latency for the user to the host, and provide A records based on that.
-		dl.dl-horizontal
-			dt: abbr(title="(routes users based on geographical location)") CNAME
-			dd: i ngapp.io
-			dt Canada
-			dd: i 198.50.168.250
-			dt Northern France
-			dd: i 5.39.78.156
+.pagestyle
+	h4 Getting Started Guide
+	p.lead This document is designed to get you started on NodeGear <small>PaaS</small>
+	h5 Creating an Application
+	p Click <a ui-sref="add">here</a> to create an application. To create an application which isn't on public git hosting, use the steps below.
+	ol
+		li
+			a(ui-sref="profile.ssh") Add an SSH Key
+			|  to your profile
+		li Push to <code>git@nodegear.io:<span ng-bind="user.username">username</span>/project.git</code>
+			ul
+				li Replace <code>project</code> with the name of your project.
+	h5#dns DNS Settings
+	p You automatically receive a subdomain on <code>app.<span ng-bind="user.username">username</span>.ngapp.io</code>. However, it is recommended you have your own domain name routed to your application. To do that, create <code>CNAME</code>/<code>A</code> records in your DNS and set the following records:
+	p: small <strong>Note:</strong> You can choose which server you deploy to for each process of your app. One app can run on multiple servers. It is advised you use a DNS provider that can determine the latency for the user to the host, and provide A records based on that.
+	dl.dl-horizontal
+		dt: abbr(title="(routes users based on geographical location)") CNAME
+		dd: i ngapp.io
+		dt Canada
+		dd: i 198.50.168.250
+		dt Northern France
+		dd: i 5.39.78.156

@@ -1,11 +1,12 @@
+hr
 div(ng-controller="PaymentMethodsController" ng-init="init('#{token}')" ng-cloak)
 	.row
-		.col-sm-12.col-md-12.col-lg-12.col-xs-12
-			h2.page-header Payment Methods
+		.col-sm-12
+			h4 Payment Methods
 				button.btn.btn-success.pull-right(ui-sref="profile.billing.paymentMethods.add") New Payment Method
 	
 	.row
-		.col-md-12.col-sm-12.col-lg-12.col-xs-12
+		.col-sm-12
 			table.table.table-striped(ng-show="cards.length > 0")
 				thead
 					tr
@@ -20,7 +21,7 @@ div(ng-controller="PaymentMethodsController" ng-init="init('#{token}')" ng-cloak
 						td XXXX XXXX XXXX {{ c.last4 }}
 	
 	.row
-		.col-md-12.col-sm-12.col-lg-12.col-xs-12
+		.col-sm-12
 			p(ng-show="cards.length == 0") You have no cards.
 
 	ui-view(autoscroll="false")

@@ -11,36 +11,21 @@ html
 		
 		//- all css goes here
 		block css
-			link(rel="stylesheet" href="#{cdn}/css/#{version}/bootstrap.min.css")
-			link(rel="stylesheet" href="#{cdn}/css/#{version}/bootstrap-theme.min.css")
+			link(rel="stylesheet" href="#{cdn}/css/#{version}/bootstrap.nodegear.css")
 			link(rel="stylesheet" href="#{cdn}/css/#{version}/font-awesome.min.css")
 			link(rel="stylesheet" href="#{cdn}/css/#{version}/nodegear.css")
 
 	body
-		#wrapper
-			include inc/navbar
-			include inc/sidebar
-			
-			#page-wrapper
-				block content
-					ui-view(autoscroll="false")
-			
-			.container(style="border-top:1px groove #EFEFEF;")
-				.row
-					.col-xs-12.col-md-12.col-sm-12.col-lg-12
-						footer
-							br
-							p.text-center NodeGear
-								br
-								a(href) Contact
-								|  | 
-								a(href) Support
-								|  | 
-								a(href) System Status
-							p.text-center
-								span.text-muted v#{version}-##{versionHash}
-							br
-		
+		.container-liquid
+			.row
+				.col-sm-3
+					include inc/sidebar
+				.col-sm-9
+					block content
+						ui-view(autoscroll="false")
+							.loading-text
+								p Hold Tight, loading awesome...
+
 		block js
 			script(src="#{cdn}/js/#{version}/vendor/require.min.js" data-main="#{cdn}/js/#{version}/ng.js")
 			

@@ -14,7 +14,6 @@ require.config({
 			deps: ['angular']
 		},
 		bootstrap: ['jquery'],
-		'sb-admin': ['jquery'],
 		'vendor/angular-sanitize': ['angular']
 	}
 });

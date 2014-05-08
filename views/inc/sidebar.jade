@@ -1,53 +1,44 @@
-nav.navbar-default.navbar-static-side(role="navigation" ng-cloak)
-	.sidebar-collapse
-		ul.nav#side-menu
-			li
-				a(ui-sref="gettingStarted")
-					i.fa.fa-thumb-tack.fa-fw
-					|  Getting Started
-			li
-				a(ui-sref="apps")
-					| Applications
-			li.active
-				a(href) Account
-					i.fa.arrow
-				ul.nav.nav-second-level.in
-					li
-						a(ui-sref="profile.view") Settings
-					li
-						a(ui-sref="profile.billing.history") Billing
-					li
-						a(ui-sref="profile.billing.paymentMethods") Payment Methods
-					li
-						a(ui-sref="profile.ssh") SSH Public Key
-			li
-				a(ui-sref="tickets.tickets") Support Tickets
-			li.divider(style="height:20px;" ng-hide="app == null")
-			li(ng-hide="app == null")
-				a(ui-sref="app.dashboard({ id: app.nameUrl })")
-					i.fa.fa-dashboard.fa-fw
-					|  {{ app.name }}
-			li(ng-hide="app == null")
-				a(ui-sref="app.domains({ id: app.nameUrl })")
-					i.fa.fa-fw
-					|  Domains
-			li(ng-hide="app == null")
-				a(ui-sref="app.environment({ id: app.nameUrl })")
-					i.fa.fa-fw
-					|  Environment Variables
-			li(ng-hide="app == null")
-				a(ui-sref="app.logs({ id: app.nameUrl })")
-					i.fa.fa-files-o.fa-fw
-					|  Logs
-			li(ng-hide="app == null")
-				a(ui-sref="app.traffic({ id: app.nameUrl })")
-					i.fa.fa-bolt.fa-fw
-					|  Traffic
-			li(ng-hide="app == null")
-				a(ui-sref="app.usage({ id: app.nameUrl })")
-					i.fa.fa-eye.fa-fw
-					|  Resources
-			li(ng-hide="app == null")
-				a(ui-sref="app.settings({ id: app.nameUrl })")
-					i.fa.fa-wrench.fa-fw
-					|  Settings
+
+ul.nav.sidenav(role="navigation" ng-cloak)
+	li: h4.text-center NodeGear
+
+	li.active
+		a(ui-sref="gettingStarted")
+			i.fa.fa-thumb-tack.fa-fw
+			|  Getting Started
+	li: a(ui-sref="apps") Gears
+	li: a(ui-sref="profile.view") Account Settings
+	li: a(ui-sref="profile.billing.history") Billing
+	li: a(ui-sref="profile.billing.paymentMethods") Payment Methods
+	li: a(ui-sref="profile.ssh") SSH Public Key
+	li: a(ui-sref="tickets.tickets") Support Tickets
+
+	li.divider
+	li(ng-cloak ng-hide="app == null")
+		a(ui-sref="app.dashboard({ id: app.nameUrl })")
+			i.fa.fa-dashboard.fa-fw
+			|  {{ app.name }}
+	li(ng-cloak ng-hide="app == null")
+		a(ui-sref="app.domains({ id: app.nameUrl })")
+			i.fa.fa-fw
+			|  Domains
+	li(ng-cloak ng-hide="app == null")
+		a(ui-sref="app.environment({ id: app.nameUrl })")
+			i.fa.fa-fw
+			|  Env. Variables
+	li(ng-cloak ng-hide="app == null")
+		a(ui-sref="app.logs({ id: app.nameUrl })")
+			i.fa.fa-files-o.fa-fw
+			|  Logs
+	li(ng-cloak ng-hide="app == null")
+		a(ui-sref="app.traffic({ id: app.nameUrl })")
+			i.fa.fa-bolt.fa-fw
+			|  Traffic
+	li(ng-cloak ng-hide="app == null")
+		a(ui-sref="app.usage({ id: app.nameUrl })")
+			i.fa.fa-eye.fa-fw
+			|  Resources
+	li(ng-cloak ng-hide="app == null")
+		a(ui-sref="app.settings({ id: app.nameUrl })")
+			i.fa.fa-wrench.fa-fw
+			|  Settings

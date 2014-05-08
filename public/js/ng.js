@@ -6,7 +6,6 @@ require.config({
 		d3: 'vendor/d3.min',
 		rickshaw: 'vendor/rickshaw.min',
 		moment: 'vendor/moment',
-		'sb-admin': 'vendor/sb-admin',
 		bootstrap: 'vendor/bootstrap'
 	},
 	shim: {
@@ -17,7 +16,6 @@ require.config({
 			deps: ['angular']
 		},
 		bootstrap: ['jquery'],
-		'sb-admin': ['jquery'],
 		'vendor/angular-sanitize': ['angular'],
 		d3: {
 			exports: 'd3'
@@ -32,8 +30,8 @@ require([
 	'vendor/angular-sanitize',
 	'routes/routes',
 	'app',
-	'bootstrap',
-	'sb-admin'
+	'jquery',
+	'vendor/flat-ui.combined'
 ], function(angular) {
 	var $html = angular.element(document.getElementsByTagName('html')[0]);
 	

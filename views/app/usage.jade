@@ -1,14 +1,15 @@
-h1.page-header Resource Usage
+.pagestyle
+	h4 Resource Usage
 
-table.table(ng-init="getUsage()")
-	thead
-		tr
-			th Time
-			th CPU Usage %
-			th RAM Usage Mb
-	tbody
-		tr(ng-repeat="use in usage")
-			td {{ use.time.getDate() }}/{{ use.time.getMonth()+1 }}/{{ use.time.getFullYear() }}
-				| {{ use.time.getHours() }}:{{ use.time.getMinutes() }}
-			td {{ use.cpu }}
-			td {{ use.memory }}
+	table.table(ng-init="getUsage()")
+		thead
+			tr
+				th Time
+				th CPU Usage %
+				th RAM Usage Mb
+		tbody
+			tr(ng-repeat="use in usage")
+				td {{ use.time.getDate() }}/{{ use.time.getMonth()+1 }}/{{ use.time.getFullYear() }}
+					| {{ use.time.getHours() }}:{{ use.time.getMinutes() }}
+				td {{ use.cpu }}
+				td {{ use.memory }}

@@ -1,5 +1,5 @@
-div(ng-controller="AppDashboardController" ng-init="setCsrf('#{token}')")
-	h1.page-header {{app.name}} Dashboard
+.pagestyle(ng-controller="AppDashboardController" ng-init="setCsrf('#{token}')")
+	h4 {{app.name}} Dashboard
 		.pull-right
 			.btn-group
 				button.btn.btn-md.btn-success(ui-sref="app.dashboard.addProcess({ id: app.nameUrl })") Add Process

@@ -1,23 +1,24 @@
-h1.page-header App Domains
-	.btn-group.pull-right
-		button.btn.btn-success(ui-sref="app.domains.addDomain({ id: app.nameUrl })") Add Domain
+.pagestyle
+	h4 App Domains
+		.btn-group.pull-right
+			button.btn.btn-success(ui-sref="app.domains.addDomain({ id: app.nameUrl })") Add Domain
 
-p(ng-show="_app.domains.length == 0") You have no domains. You won't be able to start any applications until you have one.
+	p(ng-show="_app.domains.length == 0") You have no domains. You won't be able to start any applications until you have one.
 
-table.table
-	thead
-		th Domain
-		th Is Subdomain
-		th Endpoint
-	tbody
-		tr(ng-repeat="domain in _app.domains")
-			td: a(ui-sref="app.domains.editDomain({ id: app.nameUrl, did: domain._id })") {{ domain.domain }}
-			td {{ domain.is_subdomain }}
-			td
-				span(ng-show="domain.is_subdomain")
-					strong {{ domain.domain }}
-					small .{{ user.username }}.ngapp.io
-				span(ng-hide="domain.is_subdomain")
-					strong {{ domain.domain }}
+	table.table
+		thead
+			th Domain
+			th Is Subdomain
+			th Endpoint
+		tbody
+			tr(ng-repeat="domain in _app.domains")
+				td: a(ui-sref="app.domains.editDomain({ id: app.nameUrl, did: domain._id })") {{ domain.domain }}
+				td {{ domain.is_subdomain }}
+				td
+					span(ng-show="domain.is_subdomain")
+						strong {{ domain.domain }}
+						small .{{ user.username }}.ngapp.io
+					span(ng-hide="domain.is_subdomain")
+						strong {{ domain.domain }}
 
-ui-view(autoscroll="off")
+	ui-view(autoscroll="off")

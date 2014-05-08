@@ -24,4 +24,41 @@
 	.authentication {
 		margin-top: 100px;
 	}
+	.sidenav {
+		position: fixed;
+		height: 100%;
+		overflow-y: scroll;
+		z-index: 2;
+	}
+	ui-view {
+		z-index: 1;
+	}
+}
+
+.container-liquid {
+	padding-left: 15px;
+	padding-right: 15px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.sidenav {
+	padding-top: 20px;
+	background: #FFF;
+}
+
+.pagestyle {
+	padding-top: 20px;
+}
+
+.sidenav a {
+	color: #111;
+}
+.sidenav a:hover {
+	border-radius: 4px;
+	color: #16a085;
+}
+
+.loading-text {
+	margin-top: 20px;
 }
