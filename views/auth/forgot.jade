@@ -1,19 +1,17 @@
 .col-md-4.col-md-offset-4.col-lg-4.col-lg-offset-4.col-sm-6.col-sm-offset-3.col-xs-10.col-xs-offset-1
-	.login-panel.panel.panel-default
-		.panel-heading
-			h3.panel-title.text-center Forgotten Password
-		.panel-body
-			form(name="forgot" ng-init="setCsrf('#{token}')")
-				fieldset
-					p.text-center(ng-cloak ng-show="status.length > 0" ng-bind="status")
-					.form-group
-						input.form-control(placeholder="Username -or- Email Address" ng-disabled="authDetailDisabled" type="text" autofocus="" required ng-model="authDetail")
-					.form-group
-						button.btn.btn-lg.btn-success.btn-block(ng-disabled="forgot.$invalid" ng-click="submitForgot()")
-							i.fa.fa-envelope.fa-fw
-							|  Send me a link
-	p.text-center
-		| When you're done, go to 
-		a.link-black.link-underline(ui-sref="login") Sign In
-		|  or 
-		a.link-black.link-underline(ui-sref="register") Sign Up
+	h3.text-center NodeGear
+	p.text-center Password Reset
+	form(name="forgot" ng-init="setCsrf('#{token}')")
+		fieldset
+			p.text-center(ng-cloak ng-show="status.length > 0" ng-bind="status")
+			.form-group
+				input.form-control(placeholder="Username -or- Email Address" ng-disabled="authDetailDisabled" type="text" autofocus="" required ng-model="authDetail")
+			.form-group
+				button.btn.btn-lg.btn-success.btn-block(ng-disabled="forgot.$invalid" ng-click="submitForgot()")
+					i.fa.fa-envelope.fa-fw
+					|  Send me a link
+		p.text-center
+			| When you're done, go to 
+			a.link-black.link-underline(ui-sref="login") Sign In
+			|  or 
+			a.link-black.link-underline(ui-sref="register") Sign Up

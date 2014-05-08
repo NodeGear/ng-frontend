@@ -19,3 +19,9 @@
 .link-muted, .link-muted:hover {
 	color: #999;
 }
+
+@media (min-width: 768px) {
+	.authentication {
+		margin-top: 100px;
+	}
+}

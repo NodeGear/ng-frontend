@@ -57,6 +57,8 @@ define([
 			$scope.status = "Welcome Back!";
 			$scope.user.auth = localStorage["login_auth"];
 			$('form[name=login] input[type=password]').trigger('focus');
+		} else {
+			$('form[name=login] input[type=text]').trigger('focus');
 		}
 
 		$scope.$watch('user.auth', function(auth) {
