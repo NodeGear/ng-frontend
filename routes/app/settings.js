@@ -10,43 +10,45 @@ exports.router = function (app) {
 
 function saveSettings (req, res) {
 	var name = req.body.name;
-	var env = req.body.env;
+	var location = req.body.location;
+	var branch = req.body.branch;
+	var script = req.body.script;
 	
 	var app = res.locals.app;
 	
+	var errs = [];
+
 	if (name && name.length > 0) {
-		// Safe!
 		app.name = name;
-		
-		var event = new models.Event({
-			name: "Settings",
-			message: "Settings updated"
-		});
-		event.save()
-		
-		app.events.push(event._id)
+		app.nameLowercase = name.toLowerCase();
+		app.nameUrl = name.replace(/\W+/g, '-').trim().toLowerCase();
+	} else {
+		errs.push("Name Invalid.")
 	}
 	
-	app.env = [];
-	for (var i = 0; i < env.length; i++) {
-		app.env.push({
-			name: env[i].name,
-			value: env[i].value,
-			created: Date.now() // incorrect date (facepalm)
-		});
+	if (location && location.length > 0) {
+		app.location = location;
+	} else {
+		errs.push("Location Invalid");
 	}
 	
+	if (branch && branch.length > 0) {
+		app.branch = branch;
+	} else {
+		errs.push("Branch Invalid");
+	}
+	
+	if (script && script.length > 0) {
+		app.script = script;
+	} else {
+		errs.push("Script Invalid");
+	}
+
 	app.save()
 	
-	res.format({
-		html: function() {
-			res.redirect('/app/'+res.locals.app._id+'/settings')
-		},
-		json: function() {
-			res.send({
-				status: 200,
-				message: "Saved"
-			})
-		}
-	})
+	res.send({
+		status: errs.length > 0 ? 200 : 400,
+		message: errs.length > 0 ? "Saved" : errs.join(', '),
+		nameUrl: app.nameUrl
+	});
 }

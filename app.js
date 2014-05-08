@@ -23,7 +23,8 @@ var app = exports.app = express();
 
 exports.backend = backend;
 if (config.production) {
-	backend.auth(config.credentials.redis_key)
+	require('newrelic');
+	backend.auth(config.credentials.redis_key);
 }
 
 if (!process.env.NG_TEST) {

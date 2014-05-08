@@ -6,7 +6,9 @@ exports.router = function (app) {
 }
 
 function getApps (req, res) {
-	models.App.find({}).populate('user').exec(function(err, apps) {
+	models.App.find({
+		deleted: false
+	}).populate('user').exec(function(err, apps) {
 		res.locals.apps = apps;
 		
 		res.render('admin/apps')

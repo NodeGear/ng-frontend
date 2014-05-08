@@ -129,6 +129,22 @@ function deleteApp (req, res) {
 		res.locals.app.deleted = true;
 		res.locals.app.save();
 
+		models.AppDomain.remove({
+			app: res.locals.app._id
+		}, function(err) {
+			if (err) throw err;
+		});
+		models.AppEnvironment.remove({
+			app: res.locals.app._id
+		}, function(err) {
+			if (err) throw err;
+		});
+		models.AppEvent.remove({
+			app: res.locals.app._id
+		}, function(err) {
+			if (err) throw err;
+		});
+
 		req.user.sendEmail("NodeGear App Manager <app_manager@nodegear.com>", "Application Deleted", "emails/appDeleted.jade", {
 			app: res.locals.app
 		});

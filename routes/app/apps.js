@@ -105,6 +105,7 @@ function doAddApp (req, res) {
 
 	var app = new models.App({
 		name: name,
+		nameLowercase: name.toLowerCase(),
 		user: req.user._id,
 		script: "index.js",
 		nameUrl: nameUrl,

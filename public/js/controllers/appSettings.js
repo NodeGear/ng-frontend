@@ -21,6 +21,22 @@ define([
 			$scope.reloadScope();
 		});
 
+		$scope.saveSettings = function() {
+			$http.put(app.appRoute, {
+				_csrf: csrf.csrf,
+				name: app.app.name,
+				location: app.app.location,
+				script: app.app.script,
+				branch: app.app.branch
+			}).success(function(data) {
+				$scope.status = data.message;
+				app.app.nameUrl = data.nameUrl;
+				app.appRoute = '/app/'+data.nameUrl;
+			}).error(function() {
+				$scope.status = "Request Failed";
+			})
+		}
+
 		$scope.reloadScope = function() {
 			if (!$scope.$$phase) $scope.$digest();
 		}
