@@ -1,7 +1,7 @@
 
 ul.nav.sidenav(role="navigation")
 	li: h4.text-center: a(ui-sref="apps") NodeGear
-	
+
 	li(ng-class="{ active: $state.includes('gettingStarted') }")
 		a(ui-sref="gettingStarted")
 			i.fa.fa-thumb-tack.fa-fw
@@ -17,3 +17,7 @@ ul.nav.sidenav(role="navigation")
 		a(ui-sref="profile.ssh") SSH Public Key
 	li(ng-class="{ active: $state.includes('tickets') }")
 		a(ui-sref="tickets.tickets") Support Tickets
+
+	li(ng-show="user.admin" ng-cloak style="margin-top: 20px;"): a(href="/admin&no_router")
+		i.fa.fa-external-link.fa-fw
+		|  Admin

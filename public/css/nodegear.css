@@ -45,6 +45,8 @@
 .sidenav {
 	padding-top: 20px;
 	background: #FFF;
+	width: inherit;
+	padding-right: 20px;
 }
 .sidenav li.active a {
 	background: #EEE;
