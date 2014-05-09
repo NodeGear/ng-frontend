@@ -1,7 +1,7 @@
 
-ul.nav.sidenav(role="navigation" ng-cloak)
-	li: h4.text-center NodeGear
-
+ul.nav.sidenav(role="navigation")
+	li: h4.text-center: a(ui-sref="apps") NodeGear
+	
 	li(ng-class="{ active: $state.includes('gettingStarted') }")
 		a(ui-sref="gettingStarted")
 			i.fa.fa-thumb-tack.fa-fw

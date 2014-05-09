@@ -23,8 +23,8 @@ html
 				.col-sm-9
 					block content
 						ui-view(autoscroll="false")
-							.loading-text
-								p Hold Tight, loading awesome...
+							.pagestyle
+								p.text-center: small Hold Tight, loading the awesome...
 
 		block js
 			script(src="#{cdn}/js/#{version}/vendor/require.min.js" data-main="#{cdn}/js/#{version}/ng.js")
