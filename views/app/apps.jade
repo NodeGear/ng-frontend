@@ -26,6 +26,7 @@
 							span.link-larger.label.label-danger(ng-show="!app.isRunning" title="Application Offline") &nbsp;
 							| &nbsp;&nbsp;
 							a.link-larger(ui-sref="app.dashboard({ id: app.nameUrl })") {{ app.name }}
+							span.link-larger {{ app.server }}
 							.btn-group.pull-right
 								button.link-larger.btn.btn-link(ui-sref="app.logs({ id: app.nameUrl })" title="Logs Monitoring")
 									i.fa.fa-fw.fa-files-o

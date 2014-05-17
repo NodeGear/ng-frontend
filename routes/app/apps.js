@@ -5,6 +5,7 @@ var mongoose = require('mongoose')
 	, util = require('../../util')
 	, app = require('./app')
 	, server = require('../../app')
+	, async = require('async')
 
 exports.httpRouter = function(_app) {
 	app.httpRouter(_app);
@@ -43,7 +44,7 @@ function getApps (req, res, next) {
 	
 	req.user.getApps(function(apps) {
 		res.locals.apps = apps;
-		
+
 		next();
 	})
 }
@@ -124,5 +125,31 @@ function doAddApp (req, res) {
 }
 
 function viewApps (req, res) {
-	res.send({ apps: res.locals.apps });
+	async.map(res.locals.apps, function(app, cb) {
+		var _app = app.toObject();
+
+		models.AppProcess.find({
+			app: _app._id
+		}).select('running').exec(function(err, processes) {
+			if (err) throw err;
+
+			var running = 0, stopped = 0;
+
+			for (var i = 0; i < processes.length; i++) {
+				if (processes[i].running) {
+					running++;
+				} else {
+					stopped++;
+				}
+			}
+			_app.running = running;
+			_app.stopped = stopped;
+
+			console.log(_app)
+
+			cb(null, _app);
+		})
+	}, function(err, apps) {
+		res.send({ apps: apps });
+	})
 }

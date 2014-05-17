@@ -5,19 +5,19 @@
 				i.fa.fa-gear.fa-fw
 				|  {{ app.name }}
 			.btn-group
-				a.btn.btn-primary(ui-sref="app.dashboard({ id: app.nameUrl })")
+				a.btn(ui-sref="app.dashboard({ id: app.nameUrl })" ng-class="{ 'btn-default': $state.includes('app.dashboard'), 'btn-primary': !$state.includes('app.dashboard') }")
 					| Processes
-				a.btn.btn-primary(ui-sref="app.domains({ id: app.nameUrl })")
+				a.btn(ui-sref="app.domains({ id: app.nameUrl })" ng-class="{ 'btn-default': $state.includes('app.domains'), 'btn-primary': !$state.includes('app.domains') }")
 					| Domains
-				a.btn.btn-primary(ui-sref="app.environment({ id: app.nameUrl })")
+				a.btn(ui-sref="app.environment({ id: app.nameUrl })" ng-class="{ 'btn-default': $state.includes('app.environment'), 'btn-primary': !$state.includes('app.environment') }")
 					| Environment
-				a.btn.btn-primary(ui-sref="app.logs({ id: app.nameUrl })")
+				a.btn(ui-sref="app.logs({ id: app.nameUrl })" ng-class="{ 'btn-default': $state.includes('app.logs'), 'btn-primary': !$state.includes('app.logs') }")
 					| Logs
-				a.btn.btn-primary(ui-sref="app.traffic({ id: app.nameUrl })")
+				a.btn(ui-sref="app.traffic({ id: app.nameUrl })" ng-class="{ 'btn-default': $state.includes('app.traffic'), 'btn-primary': !$state.includes('app.traffic') }")
 					| Traffic
-				a.btn.btn-primary(ui-sref="app.usage({ id: app.nameUrl })")
+				a.btn(ui-sref="app.usage({ id: app.nameUrl })" ng-class="{ 'btn-default': $state.includes('app.usage'), 'btn-primary': !$state.includes('app.usage') }")
 					| Resources
-				a.btn.btn-primary(ui-sref="app.settings({ id: app.nameUrl })")
+				a.btn(ui-sref="app.settings({ id: app.nameUrl })" ng-class="{ 'btn-default': $state.includes('app.settings'), 'btn-primary': !$state.includes('app.settings') }")
 					| Settings
 			ui-view(autoscroll="false")
 		.clearfix
