@@ -5,7 +5,7 @@ define([
 	'../services/csrf',
 	'../services/servers'
 ], function(angular, app, moment) {
-	app.controller('AddAppController', function ($scope, $http, $rootScope, csrf, servers) {
+	app.registerController('AddAppController', function ($scope, $http, $rootScope, csrf, servers) {
 		var socket = io.connect();
 
 		$scope.creating = false;

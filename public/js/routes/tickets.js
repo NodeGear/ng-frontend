@@ -1,15 +1,14 @@
 define([
-	'angular',
-	'../app',
-	'../controllers/tickets'
-], function(angular, app) {
-	app.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
+	'../app'
+], function(app) {
+	app.config(function($stateProvider, $couchPotatoProvider) {
 		$stateProvider.state('tickets', {
 			url: '/tickets',
 			pageTitle: 'Support Tickets',
 			abstract: true,
 			controller: 'TicketsController',
 			resolve: {
+				dummy: $couchPotatoProvider.resolveDependencies(['controllers/tickets']),
 				data: function($q, $http) {
 					var def = $q.defer();
 			
@@ -33,6 +32,7 @@ define([
 			templateUrl: "/view/tickets/add",
 			controller: "TicketController",
 			resolve: {
+				dummy: $couchPotatoProvider.resolveDependencies(['controllers/tickets']),
 				data: function($q) {
 					var def = $q.defer()
 					def.resolve({});
@@ -46,6 +46,7 @@ define([
 			templateUrl: "/view/ticket",
 			controller: "TicketController",
 			resolve: {
+				dummy: $couchPotatoProvider.resolveDependencies(['controllers/tickets']),
 				data: function($q, $http, $stateParams) {
 					var def = $q.defer();
 			

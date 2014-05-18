@@ -6,7 +6,7 @@ define([
 	'../directives/apps',
 	'./appDashboard'
 ], function(angular, app, moment) {
-	app.controller('AppsController', function ($scope, $http, $rootScope) {
+	app.registerController('AppsController', function ($scope, $http, $rootScope) {
 		$scope.appsOff = 0;
 		$scope.appsOn = 0;
 

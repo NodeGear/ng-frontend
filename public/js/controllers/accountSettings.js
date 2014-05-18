@@ -1,9 +1,8 @@
 define([
-	'angular',
 	'app',
 	'moment'
-], function(angular, app, moment) {
-	app.controller('AccountSettingsController', function ($scope, $http) {
+], function(app, moment) {
+	app.registerController('AccountSettingsController', function ($scope, $http) {
 		$scope.user = {};
 		$scope.csrf = "";
 		$scope.formDisabled = true;

@@ -6,7 +6,7 @@ define([
 	'../services/csrf',
 	'../services/servers'
 ], function(angular, app, moment) {
-	app.controller('AppDashboardController', function ($scope, app, csrf, $rootScope) {
+	app.registerController('AppDashboardController', function ($scope, app, csrf, $rootScope) {
 		var socket = io.connect();
 		
 		$scope._app = app;
@@ -160,7 +160,7 @@ define([
 		}
 	});
 
-	app.controller('AppProcessController', function ($scope, process, csrf, $http, $state, app, servers) {
+	app.registerController('AppProcessController', function ($scope, process, csrf, $http, $state, app, servers) {
 		$scope.process = process.process;
 		$scope.addProcess = false;
 		$scope.status = "";

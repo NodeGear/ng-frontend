@@ -3,7 +3,7 @@ define([
 	'app',
 	'moment'
 ], function(angular, app, moment) {
-	app.controller('CurrentUsageController', function ($scope, $http, $rootScope) {
+	app.registerController('CurrentUsageController', function ($scope, $http, $rootScope) {
 		var positive = '#5cb85c';
 		var negative = '#d9534f';
 
@@ -52,7 +52,7 @@ define([
 		};
 	})
 
-	.controller('BillingUsageController', function($scope, $http, $state) {
+	.registerController('BillingUsageController', function($scope, $http, $state) {
 		$scope.usages = [];
 
 		$http.get('/profile/billing/usage').success(function(data) {

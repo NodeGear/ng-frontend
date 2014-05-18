@@ -1,27 +1,25 @@
 define([
-	'angular',
 	'app',
-	'../controllers/apps',
-	'../controllers/addApp',
-	'../controllers/appDashboard',
-	'../controllers/appDomains',
-	'../controllers/appEnvironment',
-	'../controllers/appLogs',
-	'../controllers/appSettings',
 	'../services/app'
-], function(angular, app) {
-	app.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
+], function(app) {
+	app.config(function($stateProvider, $couchPotatoProvider) {
 		$stateProvider.state('add', {
 			url: '/apps/add',
 			pageTitle: "Add Application",
 			templateUrl: "/view/app/add",
-			controller: "AddAppController"
+			controller: "AddAppController",
+			resolve: {
+				dummy: $couchPotatoProvider.resolveDependencies(['controllers/addApp'])
+			}
 		})
 		.state('apps', {
 			url: '/apps',
 			pageTitle: "Applications",
 			templateUrl: "/view/apps",
-			controller: "AppsController"
+			controller: "AppsController",
+			resolve: {
+				dummy: $couchPotatoProvider.resolveDependencies(['controllers/apps'])
+			}
 		})
 		.state('app', {
 			url: '/app/:id',
@@ -51,6 +49,7 @@ define([
 			templateUrl: "/view/app/process",
 			controller: "AppProcessController",
 			resolve: {
+				dummy: $couchPotatoProvider.resolveDependencies(['controllers/appDashboard']),
 				process: function($q, $http, $stateParams) {
 					return {
 						process: {
@@ -67,6 +66,7 @@ define([
 			templateUrl: "/view/app/process",
 			controller: "AppProcessController",
 			resolve: {
+				dummy: $couchPotatoProvider.resolveDependencies(['controllers/appDashboard']),
 				process: function($q, $http, $stateParams) {
 					var def = $q.defer();
 
@@ -83,7 +83,10 @@ define([
 			url: '/domains',
 			pageTitle: 'App Domains',
 			templateUrl: "/view/app/domains",
-			controller: "AppDomainsController"
+			controller: "AppDomainsController",
+			resolve: {
+				dummy: $couchPotatoProvider.resolveDependencies(['controllers/appDomains'])
+			}
 		})
 		.state('app.domains.addDomain', {
 			url: '/add',
@@ -91,6 +94,7 @@ define([
 			templateUrl: "/view/app/domain",
 			controller: "AppDomainController",
 			resolve: {
+				dummy: $couchPotatoProvider.resolveDependencies(['controllers/appDomains']),
 				domain: function() {
 					return { domain: {} };
 				}
@@ -102,6 +106,7 @@ define([
 			templateUrl: "/view/app/domain",
 			controller: "AppDomainController",
 			resolve: {
+				dummy: $couchPotatoProvider.resolveDependencies(['controllers/appDomains']),
 				domain: function($q, $http, $stateParams) {
 					var def = $q.defer();
 
@@ -118,7 +123,10 @@ define([
 			url: '/environment',
 			pageTitle: 'App Environment',
 			templateUrl: "/view/app/environment",
-			controller: "AppEnvironmentController"
+			controller: "AppEnvironmentController",
+			resolve: {
+				dummy: $couchPotatoProvider.resolveDependencies(['controllers/appEnvironment'])
+			}
 		})
 		.state('app.environment.addEnv', {
 			url: '/add',
@@ -126,6 +134,7 @@ define([
 			templateUrl: "/view/app/editEnvironment",
 			controller: "AppEnvironmentVariableController",
 			resolve: {
+				dummy: $couchPotatoProvider.resolveDependencies(['controllers/appEnvironment']),
 				env: function() {
 					return { env: {} };
 				}
@@ -137,6 +146,7 @@ define([
 			templateUrl: "/view/app/editEnvironment",
 			controller: "AppEnvironmentVariableController",
 			resolve: {
+				dummy: $couchPotatoProvider.resolveDependencies(['controllers/appEnvironment']),
 				env: function($q, $http, $stateParams) {
 					var def = $q.defer();
 
@@ -153,7 +163,10 @@ define([
 			url: '/logs',
 			pageTitle: "App Logs",
 			template: "<ui-view autoscroll='false'></ui-view>",
-			controller: "AppLogsController"
+			controller: "AppLogsController",
+			resolve: {
+				dummy: $couchPotatoProvider.resolveDependencies(['controllers/appLogs'])
+			}
 		})
 		.state('app.logs.process', {
 			url: '/:pid',
@@ -161,6 +174,7 @@ define([
 			templateUrl: "/view/app/logs",
 			controller: "AppLogProcessController",
 			resolve: {
+				dummy: $couchPotatoProvider.resolveDependencies(['controllers/appLogs']),
 				process: function($stateParams) {
 					return $stateParams.pid;
 				}
@@ -172,6 +186,7 @@ define([
 			templateUrl: "/view/app/log",
 			controller: "AppLogController",
 			resolve: {
+				dummy: $couchPotatoProvider.resolveDependencies(['controllers/appLogs']),
 				log: function($stateParams) {
 					return $stateParams.lid;
 				}
@@ -191,7 +206,10 @@ define([
 			url: '/settings',
 			pageTitle: "App Settings",
 			templateUrl: "/view/app/settings",
-			controller: "AppSettingsController"
+			controller: "AppSettingsController",
+			resolve: {
+				dummy: $couchPotatoProvider.resolveDependencies(['controllers/appSettings'])
+			}
 		})
 	});
 });

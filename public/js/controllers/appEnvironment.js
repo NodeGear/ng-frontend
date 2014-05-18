@@ -3,7 +3,7 @@ define([
 	'app',
 	'moment'
 ], function(angular, app, moment) {
-	app.controller('AppEnvironmentController', function ($scope, $http, app) {
+	app.registerController('AppEnvironmentController', function ($scope, $http, app) {
 		$scope.environment = app.environment;
 
 		$scope.app = app.app;
@@ -15,7 +15,7 @@ define([
 			}
 		})
 	})
-	.controller('AppEnvironmentVariableController', function ($scope, $http, csrf, app, env, $state) {
+	.registerController('AppEnvironmentVariableController', function ($scope, $http, csrf, app, env, $state) {
 		$scope.env = env.env;
 		$scope.addEnvironment = $scope.env._id == null;
 		$scope.checking = false;

@@ -2,7 +2,7 @@ define([
 	'angular',
 	'../app'
 ], function(angular, app) {
-	app.controller('VerifyEmailController', function($scope, $http) {
+	app.registerController('VerifyEmailController', function($scope, $http) {
 		$scope.status = "";
 		$scope.csrf = "";
 		$scope.codeTextTransform = "none";

@@ -1,8 +1,14 @@
 define([
-	'angular'
-	], function(angular) {
-		var app = angular.module('nodegear', ['ui.router', 'ngSanitize']);
-		app.run(function($rootScope, $window) {
+	'angular',
+	'couchPotato'
+	], function(angular, couchPotato) {
+		var app = angular.module('nodegear', ['scs.couch-potato', 'ui.router', 'ngSanitize']);
+
+		couchPotato.configureApp(app);
+
+		app.run(function($rootScope, $window, $couchPotato) {
+			app.lazy = $couchPotato;
+			
 			$rootScope.$on('$locationChangeStart', function(event, newUrl, oldUrl){
 				if (newUrl.match(/\&no_router/)) {
 					event.preventDefault();

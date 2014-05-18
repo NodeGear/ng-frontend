@@ -5,7 +5,7 @@ module.exports = function() {
 
 	['js', 'css', 'img', 'fonts'].forEach(function(folder) {
 		staticFolders.push(
-			new RegExp('/'+folder+'/'+config.version+'/.*')
+			new RegExp('/'+config.version+'/'+folder+'/.*')
 		);
 	});
 

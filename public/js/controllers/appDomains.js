@@ -3,7 +3,7 @@ define([
 	'app',
 	'moment'
 ], function(angular, app, moment) {
-	app.controller('AppDomainsController', function ($scope, $http, app) {
+	app.registerController('AppDomainsController', function ($scope, $http, app) {
 		$scope.domains = app.domains;
 
 		$scope.app = app.app;
@@ -15,7 +15,7 @@ define([
 			}
 		})
 	})
-	.controller('AppDomainController', function ($scope, $http, csrf, app, domain, $state) {
+	.registerController('AppDomainController', function ($scope, $http, csrf, app, domain, $state) {
 		$scope.domain = domain.domain;
 		$scope.addDomain = $scope.domain._id == null;
 		$scope.checking = false;

@@ -1,13 +1,8 @@
 define([
 	'angular',
-	'app',
-	'../controllers/auth_login',
-	'../controllers/auth_register',
-	'../controllers/auth_forgot',
-	'../controllers/auth_verify',
-	'../controllers/tfa'
+	'app'
 ], function(angular, app) {
-	app.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
+	app.config(function($stateProvider, $urlRouterProvider, $locationProvider, $couchPotatoProvider) {
 		$locationProvider.html5Mode(true);
 
 		$urlRouterProvider.otherwise('/');
@@ -16,31 +11,46 @@ define([
 			url: '/',
 			pageTitle: "Sign In",
 			templateUrl: "/view/auth/login",
-			controller: "SignInController"
+			controller: "SignInController",
+			resolve: {
+				dummy: $couchPotatoProvider.resolveDependencies(['controllers/auth_login'])
+			}
 		})
 		.state('register', {
 			url: '/register',
 			pageTitle: "Register",
 			templateUrl: "/view/auth/register",
-			controller: "SignUpController"
+			controller: "SignUpController",
+			resolve: {
+				dummy: $couchPotatoProvider.resolveDependencies(['controllers/auth_register'])
+			}
 		})
 		.state('verifyEmail', {
 			url: '/register/verify',
 			pageTitle: "Verify Email",
 			templateUrl: "/view/auth/verifyEmail",
-			controller: "VerifyEmailController"
+			controller: "VerifyEmailController",
+			resolve: {
+				dummy: $couchPotatoProvider.resolveDependencies(['controllers/auth_verify'])
+			}
 		})
 		.state('forgot', {
 			url: '/forgot',
 			pageTitle: "Forgotten Password",
 			templateUrl: "/view/auth/forgot",
-			controller: "ForgotController"
+			controller: "ForgotController",
+			resolve: {
+				dummy: $couchPotatoProvider.resolveDependencies(['controllers/auth_forgot'])
+			}
 		})
 		.state('tfa', {
 			url: '/tfa',
 			pageTitle: "Two Factor Authentication",
 			templateUrl: "/view/auth/tfa",
-			controller: "TFAController"
+			controller: "TFAController",
+			resolve: {
+				dummy: $couchPotatoProvider.resolveDependencies(['controllers/tfa'])
+			}
 		})
 	});
 });

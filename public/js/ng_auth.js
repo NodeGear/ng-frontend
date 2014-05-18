@@ -4,7 +4,8 @@ require.config({
 		uiRouter: 'vendor/angular-ui-router',
 		jquery: 'vendor/jquery',
 		moment: 'vendor/moment',
-		bootstrap: 'vendor/bootstrap'
+		bootstrap: 'vendor/bootstrap',
+		couchPotato: 'vendor/angular-couch-potato'
 	},
 	shim: {
 		angular: {
@@ -14,12 +15,14 @@ require.config({
 			deps: ['angular']
 		},
 		bootstrap: ['jquery'],
-		'vendor/angular-sanitize': ['angular']
+		'vendor/angular-sanitize': ['angular'],
+		'vendor/flat-ui.combined': ['jquery']
 	}
 });
 
 require([
 	'angular',
+	'couchPotato',
 	'uiRouter',
 	'vendor/angular-sanitize',
 	'app',

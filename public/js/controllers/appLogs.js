@@ -3,7 +3,7 @@ define([
 	'app',
 	'moment'
 ], function(angular, app, moment) {
-	app.controller('AppLogsController', function ($scope, $http, $rootScope, app, $state) {
+	app.registerController('AppLogsController', function ($scope, $http, $rootScope, app, $state) {
 		$scope._app = app;
 		$scope.app = app.app;
 
@@ -35,7 +35,7 @@ define([
 		});
 	});
 
-	app.controller('AppLogProcessController', function($scope, $http, $rootScope, app, $state, process) {
+	app.registerController('AppLogProcessController', function($scope, $http, $rootScope, app, $state, process) {
 		$scope._app = app;
 		$scope.app = app.app;
 
@@ -83,7 +83,7 @@ define([
 		})
 	})
 
-	app.controller('AppLogController', function($scope, $http, $rootScope, app, $state, log) {
+	app.registerController('AppLogController', function($scope, $http, $rootScope, app, $state, log) {
 		$scope._app = app;
 		$scope.app = app.app;
 

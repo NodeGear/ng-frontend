@@ -3,7 +3,7 @@ define([
 	'../app',
 	'./tfa'
 ], function(angular, app) {
-	app.controller('SignUpController', function($scope, $http, $state) {
+	app.registerController('SignUpController', function($scope, $http, $state) {
 		$scope.status = "";
 		$scope.user = {};
 		$scope.help_text = {};

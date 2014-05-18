@@ -3,7 +3,7 @@ define([
 	'app',
 	'moment'
 ], function(angular, app, moment) {
-	app.controller('BillingHistoryController', function ($scope, $http, $rootScope) {
+	app.registerController('BillingHistoryController', function ($scope, $http, $rootScope) {
 		$scope.init = function () {
 			$scope.history = []
 			$scope.reload();

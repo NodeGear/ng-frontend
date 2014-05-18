@@ -2,7 +2,7 @@ define([
 	'angular',
 	'app'
 ], function(angular, app) {
-	app.controller('TFAController', function($scope, $http, $state) {
+	app.registerController('TFAController', function($scope, $http, $state) {
 		$scope.tfa = {
 			hide: false,
 			status: "",

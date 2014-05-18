@@ -3,7 +3,7 @@ define([
 	'app',
 	'moment'
 ], function(angular, app, moment) {
-	app.controller('TransactionController', function ($scope, transaction, $state) {
+	app.registerController('TransactionController', function ($scope, transaction, $state) {
 		$scope.transaction = transaction.data.transaction;
 
 		$("#transactionDetailsModal").modal('show')

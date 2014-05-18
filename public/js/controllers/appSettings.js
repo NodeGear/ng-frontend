@@ -3,7 +3,7 @@ define([
 	'app',
 	'moment'
 ], function(angular, app, moment) {
-	app.controller('AppSettingsController', function ($scope, $http, $state, app, csrf) {
+	app.registerController('AppSettingsController', function ($scope, $http, $state, app, csrf) {
 		$scope.app = app.app;
 		$scope._app = app;
 		$scope.canDelete = false;

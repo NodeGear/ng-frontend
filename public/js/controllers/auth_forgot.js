@@ -2,7 +2,7 @@ define([
 	'angular',
 	'../app'
 ], function(angular, app) {
-	app.controller('ForgotController', function($scope, $http, $rootScope) {
+	app.registerController('ForgotController', function($scope, $http, $rootScope) {
 		$scope.status = "";
 		$scope.authDetail = "";
 		$scope.csrf = "";

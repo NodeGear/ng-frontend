@@ -2,11 +2,11 @@ define([
 	'angular',
 	'app'
 ], function(angular, app) {
-	app.controller('TicketsController', function ($scope, data, $http) {
+	app.registerController('TicketsController', function ($scope, data, $http) {
 		$scope.tickets = data.tickets || [];
 	})
 
-	.controller('TicketController', function ($scope, data, $http, $rootScope, $state) {
+	.registerController('TicketController', function ($scope, data, $http, $rootScope, $state) {
 		$scope.ticket = data.ticket || {}
 		$scope.csrf = "";
 		$scope.status = "";

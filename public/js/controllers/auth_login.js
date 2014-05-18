@@ -1,9 +1,7 @@
 define([
-	'angular',
-	'../app',
-	'./tfa'
-], function(angular, app) {
-	app.controller('SignInController', function($scope, $http, $rootScope, $state) {
+	'../app'
+], function(app) {
+	app.registerController('SignInController', function($scope, $http, $rootScope, $state) {
 		$scope.status = "";
 		$scope.user = {
 			auth: "",

@@ -4,9 +4,9 @@ require.config({
 		uiRouter: 'vendor/angular-ui-router',
 		jquery: 'vendor/jquery',
 		d3: 'vendor/d3.min',
-		rickshaw: 'vendor/rickshaw.min',
 		moment: 'vendor/moment',
-		bootstrap: 'vendor/bootstrap'
+		bootstrap: 'vendor/bootstrap',
+		couchPotato: 'vendor/angular-couch-potato'
 	},
 	shim: {
 		angular: {
@@ -20,18 +20,19 @@ require.config({
 		d3: {
 			exports: 'd3'
 		},
-		rickshaw: ['d3']
+		'vendor/flat-ui.combined': ['jquery']
 	}
 });
 
 require([
 	'angular',
+	'couchPotato',
 	'uiRouter',
 	'vendor/angular-sanitize',
-	'routes/routes',
 	'app',
 	'jquery',
-	'vendor/flat-ui.combined'
+	'vendor/flat-ui.combined',
+	'routes/routes'
 ], function(angular) {
 	var $html = angular.element(document.getElementsByTagName('html')[0]);
 	

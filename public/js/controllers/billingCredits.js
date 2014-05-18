@@ -4,7 +4,7 @@ define([
 	'moment',
 	'../services/csrf'
 ], function(angular, app, moment) {
-	app.controller('BillingCreditsController', function ($scope, $http, $rootScope, csrf) {
+	app.registerController('BillingCreditsController', function ($scope, $http, $rootScope, csrf) {
 		$scope.cards = [];
 		$scope.paymentOptions = [{
 			name: "Pay £5 GBP",

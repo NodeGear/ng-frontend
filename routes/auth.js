@@ -272,7 +272,7 @@ function doVerifyEmail (req, res) {
 	models.EmailVerification.findOne({
 		user: req.user._id,
 		verified: false,
-		code: code
+		code: code.toUpperCase()
 	}, function(err, emailVerification) {
 		if (err) {
 			throw err;

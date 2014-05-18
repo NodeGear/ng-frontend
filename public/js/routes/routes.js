@@ -1,13 +1,12 @@
 define([
-	'angular',
 	'/socket.io/socket.io.js',
 	'../app',
 	'./app',
 	'./tickets',
 	'./profile',
 	'../services/user'
-], function(angular, io, app) {
-	app.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
+], function(io, app) {
+	app.config(function($stateProvider, $urlRouterProvider, $locationProvider, $couchPotatoProvider) {
 		$locationProvider.html5Mode(true);
 		
 		socket = io.connect()

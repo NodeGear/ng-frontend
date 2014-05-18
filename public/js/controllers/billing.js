@@ -4,7 +4,7 @@ define([
 	'moment',
 	'../services/csrf'
 ], function(angular, app, moment) {
-	app.controller('PaymentMethodsController', function ($scope, $http, $rootScope, csrf) {
+	app.registerController('PaymentMethodsController', function ($scope, $http, $rootScope, csrf) {
 		$scope.cards = [];
 		
 		$scope.init = function () {
@@ -25,7 +25,7 @@ define([
 		}
 	})
 	
-	.controller('PaymentMethodController', function($scope, $http, $state, csrf, paymentMethod) {
+	.registerController('PaymentMethodController', function($scope, $http, $state, csrf, paymentMethod) {
 		$("#paymentMethodModal").modal('show')
 		.on('hidden.bs.modal', function() {
 			$state.transitionTo('profile.billing.paymentMethods');

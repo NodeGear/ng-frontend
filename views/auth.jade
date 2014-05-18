@@ -9,9 +9,9 @@ html
 		link(href="/favicon.ico" type="image/x-icon" rel="icon")
 		link(href="/favicon.ico" type="image/x-icon" rel="shortcut icon")
 		
-		link(rel="stylesheet" href="#{cdn}/css/#{version}/bootstrap.nodegear.css")
-		link(rel="stylesheet" href="#{cdn}/css/#{version}/font-awesome.min.css")
-		link(rel="stylesheet" href="#{cdn}/css/#{version}/nodegear.css")
+		link(rel="stylesheet" href="#{cdn}/#{version}/css/bootstrap.nodegear.css")
+		link(rel="stylesheet" href="#{cdn}/#{version}/css/font-awesome.min.css")
+		link(rel="stylesheet" href="#{cdn}/#{version}/css/nodegear.css")
 
 	body(style="background-color:#fff;")
 		.container
@@ -21,4 +21,4 @@ html
 						h3.text-center NodeGear
 						p.text-center Hold on, we're loading the interface...
 		
-		script(src="#{cdn}/js/#{version}/vendor/require.min.js" data-main="#{cdn}/js/#{version}/ng_auth.js")
+		script(src="#{cdn}/#{version}/js/vendor/require.min.js" data-main="#{cdn}/#{version}/js/ng_auth.js")
