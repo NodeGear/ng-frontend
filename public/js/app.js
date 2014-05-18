@@ -9,6 +9,11 @@ define([
 		app.run(function($rootScope, $window, $couchPotato) {
 			app.lazy = $couchPotato;
 			
+			$rootScope.kiosk_enabled = false;
+			$rootScope.toggleKiosk = function() {
+				$rootScope.kiosk_enabled = !$rootScope.kiosk_enabled;
+			}
+
 			$rootScope.$on('$locationChangeStart', function(event, newUrl, oldUrl){
 				if (newUrl.match(/\&no_router/)) {
 					event.preventDefault();

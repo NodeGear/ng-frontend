@@ -27,7 +27,7 @@
 	.sidenav {
 		position: fixed;
 		height: 100%;
-		overflow-y: scroll;
+		overflow-y: auto;
 		z-index: 2;
 	}
 	ui-view {
@@ -70,4 +70,29 @@
 
 .loading-text {
 	margin-top: 20px;
+}
+
+.kiosk-toggle {
+	position: absolute;
+	top: 0;
+	right: 20px;
+	cursor: pointer;
+	z-index: 2;
+
+	-webkit-transform: rotate(90deg);
+	-moz-transform: rotate(90deg);
+	-ms-transform: rotate(90deg);
+}
+.kiosk-toggle .caret {
+	border-bottom-color: rgba(51, 51, 51, 0.4);
+	border-top-color: rgba(51, 51, 51, 0.4);
+}
+
+.inside_container {
+	left: 0;
+	right: auto;
+	bottom: auto;
+	-webkit-transform: rotate(-90deg);
+	-moz-transform: rotate(-90deg);
+	-ms-transform: rotate(-90deg);
 }

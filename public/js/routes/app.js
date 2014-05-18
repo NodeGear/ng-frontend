@@ -38,12 +38,15 @@ define([
 				}
 			}
 		})
-		.state('app.dashboard', {
+		.state('app.processes', {
 			url: '',
-			pageTitle: "App Dashboard",
-			templateUrl: "/view/app/dashboard"
+			pageTitle: "App Processes",
+			templateUrl: "/view/app/processes",
+			resolve: {
+				dummy: $couchPotatoProvider.resolveDependencies(['controllers/appDashboard'])
+			}
 		})
-		.state('app.dashboard.addProcess', {
+		.state('app.processes.addProcess', {
 			url: '/process/new',
 			pageTitle: 'Add Process',
 			templateUrl: "/view/app/process",
@@ -60,7 +63,7 @@ define([
 				}
 			}
 		})
-		.state('app.dashboard.editProcess', {
+		.state('app.prcoesses.editProcess', {
 			url: '/process/:pid',
 			pageTitle: 'Edit Process',
 			templateUrl: "/view/app/process",

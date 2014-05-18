@@ -18,9 +18,12 @@ html
 	body
 		.container-liquid
 			.row
-				.col-sm-3
+				.col-sm-3(ng-class="{ 'col-sm-3': !kiosk_enabled }" ng-hide="kiosk_enabled")
 					include inc/sidebar
-				.col-sm-9
+				div(ng-class="{ 'col-sm-12': kiosk_enabled, 'col-sm-9': !kiosk_enabled }")
+					.kiosk-toggle.inside_container(ng-show="kiosk_enabled" ng-cloak)
+						a(ng-click="toggleKiosk()")
+							span.caret
 					block content
 						ui-view(autoscroll="false")
 							.pagestyle

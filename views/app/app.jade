@@ -5,7 +5,7 @@
 				i.fa.fa-gear.fa-fw
 				|  {{ app.name }}
 			.btn-group
-				a.btn(ui-sref="app.dashboard({ id: app.nameUrl })" ng-class="{ 'btn-default': $state.includes('app.dashboard'), 'btn-primary': !$state.includes('app.dashboard') }")
+				a.btn(ui-sref="app.processes({ id: app.nameUrl })" ng-class="{ 'btn-default': $state.includes('app.processes'), 'btn-primary': !$state.includes('app.processes') }")
 					| Processes
 				a.btn(ui-sref="app.domains({ id: app.nameUrl })" ng-class="{ 'btn-default': $state.includes('app.domains'), 'btn-primary': !$state.includes('app.domains') }")
 					| Domains

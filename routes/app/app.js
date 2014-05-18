@@ -23,7 +23,7 @@ exports.httpRouter = function(app) {
 exports.unauthorized = function (template) {
 	template([
 		['app', 'app/app'],
-		'app/dashboard',
+		'app/processes',
 		['app/process', 'app/processModal'],
 		'app/logs',
 		'app/log',

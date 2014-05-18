@@ -180,7 +180,7 @@ define([
 
 		$("#processModal").modal('show')
 		.on('hidden.bs.modal', function() {
-			$state.transitionTo('app.dashboard', {
+			$state.transitionTo('app.processes', {
 				id: app.app.nameUrl
 			});
 		});
