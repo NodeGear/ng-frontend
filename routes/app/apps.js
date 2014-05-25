@@ -63,12 +63,12 @@ function doAddApp (req, res) {
 	} else {
 		var templates = [
 			{
-				name: "ghost",
-				location: "git://github.com/NodeGear/Ghost.git",
-				branch: '0.4.2-ng'
+				name: 'ghost',
+				location: 'git://github.com/NodeGear/ghost-dist.git',
+				branch: 'master'
 			},
 			{
-				name: "custom",
+				name: 'custom',
 				location: req.body.custom_location,
 				branch: req.body.custom_branch
 			}
