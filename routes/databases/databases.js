@@ -108,32 +108,37 @@ function addDatabase (req, res) {
 		// Create the database
 		if (database.database_type == 'mongodb') {
 			// Create mongodb db
-			mongodb.connect(config.credentials.admin_mongodb+database._id, {
-				authDb: 'admin'
-			}, function(err, db) {
-				db.addUser(req.user._id.toString(), db_pass, function(err, result) {
+			var db = new mongodb.Db('admin', new mongodb.Server(config.credentials.admin_mongodb.host, '27017'));
+			db.open(function(err, db) {
+				db.authenticate(config.credentials.admin_mongodb.user, config.credentials.admin_mongodb.pass, function(err, result) {
 					if (err) throw err;
 
-					console.log(result);
-
-					db.collection('system.users').update({
-						user: req.user._id.toString()
-					}, {
-						$set: {
-							roles: ['readWrite']
-						}
-					}, function(err) {
+					var newdb = db.db(database._id.toString());
+					newdb.addUser(req.user._id.toString(), db_pass, function(err, result) {
 						if (err) throw err;
 
-						complete(err, {
-							db_host: '127.0.0.1',
-							db_user: req.user._id.toString(),
-							db_name: database._id,
-							db_port: 27017
-						});
+						newdb.collection('system.users').update({
+							user: req.user._id.toString()
+						}, {
+							$set: {
+								roles: ['readWrite']
+							}
+						}, function(err) {
+							if (err) throw err;
+
+							newdb.close();
+							db.close();
+							
+							complete(err, {
+								db_host: config.credentials.admin_mongodb.host,
+								db_user: req.user._id.toString(),
+								db_name: database._id,
+								db_port: 27017
+							});
+						})
 					})
 				})
-			})
+			});
 		}
 
 		if (database.database_type == 'mysql') {
@@ -152,7 +157,7 @@ function addDatabase (req, res) {
 					if (err) throw err;
 
 					complete(err, {
-						db_host: '127.0.0.1',
+						db_host: config.credentials.admin_mysql.host,
 						db_user: uid,
 						db_name: database._id,
 						db_port: 3306
