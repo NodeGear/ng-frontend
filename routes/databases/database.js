@@ -103,7 +103,7 @@ function deleteDatabase (req, res) {
 			db.authenticate(config.credentials.admin_mongodb.user, config.credentials.admin_mongodb.pass, function(err, result) {
 				if (err) throw err;
 
-				var newdb = db.db(db._id.toString());
+				var newdb = db.db(res.locals.database._id.toString());
 				newdb.dropDatabase(function(err) {
 					if (err) throw err;
 
