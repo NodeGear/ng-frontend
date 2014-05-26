@@ -113,13 +113,13 @@ function addDatabase (req, res) {
 			});
 
 			db.open(function(err, db) {
-				db.authenticate(config.credentials.admin_mongodb.user, config.credentials.admin_mongodb.pass, {
-					roles: ['readWrite']
-				}, function(err, result) {
+				db.authenticate(config.credentials.admin_mongodb.user, config.credentials.admin_mongodb.pass, function(err, result) {
 					if (err) throw err;
 
 					var newdb = db.db(database._id.toString());
-					newdb.addUser(req.user._id.toString(), db_pass, function(err, result) {
+					newdb.addUser(req.user._id.toString(), db_pass, {
+						roles: ['readWrite']
+					}, function(err, result) {
 						if (err) throw err;
 
 						newdb.close();
