@@ -104,11 +104,15 @@ function deleteDatabase (req, res) {
 				if (err) throw err;
 
 				var newdb = db.db(res.locals.database._id.toString());
-				newdb.dropDatabase(function(err) {
+				newdb.removeUser(req.user._id.toString(), function(err) {
 					if (err) throw err;
 
-					newdb.close();
-					db.close();
+					newdb.dropDatabase(function(err) {
+						if (err) throw err;
+
+						newdb.close();
+						db.close();
+					});
 				});
 			})
 		});
