@@ -6,6 +6,7 @@ var util = require('../util')
 	, admin = require('./admin')
 	, tickets = require('./tickets')
 	, models = require('ng-models')
+	, databases = require('./databases/databases')
 
 exports.router = function(app) {
 	var templates = require('../templates')(app);
@@ -13,7 +14,8 @@ exports.router = function(app) {
 		auth,
 		apps,
 		profile,
-		tickets
+		tickets,
+		databases
 	]);
 
 	templates.add('gettingStarted');
@@ -48,6 +50,7 @@ exports.router = function(app) {
 	apps.router(app)
 	profile.router(app)
 	tickets.router(app)
+	databases.router(app);
 
 	app.get('/servers', getServers)
 }

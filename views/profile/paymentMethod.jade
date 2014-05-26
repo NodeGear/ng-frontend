@@ -24,7 +24,7 @@
 					.form-group
 						label.col-md-4.col-lg-4.col-sm-4.control-label(for="expiry_date" ng-style="{ color: card.errors.expiry }") Expiry Date
 						.col-lg-6.col-md-6.col-sm-6
-							input#expiry_date.form-control(type="text" placeholder="Expiration Date | MM/YYYY" required ng-model="card.expiry" ng-disabled="cardFormDisabled || card._id.length > 0")
+							input#expiry_date.form-control(type="text" placeholder="MM/YYYY" required ng-model="card.expiry" ng-disabled="cardFormDisabled || card._id.length > 0")
 					.form-group
 						label.col-md-4.col-lg-4.col-sm-4.control-label(for="cvc" ng-style="{ color: card.errors.cvc }") CVC
 						.col-lg-6.col-md-6.col-sm-6

@@ -1,0 +1,49 @@
+#databaseModal.modal.fade
+	.modal-dialog
+		.modal-content
+			.modal-header
+				button.close(type="button" data-dismiss="modal") &times;
+				h4.modal-title(ng-show="addDatabase") Add new Database
+				h4.modal-title(ng-hide="addDatabase") Edit Database - {{ database.name }}
+			.modal-body
+				form.form-horizontal
+					.form-group
+						label.control-label.col-md-4.col-lg-3.col-sm-3 Name
+						.col-md-7.col-lg-8.col-sm-7
+							input.form-control(type="text" ng-model="database.name" placeholder="Name of your database" required)
+					.form-group
+						label.control-label.col-md-4.col-lg-3.col-sm-3 Type
+						.col-md-7.col-lg-8.col-sm-7
+							select.form-control(ng-model="database.database_type")
+								option(value="mongodb") mongodb
+								option(value="mysql") mysql
+					fieldset(ng-show="!addDatabase")
+						legend Connection Details
+						.form-group
+							label.control-label.col-md-4.col-lg-3.col-sm-3 Hostname
+							.col-md-7.col-lg-8.col-sm-7
+								label.control-label {{ database.db_host }}
+						.form-group
+							label.control-label.col-md-4.col-lg-3.col-sm-3 User
+							.col-md-7.col-lg-8.col-sm-7
+								label.control-label {{ database.db_user }}
+						.form-group
+							label.control-label.col-md-4.col-lg-3.col-sm-3 Password
+							.col-md-7.col-lg-8.col-sm-7
+								label.control-label {{ database.db_pass }}
+						.form-group
+							label.control-label.col-md-4.col-lg-3.col-sm-3 Port
+							.col-md-7.col-lg-8.col-sm-7
+								label.control-label {{ database.db_port }}
+						.form-group
+							label.control-label.col-md-4.col-lg-3.col-sm-3 DB Name
+							.col-md-7.col-lg-8.col-sm-7
+								label.control-label {{ database.db_name }}
+
+			.modal-footer
+				button.btn.btn-danger.pull-left(ng-hide="addDatabase" ng-click="deleteDatabase()") Delete Database
+				span.text-muted(ng-class="{ 'pull-left': addDatabase }" ng-bind="status") Loading..
+				button.btn.btn-default(data-dismiss="modal") Close
+				button.btn.btn-success(ng-click="saveDatabase()" ng-disabled="!database.name")
+					span(ng-show="addDatabase") Create
+					span(ng-hide="addDatabase") Save

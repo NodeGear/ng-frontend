@@ -66,12 +66,12 @@ define([
 			if ($scope.addEnvironment) {
 				promise = $http.post(url, data);
 			} else {
-				promise = $http.put(url+'/'+data.domain._id, data);
+				promise = $http.put(url+'/'+data.env._id, data);
 			}
 
 			promise.success(function(data, status) {
 				if (data.status == 200) {
-					if ($scope.addDomain) {
+					if ($scope.addEnvironment) {
 						$scope.status = "Environment Added ";
 					} else {
 						$scope.status = "Environment Saved ";

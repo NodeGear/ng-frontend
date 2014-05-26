@@ -7,6 +7,7 @@ ul.nav.sidenav(role="navigation")
 			i.fa.fa-thumb-tack.fa-fw
 			|  Getting Started
 	li(ng-class="{ active: $state.includes('apps') || $state.includes('app') }"): a(ui-sref="apps") Gears
+	li(ng-class="{ active: $state.includes('databases') || $state.includes('database') }"): a(ui-sref="databases") Databases
 	li(ng-class="{ active: $state.includes('profile.view') }")
 		a(ui-sref="profile.view") Account Settings
 	li(ng-class="{ active: $state.includes('profile.billing') && !$state.includes('profile.billing.paymentMethods') }")

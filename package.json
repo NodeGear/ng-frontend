@@ -32,7 +32,9 @@
     "toobusy-js": "latest",
     "ng-models": "git+ssh://git@git.matej.me:23/nodegear/ng-models.git",
     "moment": "latest",
-    "newrelic": "latest"
+    "newrelic": "latest",
+    "mysql": "latest",
+    "mongodb": "latest"
   },
   "devDependencies": {
     "should": "latest",

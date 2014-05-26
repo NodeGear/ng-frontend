@@ -63,7 +63,7 @@ define([
 				}
 			}
 		})
-		.state('app.prcoesses.editProcess', {
+		.state('app.processes.editProcess', {
 			url: '/process/:pid',
 			pageTitle: 'Edit Process',
 			templateUrl: "/view/app/process",

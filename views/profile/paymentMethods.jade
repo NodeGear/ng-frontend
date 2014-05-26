@@ -24,4 +24,8 @@ div(ng-controller="PaymentMethodsController" ng-init="init('#{token}')" ng-cloak
 		.col-sm-12
 			p(ng-show="cards.length == 0") You have no cards.
 
+	blockquote
+		strong A note about security: 
+		| All payment methods are stored securely on PCI-compilant systems. The card details are encrypted via HTTPS. Once saved, nobody (even us) can access the payment details because they are delegated to a payment gateway.
+
 	ui-view(autoscroll="false")

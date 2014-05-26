@@ -129,7 +129,8 @@ function viewApps (req, res) {
 		var _app = app.toObject();
 
 		models.AppProcess.find({
-			app: _app._id
+			app: _app._id,
+			deleted: false
 		}).select('running').exec(function(err, processes) {
 			if (err) throw err;
 

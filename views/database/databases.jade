@@ -1,0 +1,16 @@
+.pagestyle
+	.row
+		.col-xs-12
+			h4
+				i.fa.fa-database.fa-fw
+				|  Databases
+				.pull-right
+					button.btn.btn-success(ui-sref="database_add") Add Database
+	br
+	.row
+		.col-xs-12
+			table.table
+				tbody
+					tr(ng-repeat="database in databases")
+						td
+							a.link-larger(ui-sref="database_edit({ database_id: database._id })") {{ database.name }}
