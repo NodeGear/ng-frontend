@@ -95,13 +95,23 @@ function deleteDatabase (req, res) {
 		});
 	}
 	if (db.database_type == 'mongodb') {
-		mongodb.connect(config.credentials.admin_mongodb+database._id, {
-			authDb: 'admin'
-		}, function(err, db) {
-			db.dropDatabase(function(err) {
+		var db = new mongodb.Db('admin', new mongodb.Server(config.credentials.admin_mongodb.host, 27017), {
+			safe: false
+		});
+
+		db.open(function(err, db) {
+			db.authenticate(config.credentials.admin_mongodb.user, config.credentials.admin_mongodb.pass, function(err, result) {
 				if (err) throw err;
-			});
-		})
+
+				var newdb = db.db(database._id.toString());
+				newdb.dropDatabase(function(err) {
+					if (err) throw err;
+
+					newdb.close();
+					db.close();
+				});
+			})
+		});
 	}
 
 	res.send({
