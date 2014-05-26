@@ -3,12 +3,15 @@ var mongoose = require('mongoose')
 	, fs = require('fs')
 	, config = require('../../config')
 	, util = require('../../util')
-	, database = require('./database')
 	, server = require('../../app')
 	, async = require('async')
 
 	, mongodb = require('mongodb')
 	, admin_mysql = require('mysql').createConnection(config.credentials.admin_mysql)
+
+exports.admin_mysql = admin_mysql;
+
+var database = require('./database');
 
 exports.httpRouter = function(app) {
 	database.httpRouter(app);
@@ -105,10 +108,31 @@ function addDatabase (req, res) {
 		// Create the database
 		if (database.database_type == 'mongodb') {
 			// Create mongodb db
-			console.log("Fuck you bitch")
 			mongodb.connect(config.credentials.admin_mongodb+database._id, {
+				authDb: 'admin'
 			}, function(err, db) {
+				db.addUser(req.user._id.toString(), db_pass, function(err, result) {
+					if (err) throw err;
 
+					console.log(result);
+
+					db.collection('system.users').update({
+						user: req.user._id.toString()
+					}, {
+						$set: {
+							roles: ['readWrite']
+						}
+					}, function(err) {
+						if (err) throw err;
+
+						complete(err, {
+							db_host: '127.0.0.1',
+							db_user: req.user._id.toString(),
+							db_name: database._id,
+							db_port: 27017
+						});
+					})
+				})
 			})
 		}
 
@@ -118,12 +142,13 @@ function addDatabase (req, res) {
 			uid = uid.substring(uid.length - 15, uid.length);
 
 			var query = "CREATE DATABASE IF NOT EXISTS "+database._id+";";
-			var query2 = "GRANT ALL ON `"+database._id+"`.* to '"+uid+"'@'%' identified by '"+db_pass+"';";
-
+			
 			admin_mysql.query(query, function(err, results) {
 				if (err) throw err;
 
-				admin_mysql.query(query2, function(err) {
+				query = "GRANT ALL ON `"+database._id+"`.* to '"+uid+"'@'%' identified by '"+db_pass+"';";
+
+				admin_mysql.query(query, function(err) {
 					if (err) throw err;
 
 					complete(err, {

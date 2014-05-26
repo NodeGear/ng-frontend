@@ -10,7 +10,18 @@
 	.row
 		.col-xs-12
 			table.table
+				thead
+					tr
+						th Name
+						th DB Type
+						th DB Host
+						th DB Name
+						th DB User
 				tbody
 					tr(ng-repeat="database in databases")
 						td
 							a.link-larger(ui-sref="database_edit({ database_id: database._id })") {{ database.name }}
+						td {{ database.database_type }}
+						td {{ database.db_host }}
+						td {{ database.db_name }}
+						td {{ database.db_user }}

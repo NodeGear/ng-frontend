@@ -5,6 +5,9 @@ var mongoose = require('mongoose')
 	, util = require('../../util')
 	, app = require('../../app')
 
+	, mongodb = require('mongodb')
+	, admin_mysql = require('./databases').admin_mysql
+
 exports.httpRouter = function(app) {
 }
 
@@ -59,12 +62,47 @@ function viewDatabase (req, res) {
 }
 
 function saveDatabase (req, res) {
+	if (req.body.database && req.body.database.name && req.body.database.name.length > 0) {
+		res.locals.database.name = req.body.database.name;
+		res.locals.database.save();
 
+		res.send({
+			status: 200
+		});
+	} else {
+		res.send({
+			status: 400,
+			message: "Invalid Name"
+		});
+	}
 }
 
 function deleteDatabase (req, res) {
-	res.locals.database.deleted = true;
-	res.locals.database.save();
+	var db = res.locals.database;
+
+	db.deleted = true;
+	db.save();
+
+	// Delete the remote counterpart
+	if (db.database_type == 'mysql') {
+		admin_mysql.query('REVOKE ALL PRIVILEGES ON `'+db._id.toString()+'`.* FROM \''+db.db_user+'\'@\'%\';', function(err) {
+			if (err) throw err;
+
+			admin_mysql.query('DROP DATABASE '+db._id.toString()+';', function(err) {
+				if (err) throw err;
+				console.log("database deleted");
+			});
+		});
+	}
+	if (db.database_type == 'mongodb') {
+		mongodb.connect(config.credentials.admin_mongodb+database._id, {
+			authDb: 'admin'
+		}, function(err, db) {
+			db.dropDatabase(function(err) {
+				if (err) throw err;
+			});
+		})
+	}
 
 	res.send({
 		status: 200

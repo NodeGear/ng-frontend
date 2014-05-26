@@ -30,9 +30,7 @@ define([
 				if (data.status == 200) {
 					$scope.status = "Database Deleted.";
 					
-					app.getEnvironment(function() {
-						$("#databaseModal").modal('hide');
-					});
+					$("#databaseModal").modal('hide');
 				} else {
 					$scope.status = data.message;
 				}
@@ -69,11 +67,11 @@ define([
 				if (data.status == 200) {
 					if ($scope.addDatabase) {
 						$scope.status = "Database Created ";
+						$scope.database = data.database;
 					} else {
 						$scope.status = "Database Saved ";
 					}
 
-					$scope.database = data.database;
 					$scope.addDatabase = false;
 				} else {
 					$scope.status = data.message;

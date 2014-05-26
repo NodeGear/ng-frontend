@@ -14,7 +14,7 @@
 					.form-group
 						label.control-label.col-md-4.col-lg-3.col-sm-3 Type
 						.col-md-7.col-lg-8.col-sm-7
-							select.form-control(ng-model="database.database_type")
+							select.form-control(ng-model="database.database_type" ng-disabled="!addDatabase")
 								option(value="mongodb") mongodb
 								option(value="mysql") mysql
 					fieldset(ng-show="!addDatabase")
