@@ -50,7 +50,7 @@ function getSystemKey (req, res) {
 		user: req.user._id,
 		deleted: false,
 		system_key: true
-	}).exec(function(err, keys) {
+	}).exec(function(err, system_key) {
 		if (err) throw err;
 
 		if (!system_key) {
