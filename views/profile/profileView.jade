@@ -1,7 +1,9 @@
 .pagestyle
 	.row
 		.col-xs-12
-			h4 Account Settings
+			h4
+				i.fa.fa-user.fa-fw
+				|  Account Settings
 
 	.row
 		.col-md-6(ng-controller="AccountSettingsController" ng-init="init('#{token}')")
@@ -42,8 +44,12 @@
 		.col-md-6(ng-controller="TFAController" ng-init="init()")
 			h6: abbr(title="TFA adds additional security measures preventing anyone but yourself from accessing the account. Supported apps: Authy or Google Authenticator.") Two Factor Authentication
 			p(ng-show="tfa.status.length > 0") {{tfa.status}}
-			a.btn.btn-success(ng-click="enableTFA('#{token}')" href="" ng-hide="tfa.hide || tfa.enabled || tfa.showConfirm") Enable TFA
-			a.btn.btn-danger(ng-click="disableTFA('#{token}')" href="" ng-hide="tfa.hide || !tfa.enabled || tfa.showConfirm") Disable TFA
+			a.btn.btn-success(ng-click="enableTFA('#{token}')" href="" ng-hide="tfa.hide || tfa.enabled || tfa.showConfirm")
+				i.fa.fa-key.fa-fw
+				|  Enable TFA
+			a.btn.btn-danger(ng-click="disableTFA('#{token}')" href="" ng-hide="tfa.hide || !tfa.enabled || tfa.showConfirm")
+				i.fa.fa-key.fa-fw
+				|  Disable TFA
 			
 			form.form-horizontal(ng-show="tfa.showConfirm" name="confirm")
 				.form-group(ng-show="tfa.qr.length > 0")
