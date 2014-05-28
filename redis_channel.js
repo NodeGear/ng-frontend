@@ -55,7 +55,7 @@ function git_verification (message) {
 				socket.emit('git:install', {
 					_id: key_id,
 					message: msg,
-					system_key: key.private_key.length > 0
+					system_key: (key.private_key && key.private_key.length > 0)
 				});
 			}
 		});
