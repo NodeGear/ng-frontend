@@ -16,7 +16,10 @@ dog.subscribe("pm:app_log_entry");
 dog.subscribe("pm:app_event");
 dog.subscribe("pm:app_running");
 
+dog.subscribe("git:install");
+
 dog.on("message", function(channel, message) {
+	console.log(channel)
 	switch(channel) {
 		case 'pm:app_event':
 			new_event(message);
@@ -27,8 +30,37 @@ dog.on("message", function(channel, message) {
 		case 'pm:app_running':
 			app_running(message);
 			break;
+		case 'git:install':
+			git_verification(message);
+			break;
 	}
 });
+
+function git_verification (message) {
+	var split = message.split('|', 1);
+
+	var key_id = split[0];
+	var msg = message.substr(key_id.length+1);
+
+	models.RSAKey.findOne({
+		_id: key_id
+	}, function(err, key) {
+		if (err) throw err;
+
+		console.log(key);
+
+		var socks = app.io.sockets.clients();
+		socks.forEach(function(socket) {
+			if (socket.handshake.user._id.equals(key.user)) {
+				socket.emit('git:install', {
+					_id: key_id,
+					message: msg,
+					system_key: key.private_key.length > 0
+				});
+			}
+		});
+	});
+}
 
 function new_log (message) {
 	var split = message.split('|', 1);

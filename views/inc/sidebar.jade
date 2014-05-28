@@ -14,8 +14,8 @@ ul.nav.sidenav(role="navigation")
 		a(ui-sref="profile.billing.history") Billing
 	li(ng-class="{ active: $state.includes('profile.billing.paymentMethods') }")
 		a(ui-sref="profile.billing.paymentMethods") Payment Methods
-	li(ng-class="{ active: $state.includes('profile.ssh') }")
-		a(ui-sref="profile.ssh") SSH Public Key
+	li(ng-class="{ active: $state.includes('ssh.keys') }")
+		a(ui-sref="ssh.keys") SSH Keys
 	li(ng-class="{ active: $state.includes('tickets') }")
 		a(ui-sref="tickets.tickets") Support Tickets
 

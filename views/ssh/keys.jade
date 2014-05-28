@@ -1,0 +1,26 @@
+.pagestyle
+	.row
+		.col-xs-12
+			h4
+				i.fa.fa-key.fa-fw
+				|  SSH Keys
+				small(ng-show="status.length > 0")  {{ status }}
+				.pull-right.btn-group
+					button.btn.btn-success(ui-sref="ssh.add") Add Public Key
+					button.btn.btn-default(ng-click="generateSystemKey()") Generate System Key
+	br
+	.row
+		.col-xs-12
+			table.table
+				thead
+					tr
+						th Name
+						th Installed
+						th Installing
+				tbody
+					tr(ng-repeat="key in keys")
+						td
+							a(ui-sref="ssh.edit({ key_id: key._id })") {{ key.name }}
+						td {{ key.installed }}
+						td {{ key.installing }}
+			blockquote Add your public SSH key so you can push to your nodegear git repository. Generate &amp; Copy the "System Key" so that your apps can install private npm dependencies, pull private code etc.

@@ -5,6 +5,7 @@ define([
 	'./tickets',
 	'./profile',
 	'./databases',
+	'./ssh',
 	'../services/user'
 ], function(io, app) {
 	app.config(function($stateProvider, $urlRouterProvider, $locationProvider, $couchPotatoProvider) {
