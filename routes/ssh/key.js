@@ -39,7 +39,7 @@ function get (req, res, next) {
 		return;
 	}
 
-	models.RSAKey.findOne(query).select('_id name public_key private_key installed installing').exec(function(err, key) {
+	models.RSAKey.findOne(query).select('_id name public_key installed installing').exec(function(err, key) {
 		if (err || key == null) {
 			res.send(404);
 			return;
@@ -53,10 +53,7 @@ function get (req, res, next) {
 
 function view (req, res) {
 	var k = res.locals.key.toObject();
-	k.system_key = (k.private_key && k.private_key.length > 0) == true;
-
-	delete k.private_key;
-
+	
 	res.send({
 		status: 200,
 		key: k

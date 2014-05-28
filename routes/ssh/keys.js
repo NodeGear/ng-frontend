@@ -63,7 +63,8 @@ function getSystemKey (req, res) {
 			system_key = new models.RSAKey({
 				name: "System Key",
 				nameLowercase: "System Key",
-				user: req.user._id
+				user: req.user._id,
+				system_key: true
 			});
 		
 			system_key.save(function(err) {
