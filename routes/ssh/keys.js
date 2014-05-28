@@ -49,28 +49,23 @@ function getSystemKey (req, res) {
 	models.RSAKey.findOne({
 		user: req.user._id,
 		deleted: false,
-		private_key: {
-			$not: {
-				$size: 0
-			}
-		}
-	}).exec(function(err, system_key) {
+		system_key: true
+	}).exec(function(err, keys) {
 		if (err) throw err;
 
 		if (!system_key) {
 			// Generate one..
-			console.log("hello")
 			res.send({
 				status: 200,
 				message: "Creating Key"
 			});
-			console.log("hello")
+		
 			system_key = new models.RSAKey({
 				name: "System Key",
 				nameLowercase: "System Key",
 				user: req.user._id
 			});
-			console.log(system_key);
+		
 			system_key.save(function(err) {
 				if (err) throw err;
 
@@ -82,7 +77,8 @@ function getSystemKey (req, res) {
 		} else {
 			res.send({
 				status: 400,
-				message: "System Key already exists"
+				message: "System Key already exists",
+				key_id: system_key._id
 			});
 		}
 	});
