@@ -45,6 +45,7 @@ angular.module('nodegear', [])
 				$scope.servers[i].stats._free = Math.round((1 - $scope.servers[i].stats.free) * 100)
 				$scope.servers[i].stats._user = Math.round(100 * ($scope.servers[i].stats.user / $scope.servers[i].stats.total))
 				$scope.servers[i].stats._sys = Math.round(100 * ($scope.servers[i].stats.sys / $scope.servers[i].stats.total))
+				$scope.servers[i].stats._ram = Math.round($scope.servers[i].stats.memTotal / 1024 / 1024 / 1024);
 			}
 		}
 

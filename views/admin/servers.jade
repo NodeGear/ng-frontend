@@ -14,6 +14,7 @@ block content
 						th Identifier
 						th Price Per Hour
 						th Free RAM
+						th RAM
 						th CPU Load
 						th CPU User
 						th CPU Sys
@@ -24,6 +25,7 @@ block content
 							td {{ server.identifier }}
 							td {{ server.price_per_hour }}
 							td {{ server.stats._mem }}%
+							td {{ server.stats._ram }}GB
 							td {{ server.stats._free }}%
 							td {{ server.stats._user }}%
 							td {{ server.stats._sys }}%
