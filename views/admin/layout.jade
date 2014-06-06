@@ -1,8 +1,8 @@
 doctype
 html(ng-app="nodegear")
 	head
-		meta(http-equiv="Content-Type", content="text/html; charset=utf-8;")
-		meta(name="_csrf", content="#{token}")
+		meta(http-equiv="Content-Type" content="text/html; charset=utf-8;")
+		meta(name="_csrf" content="#{token}")
 		meta(name="viewport" content="width=device-width, initial-scale=1.0")
 		block meta
 		title NodeGear Admin
@@ -30,11 +30,11 @@ html(ng-app="nodegear")
 								li
 									a(href="/admin/users") Users
 								li
-									a(href="/admin/databases" disabled) Databases
+									a(href="/admin/databases") Databases
 								li
 									a(href="/admin/apps") Apps
 								li
-									a(href="/admin/servers" disabled) Servers
+									a(href="/admin/servers") Servers
 								li
 									a(href="/admin/tickets") Support Tickets
 								li
@@ -57,13 +57,12 @@ html(ng-app="nodegear")
 								br
 			
 		block js
-			script(src="#{cdn}/js/#{version}/vendor/jquery.js" defer)
-			script(src="#{cdn}/js/#{version}/vendor/bootstrap.js" defer)
-			script(src="#{cdn}/js/#{version}/vendor/sb-admin.js" defer)
-			script(src="#{cdn}/js/#{version}/vendor/angular.js" defer)
-			script(src="#{cdn}/js/#{version}/vendor/moment.js" defer)
+			script(src="#{cdn}/js/vendor/jquery.js" defer)
+			script(src="#{cdn}/js/vendor/bootstrap.js" defer)
+			script(src="#{cdn}/js/vendor/angular.js" defer)
+			script(src="#{cdn}/js/vendor/moment.js" defer)
 			script(src="/socket.io/socket.io.js" defer)
-			script(src="#{cdn}/js/#{version}/controllers/admin.js" defer)
+			script(src="#{cdn}/js/controllers/admin.js" defer)
 			
 		//- page-specific js
 		block addonjs

@@ -5,10 +5,18 @@ exports.router = function(router) {
 }
 
 function get (req, res) {
-	models.Server.find({}, function(err, servers) {
-		if (err) throw err;
-		
-		res.locals.servers = servers;
-		res.render('admin/servers')
-	});
+	res.format({
+		json: function() {
+			models.Server.find({}, function(err, servers) {
+				if (err) throw err;
+				
+				res.send(200, {
+					servers: servers
+				})
+			});
+		},
+		html: function() {
+			res.render('admin/servers')
+		}
+	})
 }

@@ -1,21 +1,29 @@
 extends layout
 
 block content
-	.row
-		.col-lg-12.col-md-12.col-sm-12
-			h1.page-header Servers
-	.row
-		.col-lg-12.col-md-12.col-sm-12
-			table.table
-				thead
-					th Name
-					th Location
-					th Identifier
-					th Price Per Hour
-				tbody
-					for server in servers
-						tr
-							td= server.name
-							td= server.location
-							td= server.identifier
-							td= server.price_per_hour
+	div(ng-controller="ServerController")
+		.row
+			.col-lg-12.col-md-12.col-sm-12
+				h1.page-header Servers
+		.row
+			.col-lg-12.col-md-12.col-sm-12
+				table.table
+					thead
+						th Name
+						th Location
+						th Identifier
+						th Price Per Hour
+						th Free RAM
+						th CPU Load
+						th CPU User
+						th CPU Sys
+					tbody
+						tr(ng-repeat="server in servers")
+							td {{ server.name }}
+							td {{ server.location }}
+							td {{ server.identifier }}
+							td {{ server.price_per_hour }}
+							td {{ server.stats._mem }}%
+							td {{ server.stats._free }}%
+							td {{ server.stats._user }}%
+							td {{ server.stats._sys }}%

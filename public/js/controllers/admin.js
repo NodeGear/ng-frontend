@@ -22,3 +22,34 @@ angular.module('nodegear', [])
 		}
 	})
 })
+
+.controller('ServerController', function ($scope, $http) {
+	var socket = io.connect();
+
+	$scope.servers = [];
+
+	$http.get('/admin/servers').success(function(data) {
+		$scope.servers = data.servers;
+	})
+
+	socket.emit('watch_servers', {
+		watch: true
+	});
+
+	socket.on('server_stats', function(data) {
+		for (var i = 0; i < $scope.servers.length; i++) {
+			if ($scope.servers[i].identifier == data.identifier) {
+				$scope.servers[i].stats = data;
+
+				$scope.servers[i].stats._mem = Math.round($scope.servers[i].stats.mem * 100)
+				$scope.servers[i].stats._free = Math.round((1 - $scope.servers[i].stats.free) * 100)
+				$scope.servers[i].stats._user = Math.round(100 * ($scope.servers[i].stats.user / $scope.servers[i].stats.total))
+				$scope.servers[i].stats._sys = Math.round(100 * ($scope.servers[i].stats.sys / $scope.servers[i].stats.total))
+			}
+		}
+
+		if (!$scope.$$phase) {
+			$scope.$digest();
+		}
+	});
+})

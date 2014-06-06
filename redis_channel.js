@@ -17,9 +17,10 @@ dog.subscribe("pm:app_event");
 dog.subscribe("pm:app_running");
 
 dog.subscribe("git:install");
+dog.subscribe('server_stats');
 
 dog.on("message", function(channel, message) {
-	console.log(channel)
+	//console.log(channel)
 	switch(channel) {
 		case 'pm:app_event':
 			new_event(message);
@@ -32,6 +33,9 @@ dog.on("message", function(channel, message) {
 			break;
 		case 'git:install':
 			git_verification(message);
+			break;
+		case 'server_stats':
+			process_server_stats(message);
 			break;
 	}
 });
@@ -163,4 +167,26 @@ function app_running (message) {
 			}
 		})
 	})
+}
+
+function process_server_stats (message) {
+	var socks = app.io.sockets.clients();
+	for (var sock in socks) {
+		if (!socks.hasOwnProperty(sock)) {
+			continue;
+		}
+
+		if (socks[sock].handshake.user.admin) {
+			socks[sock].get('server_stats', function(err, yeah) {
+				if (err) throw err;
+
+				if (yeah) {
+					try {
+						var msg = JSON.parse(message);
+						socks[sock].emit('server_stats', msg);
+					} catch (e) {}
+				}
+			})
+		}
+	}
 }

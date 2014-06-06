@@ -60,7 +60,15 @@ exports.router = function(app) {
 
 // webSocket routing stuff
 exports.socket = function (socket) {
-	apps.socket(socket)
+	apps.socket(socket);
+	
+	socket.on('watch_servers', function(data) {
+		if (this.handshake.user.admin && data.watch == true) {
+			this.set('server_stats', true, function(err) {
+				if (err) throw err;
+			});
+		}
+	})
 }
 exports.socketDisconnect = function (socket) {
 	apps.socketDisconnect(socket)
