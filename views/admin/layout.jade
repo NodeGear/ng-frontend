@@ -11,65 +11,51 @@ html(ng-app="nodegear")
 		
 		//- all css goes here
 		block css
-			link(rel="stylesheet" href="#{cdn}/css/#{version}/bootstrap.min.css")
-			link(rel="stylesheet" href="#{cdn}/css/#{version}/bootstrap-theme.min.css")
-			link(rel="stylesheet" href="#{cdn}/css/#{version}/font-awesome.min.css")
+			link(rel="stylesheet" href="#{cdn}/css/bootstrap.min.css")
+			link(rel="stylesheet" href="#{cdn}/css/nodegear.css")
+			link(rel="stylesheet" href="#{cdn}/css/font-awesome.min.css")
 
 	body
-		#wrapper
-			header
-				nav.navbar.navbar-default.navbar-static-top(style="margin-bottom: 0")
-					.full-width-container
-						.navbar-header
-							button.navbar-toggle(type="button", data-toggle="collapse", data-target=".nodegear-navbar-collapse")
-								span.sr-only Toggle Navigation
-								span.icon-bar
-								span.icon-bar
-								span.icon-bar
-							a.navbar-brand(href="/admin") NodeGear Admin
-						.collapse.navbar-collapse.nodecloud-navbar-collapse
-							ul.nav.navbar-right.navbar-top-links
-								li: a(href="/") Back to NodeGear
-								li.dropdown
-									a.dropdown-toggle(href, data-toggle="dropdown")
-										i.fa.fa-user.fa-fw
-										i.fa.fa-caret-down
-									ul.dropdown-menu
-										li
-											a(href="/logout") Logout
+		.container-fluid
+			.row
+				.col-sm-3
+					h1.text-center NodeGear
+						small  Admin
+					nav.navbar-default.navbar-static-side(role="navigation")
+						.sidebar-collapse
+							ul.nav
+								li
+									a(href="/admin") Dashboard
+								li.divider
+								li
+									a(href="/admin/users") Users
+								li
+									a(href="/admin/databases" disabled) Databases
+								li
+									a(href="/admin/apps") Apps
+								li
+									a(href="/admin/servers" disabled) Servers
+								li
+									a(href="/admin/tickets") Support Tickets
+								li
+									a(href="/admin/paymentMethods") Payment Methods
+								li
+									a(href="/admin/transactions") Transactions
+								li.divider
+								li
+									a(href="/admin/performance") System Performance
+				.col-sm-9
+					block content
+				
+				.container
+					.row
+						.col-xs-12.col-md-12.col-sm-12.col-lg-12
+							footer
+								br
+								p.text-center NodeGear 
+									span.text-muted v#{version}-##{versionHash}
+								br
 			
-			nav.navbar-default.navbar-static-side(role="navigation")
-				.sidebar-collapse
-					ul.nav#side-menu
-						li
-							a(href="/admin") Dashboard
-						li.divider
-						li
-							a(href="/admin/users") Users
-						li
-							a(href="/admin/apps") Apps
-						li
-							a(href="/admin/tickets") Support Tickets
-						li
-							a(href="/admin/paymentMethods") Payment Methods
-						li
-							a(href="/admin/transactions") Transactions
-						li.divider
-						li
-							a(href="/admin/performance") System Performance
-			
-			#page-wrapper
-				block content
-			
-			.container
-				.row
-					.col-xs-12.col-md-12.col-sm-12.col-lg-12
-						footer
-							br
-							p.text-center NodeGear 
-								span.text-muted v#{version}-##{versionHash}
-							br
-		
 		block js
 			script(src="#{cdn}/js/#{version}/vendor/jquery.js" defer)
 			script(src="#{cdn}/js/#{version}/vendor/bootstrap.js" defer)
