@@ -10,6 +10,57 @@ define([
 		$scope.appsOff = 0;
 		$scope.appsOn = 0;
 
+		var socket = io.connect();
+		
+		socket.emit('watch_processes', {
+			watch: true
+		});
+
+		$scope.process_stats = function(data) {
+			if (!$scope.apps) return;
+
+			for (var i = 0; i < $scope.apps.length; i++) {
+				var app = $scope.apps[i];
+
+				if (!app.stat_processes) app.stat_processes = [];
+
+				if (app._id != data.app) continue;
+
+				var found = false;
+				for (var x = 0; x < app.stat_processes.length; x++) {
+					var stat = app.stat_processes[x];
+					if (stat._id == data._id) {
+						app.stat_processes[x] = data;
+						found = app.stat_processes[x];
+						break;
+					}
+				}
+
+				if (!found) {
+					app.stat_processes.push(data);
+					found = data;
+				}
+
+				found.monitor.rssString = found.monitor.rss + ' KB';
+				if (found.monitor.rss > 1024) {
+					found.monitor.rssString = Math.round(found.monitor.rss / 1024) + ' MB';
+				}
+				if (found.monitor.rss > 1024 * 1024) {
+					found.monitor.rssString = Math.round(found.monitor.rss / 1024 / 1024) + ' GB';
+				}
+			}
+
+			if (!$scope.$$phase) {
+				$scope.$digest();
+			}
+		};
+
+		socket.on('process_stats', $scope.process_stats);
+		$scope.$on('$destroy', function() {
+			socket.emit('watch_processes', { watch: false });
+			socket.removeListener('watch_processes', $scope.process_stats);
+		});
+
 		if (!$scope.apps) return;
 
 		for (var i = 0; i < $scope.apps.length; i++) {

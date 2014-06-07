@@ -18,6 +18,7 @@ dog.subscribe("pm:app_running");
 
 dog.subscribe("git:install");
 dog.subscribe('server_stats');
+dog.subscribe('process_stats');
 
 dog.on("message", function(channel, message) {
 	//console.log(channel)
@@ -37,6 +38,8 @@ dog.on("message", function(channel, message) {
 		case 'server_stats':
 			process_server_stats(message);
 			break;
+		case 'process_stats':
+			process_stats(message);
 	}
 });
 
@@ -170,7 +173,13 @@ function app_running (message) {
 }
 
 function process_server_stats (message) {
-	var socks = app.io.sockets.clients();
+	try {
+		var socks = app.io.sockets.clients();
+	} catch (e) {
+		// not ready
+		return;
+	}
+	
 	for (var sock in socks) {
 		if (!socks.hasOwnProperty(sock)) {
 			continue;
@@ -189,4 +198,40 @@ function process_server_stats (message) {
 			})
 		}
 	}
+}
+
+function process_stats (message) {
+	var msg;
+	var socks;
+	try {
+		msg = JSON.parse(message);
+		socks = app.io.sockets.clients();
+	} catch (e) {
+		return;
+	}
+
+	// Lookup user
+	models.App.findOne({
+		_id: msg.app
+	}).select('user').exec(function(err, app) {
+		if (err) throw err;
+
+		if (!app) return;
+
+		for (var sock in socks) {
+			if (!socks.hasOwnProperty(sock)) {
+				continue;
+			}
+
+			if (socks[sock].handshake && socks[sock].handshake.user._id.equals(app.user)) {
+				socks[sock].get('process_stats', function(err, yeah) {
+					if (err) throw err;
+					
+					if (yeah) {
+						socks[sock].emit('process_stats', msg);
+					}
+				})
+			}
+		}
+	})
 }

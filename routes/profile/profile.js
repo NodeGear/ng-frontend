@@ -2,7 +2,6 @@ var mongoose = require('mongoose')
 	, models = require('ng-models')
 	, config = require('../../config')
 	, util = require('../../util')
-	, sshkeys = require('./sshkeys')
 	, billing = require('./billing')
 	, async = require('async')
 
@@ -15,8 +14,7 @@ exports.unauthorized = function (app, template) {
 		}, {
 			route: 'profile/settings',
 			view: 'profile/profileView'
-		},
-		'profile/ssh'
+		}
 	]);
 
 	billing.unauthorized(template);
@@ -28,7 +26,6 @@ exports.router = function (app, template) {
 	app.put('/profile/profile', updateProfile)
 		.get('/profile', getProfile)
 	
-	sshkeys.router(app)
 	billing.router(app)
 }
 

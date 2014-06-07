@@ -28,12 +28,6 @@
 							| &nbsp;&nbsp;
 							a.link-larger(ui-sref="app.processes({ id: app.nameUrl })") {{ app.name }}
 							span.link-larger {{ app.server }}
-							.btn-group.pull-right
-								button.link-larger.btn.btn-link(ui-sref="app.logs({ id: app.nameUrl })" title="Logs Monitoring")
-									i.fa.fa-fw.fa-files-o
-								button.link-larger.btn.btn-link(ui-sref="app.traffic({ id: app.nameUrl })" title="Traffic Analysis")
-									i.fa.fa-fw.fa-bolt
-								button.link-larger.btn.btn-link(ui-sref="app.usage({ id: app.nameUrl })" title="Usage Monitoring")
-									i.fa.fa-fw.fa-eye
-								button.link-larger.btn.btn-link(ui-sref="app.settings({ id: app.nameUrl })" title="Settings")
-									i.fa.fa-fw.fa-wrench
+							span.pull-right(ng-repeat="stat in app.stat_processes" style="padding: 10px;")
+								| CPU: {{ stat.monitor.cpu_percent }}%
+								| RAM: {{ stat.monitor.rssString }}

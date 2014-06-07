@@ -12,6 +12,10 @@ define([
 		$scope._app = app;
 		$scope.app = app.app;
 
+		socket.emit('watch_processes', {
+			watch: true
+		});
+
 		app.getProcesses(function() {
 			$scope.reloadScope();
 
@@ -71,6 +75,31 @@ define([
 			$scope.reloadScope();
 		}
 
+		$scope.process_stats = function(data) {
+			if (!$scope._app.processes) return;
+
+			for (var i = 0; i < $scope._app.processes.length; i++) {
+				var process = $scope._app.processes[i];
+
+				if (process._id != data._id) continue;
+
+				process.stat = data;
+
+				process.stat.monitor.rssString = process.stat.monitor.rss + ' KB';
+				if (process.stat.monitor.rss > 1024) {
+					process.stat.monitor.rssString = Math.round(process.stat.monitor.rss / 1024) + ' MB';
+				}
+				if (process.stat.monitor.rss > 1024 * 1024) {
+					process.stat.monitor.rssString = Math.round(process.stat.monitor.rss / 1024 / 1024) + ' GB';
+				}
+			}
+
+			if (!$scope.$$phase) {
+				$scope.$digest();
+			}
+		};
+
+		socket.on('process_stats', $scope.process_stats);
 		socket.on('process_log', $scope.processLog);
 		socket.on('app_event', $scope.app_event);
 		socket.on('app_running', $scope.app_running);
@@ -79,6 +108,9 @@ define([
 			socket.removeListener('process_log', $scope.processLog);
 			socket.removeListener('app_event', $scope.app_event);
 			socket.removeListener('app_running', $scope.app_running);
+			socket.removeListener('watch_processes', $scope.process_stats);
+
+			socket.emit('watch_processes', { watch: false });
 		})
 
 		$scope.reloadScope = function() {

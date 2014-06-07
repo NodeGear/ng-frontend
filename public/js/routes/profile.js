@@ -16,11 +16,6 @@ define([
 				dummy: $couchPotatoProvider.resolveDependencies(['controllers/tfa', 'controllers/accountSettings'])
 			}
 		})
-		.state('profile.ssh', {
-			url: '/ssh',
-			pageTitle: 'Profile SSH Key',
-			templateUrl: "/view/profile/ssh"
-		})
 		.state('profile.billing', {
 			url: '/billing',
 			pageTitle: 'Billing',

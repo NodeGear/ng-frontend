@@ -2,22 +2,31 @@
 	.pull-right
 		.btn-group
 			button.btn.btn-md.btn-success(ui-sref="app.processes.addProcess({ id: app.nameUrl })") Add Process
-	p.lead You have {{ _app.processes.length }} processes
+	p.lead You have {{ _app.processes.length }} process
+		span(ng-show="_app.processes.length > 1") es
 	table.table.table-striped(ng-hide="_app.processes.length == 0")
 		thead
 			tr
-				th.col-md-3.col-lg-3.col-sm-3 Process Name
-				th.col-md-2.col-lg-2.col-sm-2 Server
-				th.col-md-4.col-lg-4.col-sm-4 Running
-				th.col-md-3.col-lg-3.col-sm-3 &nbsp;
+				th.col-sm-2 Process Name
+				th.col-sm-2 Server
+				th.col-sm-3 Running
+				th.col-sm-2 Resources
+				th.col-sm-3 &nbsp;
 		tbody
 			tr(ng-repeat="process in _app.processes")
 				td: a(ui-sref="app.processes.editProcess({ id: app.nameUrl, pid: process._id })" title="Edit Process") {{ process.name }}
 				td {{ process.server.name }}
 				td
-					span(ng-show="!process.status || process.status.length == 0") {{ process.running }}
+					i.fa.fa-fw(ng-show="!process.status || process.status.length == 0" ng-class="{ 'fa-thumbs-down': !process.running, 'fa-thumbs-up': process.running }")
 					a.text-muted(ng-show="process.status.length > 0" ng-click="showLog()")
 						| {{ process.status }}
+				td
+					div(ng-show="process.running")
+						| {{ process.stat.monitor.cpu_percent }}%
+						br
+						| {{ process.stat.monitor.rssString }}
+					div(ng-hide="process.running")
+						| N/A
 				td
 					.pull-right
 						.btn-group(style="padding-right:5px;")

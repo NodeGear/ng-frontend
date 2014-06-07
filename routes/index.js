@@ -61,13 +61,18 @@ exports.router = function(app) {
 // webSocket routing stuff
 exports.socket = function (socket) {
 	apps.socket(socket);
-	
+
 	socket.on('watch_servers', function(data) {
-		if (this.handshake.user.admin && data.watch == true) {
-			this.set('server_stats', true, function(err) {
+		if (this.handshake.user.admin) {
+			this.set('server_stats', data.watch, function(err) {
 				if (err) throw err;
 			});
 		}
+	})
+	socket.on('watch_processes', function(data) {
+		this.set('process_stats', data.watch, function(err) {
+			if (err) throw err;
+		});
 	})
 }
 exports.socketDisconnect = function (socket) {
