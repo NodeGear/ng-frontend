@@ -8,6 +8,7 @@ block content
 		.col-lg-12.col-md-12.col-sm-12
 			table.table
 				thead
+					th Deleted
 					th Name
 					th Type
 					th Host
@@ -15,6 +16,7 @@ block content
 				tbody
 					for database in databases
 						tr
+							td= database.deleted
 							td= database.name
 							td= database.database_type
 							td= database.db_host
