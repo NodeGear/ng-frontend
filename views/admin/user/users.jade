@@ -19,5 +19,5 @@ block content
 							td(data-title="'Email Address'" filter="{ 'email': 'text' }" sortable="'email'") {{ user.email }}
 							td(data-title="'Balance'" filter="{ 'balance': 'text' }" sortable="'balance'") {{ user.balance }}
 							td
-							td
 								.btn-group.pull-right
+									a.btn.btn-default(href="/admin/user/{{ user._id }}") Access
