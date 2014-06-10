@@ -6,36 +6,51 @@ block content
 			h1.page-header User #{aUser.name}
 				a.btn.btn-default.pull-right(href="/admin/user/#{aUser._id}/edit") Edit
 	.row
-		.col-lg-6.col-md-6.col-sm-6
+		.col-sm-6
+			h4.text-center User Details
 			dl.dl-horizontal
 				dt(title="_id") _id
 				dd= aUser._id
 				dt Created
 				dd= aUser.created
+				
 				dt(title="Username") Username
 				dd= aUser.username
+				dt(title="Username") Username Lowercase
+				dd= aUser.usernameLowercase
+				
 				dt(title="Name") Name
 				dd= aUser.name
+
 				dt(title="Email") Email
 				dd= aUser.email
+				dt(title="Email Verified") Email Verified
+				dd= aUser.email_verified
+
 				dt(title="Password") Password
 				dd= aUser.password.split('').slice(0, 10).join('')
 					| &hellip;
-				dt(title="UID") UID
-				dd= aUser.uid
-				dt(title="GID") GID
-				dd= aUser.gid
+				
 				dt(title="Admin") Admin
 				dd= aUser.admin
+				
 				dt(title="Disabled") Disabled
 				dd= aUser.disabled
+				
 				dt(title="Balance") Balance
 				dd= aUser.balance
 				dt(title="Stripe Customer") Stripe Customer
 				dd= aUser.stripe_customer
+				
 				dt(title="Default Payment Method") Default Payment Method
 				dd: a(href="/admin/paymentMethod/#{aUser.default_payment_method}")= aUser.default_payment_method
+				
 				dt(title="Tfa Enabled") Tfa Enabled
 				dd= aUser.tfa_enabled
 				dt(title="Tfa") Tfa
 				dd= aUser.tfa
+		.col-sm-6
+			h4.text-center User Apps
+			table.table
+				thead
+					

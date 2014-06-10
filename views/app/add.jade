@@ -38,7 +38,7 @@
 				p.lead Created <strong>{{ name }}</strong>, your new <strong>{{ template }}</strong> application
 				p.lead Watch the install log on the right 
 					i.fa.fa-hand-o-right.fa-fw
-				button.btn(ng-class="{ 'btn-success': is_running, 'btn-default': !is_running }" ui-sref="app.dashboard({ id: app_url })" title="Click to continue to app.")
+				button.btn(ng-class="{ 'btn-success': is_running, 'btn-default': !is_running }" ui-sref="app.processes({ id: app_url })" title="Click to continue to app.")
 					span(ng-show="is_running") App is Running. Continue!
 					span(ng-hide="is_running") .. waiting ..
 			.col-lg-6.col-sm-6.col-md-6
