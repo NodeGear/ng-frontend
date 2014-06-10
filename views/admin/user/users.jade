@@ -1,24 +1,23 @@
 extends ../layout
 
+append js
+	script(src="#{cdn}/js/controllers/admin/user.js" defer)
+
 block content
-	.row
-		.col-lg-12.col-md-12.col-sm-12
-			h1.page-header Users
-	.row
-		.col-lg-12.col-md-12.col-sm-12
-			table.table
-				thead
-					th: a(href="/admin/users") Created
-					th: a(href="/admin/users?sort=email") Email
-					th: a(href="/admin/users?sort=name") Name
-					th &nbsp;
-				tbody
-					for user in users
-						tr
-							td= user.created
-							td= user.email
-							td= user.name
+	div(ng-controller="UsersController")
+		.row
+			.col-lg-12.col-md-12.col-sm-12
+				h1.page-header Users
+		.row
+			.col-lg-12.col-md-12.col-sm-12
+				table.table(ng-table="tableParams" show-filter="true")
+					tbody
+						tr(ng-repeat="user in $data")
+							td(data-title="'Created'" filter="{ 'created': 'text' }" sortable="'created'") {{ user.created }}
+							td(data-title="'Name'" filter="{ 'name': 'text' }" sortable="'name'") {{ user.name }}
+							td(data-title="'Username'" filter="{ 'username': 'text' }" sortable="'username'") {{ user.username }}
+							td(data-title="'Email Address'" filter="{ 'email': 'text' }" sortable="'email'") {{ user.email }}
+							td(data-title="'Balance'" filter="{ 'balance': 'text' }" sortable="'balance'") {{ user.balance }}
+							td
 							td
 								.btn-group.pull-right
-									a.btn.btn-xs.btn-default(href="/admin/user/"+user._id) Access
-									a.btn.btn-xs.btn-default(href="/admin/user/"+user._id+"/edit") Edit

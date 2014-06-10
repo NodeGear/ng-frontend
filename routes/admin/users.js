@@ -8,15 +8,66 @@ exports.router = function (app) {
 }
 
 function getUsers (req, res) {
-	var sort = '-created';
-	if (req.query.sort) {
-		sort = req.query.sort;
-	}
+	res.format({
+		html: function () {
+			res.render('admin/user/users')
+		},
+		json: function () {
+			var sort = '-created';
+			var limit = 20;
+			var offset = 0;
 
-	models.User.find({}).sort(sort).exec(function(err, users) {
-		res.locals.users = users;
-		
-		res.render('admin/user/users')
+			if (req.query.sorting) {
+				sort = "";
+				for (var s in req.query.sorting) {
+					var desc = false;
+					if (req.query.sorting[s] == 'desc') {
+						desc = true;
+					}
+
+					sort += (desc ? '-' : '') + s + ' ';
+				}
+			}
+			if (req.query.limit) {
+				limit = parseInt(req.query.limit);
+			}
+			if (req.query.offset) {
+				offset = parseInt(req.query.offset);
+			}
+
+			var query = {};
+			if (req.query.filter) {
+				query = req.query.filter;
+				for (var q in query) {
+					if (!isNaN(parseInt(query[q]))) {
+						query[q] = parseInt(query[q]);
+					} else {
+						query[q] = new RegExp(query[q], 'gi');
+					}
+				}
+			}
+
+			models.User.find(query)
+			.sort(sort)
+			.limit(limit)
+			.skip(offset)
+			.lean()
+			.exec(function(err, users) {
+				if (err) throw err;
+
+				for (var i = 0; i < users.length; i++) {
+					var d = new Date(users[i].created);
+					users[i].created = d.getDate() + '/' + (d.getMonth()+1) + '/' + d.getFullYear() + ' ' + d.getHours() + ':' + d.getMinutes();
+				}
+
+				models.User.count({}, function(err, total) {
+					res.send(200, {
+						total: total,
+						users: users
+					})
+				})
+			})
+		}
 	})
 }
 

@@ -1,4 +1,4 @@
-angular.module('nodegear', [])
+angular.module('nodegear', ['ngTable'])
 
 .controller('PerformanceController', function ($scope) {
 	var socket = io.connect();
