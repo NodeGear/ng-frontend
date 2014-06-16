@@ -2,10 +2,11 @@ define([
 	'angular',
 	'app',
 	'moment',
+	'socketio',
 	'../services/app',
 	'../directives/apps',
 	'./appDashboard'
-], function(angular, app, moment) {
+], function(angular, app, moment, io) {
 	app.registerController('AppsController', function ($scope, $http, $rootScope) {
 		$scope.appsOff = 0;
 		$scope.appsOn = 0;

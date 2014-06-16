@@ -1,5 +1,5 @@
 define([
-	'/socket.io/socket.io.js',
+	'socketio',
 	'../app',
 	'./app',
 	'./tickets',

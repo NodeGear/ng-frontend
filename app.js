@@ -4,8 +4,8 @@ var express = require('express')
 	, path = require('path')
 	, mongoose = require('mongoose')
 	, util = require('./util')
-	, MongoStore = require('session-mongoose')(express)
-	, mailer = require('nodemailer')
+	, session = require('express-session')
+	, MongoStore = require('connect-mongo')(session)
 	, passport = require('passport')
 	, auth = require('./auth')
 	, config = require('./config')
@@ -53,10 +53,6 @@ if (process.platform.match(/^win/) == null) {
 }
 
 mongoose.connect(config.credentials.db, config.credentials.db_options);
-var sessionStore = new MongoStore({
-	connection: mongoose.connection,
-	interval: 120000
-});
 if (process.env.NODE_ENV == 'production') {
 	// production mode
 	console.log("Production");
@@ -64,6 +60,12 @@ if (process.env.NODE_ENV == 'production') {
 	// development mode
 	console.log("Development");
 }
+
+var sessionStore = new MongoStore({
+	mongoose_connection: mongoose.connection,
+	auto_reconnect: true,
+	stringify: false
+});
 
 var db = mongoose.connection
 db.on('error', console.error.bind(console, 'Mongodb Connection Error:'));
@@ -78,11 +80,17 @@ app.set('views', __dirname + '/views');
 app.set('view engine', 'jade'); // Templating engine
 app.set('view cache', true); // Cache views
 app.set('app version', config.version); // App version
-app.locals.pretty = process.env.NODE_ENV != 'production' // Pretty HTML outside production mode
+app.set('x-powered-by', false);
 
-if (!process.env.NG_TEST) {
-	app.use(express.logger('dev')); // Pretty log
+if ('development' == app.get('env')) {
+	app.set('view cache', false); // Tell Jade not to cache views
 }
+
+app.locals.pretty = process.env.NODE_ENV != 'production' // Pretty HTML outside production mode
+app.locals.stripe_pub = config.credentials.stripe.pub;
+app.locals.cdn = (config.credentials.cdn && config.credentials.cdn.enabled) ? config.credentials.cdn.url : "";
+app.locals.version = config.version;
+app.locals.versionHash = config.hash;
 
 app.use(monitor());
 
@@ -108,54 +116,31 @@ app.use(monitor());
 	}
 });*/
 
-app.use(bugsnag.requestHandler);
-app.use(express.limit('30mb')); // File upload limit
 app.use(staticVersioning());
+
 app.use(function(req, res, next) {
-	res.set('X-Powered-By', 'NodeGear');
+	res.set('server', 'nodegear');
+	res.set('x-frame-options', 'SAMEORIGIN');
+	res.set('x-xss-protection', '1; mode=block');
 	next();
-})
-app.use("/", express.static(path.join(__dirname, 'public'), {
-	maxAge: 7 * 24 * 60 * 60
-})); // serve static files
-app.use(express.bodyParser()); // Parse the request body
-app.use(express.multipart());
-app.use(express.cookieParser()); // Parse cookies from header
-app.use(express.methodOverride());
-app.use(express.session({ // Session store
-	key: 'ng',
+});
+
+app.use(require('serve-static')(path.join(__dirname, 'public')));
+
+app.use(require('body-parser')());
+app.use(require('cookie-parser')());
+app.use(session({
 	secret: "K3hsadkasdoijqwpoie",
+	name: 'autoskolasemera',
 	store: sessionStore,
-	cookie: {
-		maxAge: 604800000 // 7 days in s * 10^3
-	}
+	proxy: true
 }));
-if (!process.env.NG_TEST) {
-	app.use(express.csrf()); // csrf protection
-}
 
 app.use(passport.initialize());
 app.use(passport.session());
 
 // Custom middleware
 app.use(function(req, res, next) {
-	// request middleware
-	
-	if (!process.env.NG_TEST) {
-		res.locals.token = req.csrfToken();
-	}
-	
-	// flash
-	if (req.session.flash) {
-		res.locals.flash = req.session.flash;
-	} else {
-		req.session.flash = res.locals.flash = [];
-	}
-	
-	res.locals.emptyFlash = function () {
-		req.session.flash = []
-	}
-	
 	res.locals.user = req.user;
 	res.locals.loggedIn = res.locals.user != null;
 	res.locals.requiresTFA = false;
@@ -164,13 +149,6 @@ app.use(function(req, res, next) {
 		res.locals.loggedIn = !(res.locals.requiresTFA || !req.user.email_verified);
 	}
 	
-	res.locals.stripe_pub = config.credentials.stripe.pub;
-	
-	res.locals.version = config.version;
-	res.locals.versionHash = config.hash;
-
-	res.locals.cdn = (config.credentials.cdn && config.credentials.cdn.enabled) ? config.credentials.cdn.url : "";
-
 	next();
 });
 
@@ -179,12 +157,6 @@ routes.router(app);
 
 app.use(bugsnag.errorHandler);
 
-// development only
-if ('development' == app.get('env')) {
-	app.use(express.errorHandler()); // Let xpress handle errors
-	app.set('view cache', false); // Tell Jade not to cache views
-}
-
 var server = http.createServer(app)
 server.listen(app.get('port'), function(){
 	console.log('Express server listening on port ' + app.get('port'));
@@ -192,7 +164,7 @@ server.listen(app.get('port'), function(){
 exports.io = io = require('socket.io').listen(server)
 
 io.set('authorization', socketPassport.authorize({
-	cookieParser: express.cookieParser,
+	cookieParser: require('cookie-parser'),
 	key: 'ng',
 	secret: 'K3hsadkasdoijqwpoie',
 	store: sessionStore,
@@ -201,9 +173,8 @@ io.set('authorization', socketPassport.authorize({
 		accept(false);
 	}
 }))
-io.set('log level', 1);
 
-io.sockets.on('connection', function(socket) {
+io.on('connection', function(socket) {
 	routes.socket(socket);
 	
 	socket.on('disconnect', function() {

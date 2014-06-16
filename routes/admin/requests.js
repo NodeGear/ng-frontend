@@ -9,6 +9,7 @@ function getPerformance (req, res) {
 	res.render('admin/monitor');
 }
 
+/*
 setInterval(function() {
 	var now = Math.round(new Date / 1000) - 1;
 
@@ -73,4 +74,4 @@ setInterval(function() {
 			}
 		}
 	})
-}, 1000);
+}, 1000);*/

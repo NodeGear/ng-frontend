@@ -6,11 +6,15 @@ require.config({
 		d3: 'vendor/d3.min',
 		moment: 'vendor/moment',
 		bootstrap: 'vendor/bootstrap',
-		couchPotato: 'vendor/angular-couch-potato'
+		couchPotato: 'vendor/angular-couch-potato',
+		socketio: '/socket.io/socket.io.js'
 	},
 	shim: {
 		angular: {
 			exports: 'angular'
+		},
+		socketio: {
+			exports: 'io'
 		},
 		uiRouter: {
 			deps: ['angular']

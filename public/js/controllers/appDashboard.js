@@ -2,10 +2,11 @@ define([
 	'angular',
 	'app',
 	'moment',
+	'socketio',
 	'../services/app',
 	'../services/csrf',
 	'../services/servers'
-], function(angular, app, moment) {
+], function(angular, app, moment, io) {
 	app.registerController('AppDashboardController', function ($scope, app, csrf, $rootScope) {
 		var socket = io.connect();
 		
