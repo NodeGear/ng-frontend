@@ -35,7 +35,7 @@
     "grunt": "latest",
     "grunt-bump": "latest",
     "toobusy-js": "latest",
-    "ng-models": "git+ssh://git@git.matej.me/nodegear/ng-models.git",
+    "ng-models": "git+ssh://git@beta.castawaylabs.com/nodegear/ng-models.git",
     "moment": "latest",
     "newrelic": "latest",
     "mysql": "latest",
