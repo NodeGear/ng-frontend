@@ -4,8 +4,8 @@ var config = require('./config');
 var mongoose = require('mongoose');
 var models = require('ng-models');
 
-var client = redis.createClient();
-var dog = redis.createClient(); // Dogs fetch and retrieve messages
+var client = redis.createClient(config.credentials.redis_port, config.credentials.redis_host);
+var dog = redis.createClient(config.credentials.redis_port, config.credentials.redis_host); // Dogs fetch and retrieve messages
 
 if (config.production) {
 	client.auth(config.credentials.redis_key)
