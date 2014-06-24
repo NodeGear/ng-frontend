@@ -58,27 +58,6 @@ exports.router = function(app) {
 	app.get('/servers', getServers)
 }
 
-// webSocket routing stuff
-exports.socket = function (socket) {
-	apps.socket(socket);
-
-	socket.on('watch_servers', function(data) {
-		if (this.handshake.user.admin) {
-			this.set('server_stats', data.watch, function(err) {
-				if (err) throw err;
-			});
-		}
-	})
-	socket.on('watch_processes', function(data) {
-		this.set('process_stats', data.watch, function(err) {
-			if (err) throw err;
-		});
-	})
-}
-exports.socketDisconnect = function (socket) {
-	apps.socketDisconnect(socket)
-}
-
 function layout (req, res) {
 	if (res.locals.loggedIn) {
 		res.render('layout')

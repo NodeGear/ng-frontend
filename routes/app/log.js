@@ -18,11 +18,6 @@ exports.router = function (app) {
 		.get('/app/:id/logs/:pid/:lid/download', getLogId, downloadLog)
 }
 
-exports.socket = function (socket) {
-}
-exports.socketDisconnect = function (socket) {
-}
-
 function getProcess (req, res, next) {
 	var pid = req.params.pid;
 	

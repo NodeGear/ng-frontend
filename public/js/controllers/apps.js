@@ -11,11 +11,7 @@ define([
 		$scope.appsOff = 0;
 		$scope.appsOn = 0;
 
-		var socket = io.connect();
-		
-		socket.emit('watch_processes', {
-			watch: true
-		});
+		var socket = io('/process_stats');
 
 		$scope.process_stats = function(data) {
 			if (!$scope.apps) return;
@@ -58,7 +54,6 @@ define([
 
 		socket.on('process_stats', $scope.process_stats);
 		$scope.$on('$destroy', function() {
-			socket.emit('watch_processes', { watch: false });
 			socket.removeListener('watch_processes', $scope.process_stats);
 		});
 

@@ -81,7 +81,10 @@ app.use(function(req, res, next) {
 });
 
 app.use(require('serve-static')(path.join(__dirname, 'public')));
+
 app.use(require('morgan')(config.production ? 'default' : 'dev'));
+
+app.use(bugsnag.requestHandler);
 app.use(require('body-parser')());
 app.use(require('cookie-parser')());
 app.use(session({
@@ -118,7 +121,7 @@ server.listen(app.get('port'), function(){
 });
 exports.io = io = require('socket.io').listen(server)
 
-io.set('authorization', socketPassport.authorize({
+io.use(socketPassport.authorize({
 	cookieParser: require('cookie-parser'),
 	key: 'ng',
 	secret: 'K3hsadkasdoijqwpoie',
@@ -129,10 +132,16 @@ io.set('authorization', socketPassport.authorize({
 	}
 }))
 
-io.on('connection', function(socket) {
-	routes.socket(socket);
-	
-	socket.on('disconnect', function() {
-		routes.socketDisconnect(this)
+io.of('/process_log').on('connection', function(socket) {
+	socket.on('subscribe_log', function (data) {
+		this.join(data.pid);
+	});
+	socket.on('unsubscribe_log', function (data) {
+		for (var i = 0; i < this.rooms.length; i++) {
+			if (this.rooms[i] == data.pid) {
+				this.rooms.splice(i, 1);
+				break;
+			}
+		}
 	})
 })

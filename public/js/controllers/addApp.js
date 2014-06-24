@@ -4,22 +4,32 @@ define([
 	'moment',
 	'socketio',
 	'../services/csrf',
-	'../services/servers'
+	'../services/servers',
+	'../services/user'
 ], function(angular, app, moment, io) {
-	app.registerController('AddAppController', function ($scope, $http, $rootScope, csrf, servers) {
-		var socket = io.connect();
-
+	app.registerController('AddAppController', function ($scope, $http, $rootScope, csrf, servers, user, $sce) {
 		$scope.creating = false;
 		$scope.status = "";
 		$scope.running = true;
 		$scope.processid = "";
 		$scope.logs = [];
+		$scope.servers = [];
+
+		servers.getServers(function(servers) {
+			$scope.servers = servers;
+			try {
+				if (!$scope.server) $scope.server = $scope.servers[0]._id;
+			} catch (e) {}
+		});
+
+		var process_log = io('/process_log'),
+			app_running = io('/app_running');
 
 		$scope.$on('$destroy', function() {
-			socket.removeListener('process_log', $scope.processLog);
-			socket.removeListener('app_running', $scope.app_running);
+			process_log.removeListener('process_log', $scope.processLog);
+			app_running.removeListener('app_running', $scope.app_running);
 
-			socket.emit('unsubscribe_log', {
+			process_log.emit('unsubscribe_log', {
 				id: $scope.app_id,
 				pid: $scope.processid
 			});
@@ -60,6 +70,57 @@ define([
 			})
 		}
 
+		$scope.createDatabase = function (type, cb) {
+			$scope.status = "Creating Database..";
+
+			$http.post('/database', {
+				database: {
+					name: $scope.app_url,
+					database_type: type
+				}
+			})
+			.success(function (data) {
+				$scope.status = "Database Created..";
+				$scope.database = data.database;
+
+				var done = 0;
+				var domain = $scope.app_url+'.'+user.user.username+'.ngapp.io';
+				var envs = [
+					['DATABASE', 'true'],
+					['DATABASE_HOST', $scope.database.db_host],
+					['DATABASE_USER', $scope.database.db_user],
+					['DATABASE_PASSWORD', $scope.database.db_pass],
+					['DATABASE_NAME', $scope.database.db_name],
+					['DOMAIN', domain]
+				];
+				var fn = function (iter) {
+					var data = {
+						env: {
+							name: envs[iter][0],
+							value: envs[iter][1]
+						}
+					};
+					$http.post('/app/'+$scope.app_url+'/environment', data)
+					.success(function (data) {
+						done++;
+						if (done >= envs.length) {
+							var fn = cb;
+
+							cb = function(){};
+							fn();
+						}
+					})
+				}
+
+				for (var i = 0; i < envs.length; i++) {
+					fn(i);
+				}
+			})
+			.error(function (data) {
+				$scope.status = "Could not create database.";
+			})
+		}
+
 		$scope.createDomain = function() {
 			$scope.status = "Creating Domain..";
 
@@ -75,6 +136,10 @@ define([
 			$http.post(url, data).success(function(data, status) {
 				if (data.status == 200) {
 					$scope.status = "Domain Added";
+
+					var domain = $scope.app_url+'.'+user.user.username+'.ngapp.io';
+					$scope.app_domain = $sce.trustAsUrl('http://'+domain);
+					
 					$scope.addProcess();
 				} else {
 					$scope.status = data.message;
@@ -98,43 +163,47 @@ define([
 			var data = {
 				_csrf: csrf.csrf,
 				process: {
-					name: $scope.name
+					name: $scope.name,
+					server: $scope.server
 				}
 			};
 			var url = '/app/'+$scope.app_url+'/process';
 
-			servers.getServers(function(servers) {
-				data.process.server = servers[0]._id;
+			$http.post(url, data).success(function(data, status) {
+				if (data.status == 200) {
+					$scope.status = "Process Added";
+					$scope.processid = data.process;
 
-				$http.post(url, data).success(function(data, status) {
-					if (data.status == 200) {
-						$scope.status = "Process Added";
-						$scope.processid = data.process;
-						$scope.startProcess(data.process);
+					if ($scope.template == 'ghost') {
+						$scope.createDatabase('mysql', function() {
+							$scope.startProcess(data.process);
+						})
 					} else {
-						$scope.status = data.message;
+						$scope.startProcess(data.process);
 					}
+				} else {
+					$scope.status = data.message;
+				}
 
-					if (!$scope.$$phase) {
-						$scope.$digest();
-					}
-				}).error(function() {
-					$scope.status = "The Request has failed.";
+				if (!$scope.$$phase) {
+					$scope.$digest();
+				}
+			}).error(function() {
+				$scope.status = "The Request has failed.";
 
-					if (!$scope.$$phase) {
-						$scope.$digest();
-					}
-				})
+				if (!$scope.$$phase) {
+					$scope.$digest();
+				}
 			});
 		}
 
 		$scope.startProcess = function(process) {
 			$scope.status = "Starting Process..";
 
-			socket.on('process_log', $scope.processLog);
-			socket.on('app_running', $scope.app_running);
+			process_log.on('process_log', $scope.processLog);
+			app_running.on('app_running', $scope.app_running);
 
-			socket.emit('subscribe_log', {
+			process_log.emit('subscribe_log', {
 				id: $scope.app_id,
 				pid: process
 			});

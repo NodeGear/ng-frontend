@@ -1,8 +1,9 @@
-var app = require('./app');
-var redis = require('redis');
-var config = require('./config');
-var mongoose = require('mongoose');
-var models = require('ng-models');
+var app = require('./app')
+	, redis = require('redis')
+	, config = require('./config')
+	, mongoose = require('mongoose')
+	, models = require('ng-models')
+	, bugsnag = require('bugsnag');
 
 var client = redis.createClient(config.credentials.redis_port, config.credentials.redis_host);
 var dog = redis.createClient(config.credentials.redis_port, config.credentials.redis_host); // Dogs fetch and retrieve messages
@@ -51,21 +52,23 @@ function git_verification (message) {
 
 	models.RSAKey.findOne({
 		_id: key_id
-	}, function(err, key) {
+	}).lean().exec(function(err, key) {
 		if (err) throw err;
 
 		console.log(key);
 
-		var socks = app.io.sockets.clients();
-		socks.forEach(function(socket) {
-			if (socket.handshake.user._id.equals(key.user)) {
+		var socks = app.io.of('/git_install').connected;
+		for (var sock in socks) {
+			if (!socks.hasOwnProperty(sock)) continue;
+			var socket = socks[sock];
+			if (socket.request.user && socket.request.user._id.equals(key.user)) {
 				socket.emit('git:install', {
 					_id: key_id,
 					message: msg,
 					system_key: (key.private_key && key.private_key.length > 0)
 				});
 			}
-		});
+		};
 	});
 }
 
@@ -75,23 +78,49 @@ function new_log (message) {
 	var pid = split[0];
 	var msg = message.substr(pid.length+1);
 
-	var socks = app.io.sockets.clients();
-	socks.forEach(function(socket) {
-		socket.get('subscribe_log', function(err, processes) {
-			for (var p in processes) {
-				if (!processes.hasOwnProperty(p)) {
-					continue;
-				}
+	try {
+		pid = mongoose.Types.ObjectId(pid);
+	} catch (e) {
+		console.log("Invalid LOG App PID", pid);
 
-				if (processes[p] == pid) {
+		return;
+	}
+
+	models.AppProcess.findOne({
+		_id: pid
+	})
+	.populate({
+		path: 'app',
+		select: 'user',
+		options: {
+			lean: true
+		}
+	})
+	.lean()
+	.exec(function(err, app_process) {
+		if (err) throw err;
+
+		if (!(app_process && app_process.app && app_process.app.user)) {
+			console.log("Log process doesn't exist/have an owner.")
+			console.log(app_process);
+			return;
+		}
+
+		var socks = app.io.of('/process_log').connected;
+		for (var sock in socks) {
+			if (!socks.hasOwnProperty(sock)) continue;
+			var socket = socks[sock];
+
+			socket.rooms.forEach(function (room) {
+				if (room == app_process._id && socket.request.user._id.equals(app_process.app.user)) {
 					socket.emit('process_log', {
 						pid: pid,
 						log: msg
 					});
-					break;
 				}
-			}
-		})
+			})
+		}
+
 	})
 }
 
@@ -106,7 +135,16 @@ function new_event (message) {
 
 	models.AppEvent.findOne({
 		_id: _id
-	}).populate('app').exec(function(err, ev) {
+	})
+	.populate({
+		path: 'app',
+		select: 'user',
+		options: {
+			lean: true
+		}
+	})
+	.lean()
+	.exec(function(err, ev) {
 		if (err) throw err;
 
 		if (!(ev && ev.app && ev.app.user)) {
@@ -115,9 +153,11 @@ function new_event (message) {
 			return;
 		}
 
-		var socks = app.io.sockets.clients();
-		socks.forEach(function(socket) {
-			var u = socket.handshake.user;
+		var socks = app.io.of('/app_event').connected;
+		for (var sock in socks) {
+			if (!socks.hasOwnProperty(sock)) continue;
+			var socket = socks[sock];
+			var u = socket.request.user;
 
 			if (u._id.equals(ev.app.user)) {
 				socket.emit('app_event', {
@@ -129,7 +169,7 @@ function new_event (message) {
 					message: ev.message
 				});
 			}
-		})
+		}
 	})
 }
 
@@ -149,7 +189,16 @@ function app_running (message) {
 
 	models.AppProcess.findOne({
 		_id: pid
-	}).populate('app').exec(function(err, app_process) {
+	})
+	.populate({
+		path: 'app',
+		select: 'user',
+		options: {
+			lean: true
+		}
+	})
+	.lean()
+	.exec(function(err, app_process) {
 		if (err) throw err;
 
 		if (!(app_process && app_process.app && app_process.app.user)) {
@@ -158,9 +207,11 @@ function app_running (message) {
 			return;
 		}
 
-		var socks = app.io.sockets.clients();
-		socks.forEach(function(socket) {
-			var u = socket.handshake.user;
+		var socks = app.io.of('/app_running').connected;
+		for (var sock in socks) {
+			if (!socks.hasOwnProperty(sock)) continue;
+			var socket = socks[sock];
+			var u = socket.request.user;
 
 			if (u._id.equals(app_process.app.user)) {
 				socket.emit('app_running', {
@@ -168,44 +219,38 @@ function app_running (message) {
 					running: running
 				});
 			}
-		})
+		}
 	})
 }
 
 function process_server_stats (message) {
 	try {
-		var socks = app.io.sockets.clients();
+		var socks = app.io.of('/server_stats');
 	} catch (e) {
 		// not ready
 		return;
 	}
-	
-	for (var sock in socks) {
-		if (!socks.hasOwnProperty(sock)) {
+
+	for (var sock in socks.connected) {
+		if (!socks.connected.hasOwnProperty(sock)) {
 			continue;
 		}
 
-		if (socks[sock].handshake.user.admin) {
-			socks[sock].get('server_stats', function(err, yeah) {
-				if (err) throw err;
-
-				if (yeah) {
-					try {
-						var msg = JSON.parse(message);
-						socks[sock].emit('server_stats', msg);
-					} catch (e) {}
-				}
-			})
+		var socket = socks.connected[sock];
+		if (socket.request.user && socket.request.user.admin) {
+			try {
+				var msg = JSON.parse(message);
+				socket.emit('server_stats', msg);
+			} catch (e) {}
 		}
 	}
 }
 
 function process_stats (message) {
 	var msg;
-	var socks;
 	try {
 		msg = JSON.parse(message);
-		socks = app.io.sockets.clients();
+		var ns = app.io.of('/process_stats');
 	} catch (e) {
 		return;
 	}
@@ -213,24 +258,23 @@ function process_stats (message) {
 	// Lookup user
 	models.App.findOne({
 		_id: msg.app
-	}).select('user').exec(function(err, app) {
+	})
+	.select('user')
+	.lean()
+	.exec(function(err, app) {
 		if (err) throw err;
 
 		if (!app) return;
 
-		for (var sock in socks) {
-			if (!socks.hasOwnProperty(sock)) {
+		for (var id in ns.connected) {
+			if (!ns.connected.hasOwnProperty(id)) {
 				continue;
 			}
 
-			if (socks[sock].handshake && socks[sock].handshake.user._id.equals(app.user)) {
-				socks[sock].get('process_stats', function(err, yeah) {
-					if (err) throw err;
-					
-					if (yeah) {
-						socks[sock].emit('process_stats', msg);
-					}
-				})
+			var sock = ns.connected[id];
+
+			if (sock.request.user && sock.request.user._id.equals(app.user)) {
+				sock.emit('process_stats', msg);
 			}
 		}
 	})

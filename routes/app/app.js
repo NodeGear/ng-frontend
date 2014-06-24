@@ -53,16 +53,6 @@ exports.router = function (app) {
 	settings.router(app)
 }
 
-exports.socket = function (socket) {
-	log.socket(socket);
-
-	socket.on('subscribe_log', subscribe_log);
-	socket.on('unsubscribe_log', unsubscribe_log);
-}
-exports.socketDisconnect = function (socket) {
-	log.socketDisconnect(socket)
-}
-
 function getApp (req, res, next) {
 	var self = this
 	var id = req.params.id;
@@ -153,91 +143,4 @@ function deleteApp (req, res) {
 			status: 200
 		})
 	})
-}
-
-// websocket stuff
-
-function authorize_socket (socket, data, cb) {
-	var locals = {};
-
-	var req = {
-		user: socket.handshake.user,
-		params: data,
-	};
-	var res = {
-		locals: locals,
-		send: function(obj) {
-			// If it got here, user supplied an invalid id..
-		}
-	}
-
-	getApp(req, res, function() {
-		process.getProcess(req, res, function() {
-			cb(locals);
-		});
-	});
-}
-
-function subscribe_log (data) {
-	var socket = this;
-
-	authorize_socket(socket, data, function(locals) {
-		socket.get('subscribe_log', function(err, processes) {
-			if (err || !processes) {
-				processes = [];
-			}
-
-			var found = false;
-			var id = locals.process._id.toString();
-			for (var i = 0; i < processes.length; i++) {
-				if (processes[i] == id) {
-					found = true;
-					break;
-				}
-			}
-
-			if (!found) {
-				processes.push(id);
-			}
-
-			socket.set('subscribe_log', processes, function(err) {
-				if (err) throw err;
-			})
-
-		});
-	});
-}
-
-function unsubscribe_log (data) {
-	var socket = this;
-
-	authorize_socket(socket, data, function(locals) {
-		socket.get('subscribe_log', function(err, processes) {
-			if (err || !processes) {
-				return;
-			}
-
-			var found = false;
-			var id = locals.process._id.toString();
-			for (var i = 0; i < processes.length; i++) {
-				if (processes[i] == id) {
-					found = true;
-
-					// Unsubscribes here
-					processes.splice(i, 1);
-
-					break;
-				}
-			}
-
-			if (!found) {
-				// Not subscribed
-				return;
-			}
-
-			socket.set('subscribe_log', processes, function(err) {
-				if (err) throw err;
-			})
-		});
-	});
 }

@@ -8,29 +8,34 @@
 			.col-lg-6.col-sm-6.col-md-6
 				p.lead Create a new <code>node.js</code> application from a template.
 				p.lead To create a custom application, please select 'custom' from template list and provide a git url.<br/>Alternatively, you can push your code to: 
-					small git://git@nodegear.io:{{ user.username }}/{repo-name}.git
+					small git://git@nodegear.io:{{ user.username }}/app-name.git
 			.col-lg-6.col-sm-6.col-md-6
 				form.form-horizontal(name="addApp" ng-init="template = 'ghost';")
 					.form-group
-						.col-lg-12.col-md-12.col-xs-12.col-sm-12
+						.col-xs-12
 							input.form-control(type="text" placeholder="App Name" ng-model="name" required autofocus="")
 					
 					.form-group
-						.col-lg-12.col-md-12.col-xs-12.col-sm-12
+						.col-xs-12
 							select.form-control(ng-model="template")
 								option(value="ghost") Ghost.js
 								option(value="custom") Custom
 
+					.form-group
+						.col-xs-12
+							select.form-control(ng-options="server._id as server.name for server in servers" ng-model="server" required)
+								option(value="") -- Pick a Server --
+
 					.form-group(ng-show="template=='custom'")
-						.col-lg-12.col-md-12.col-xs-12.col-sm-12
+						.col-xs-12
 							input.form-control(type="text" placeholder="Publicly Accessible Git URL" ng-init="custom_location='git://github.com/NodeGear/node-js-sample.git'" ng-model="custom_location" ng-required="template=='custom'")
 
 					.form-group(ng-show="template=='custom'")
-						.col-lg-12.col-md-12.col-xs-12.col-sm-12
+						.col-xs-12
 							input.form-control(type="text" placeholder="Git Branch (e.g. 'master')" ng-init="custom_branch='master'" ng-model="custom_branch" ng-required="template=='custom'")
 
 					.form-group
-						.col-lg-12.col-md-12.col-xs-12.col-sm-12
+						.col-xs-12
 							button.btn.btn-success(ng-disabled="addApp.$invalid" ng-click="create('#{token}')") Next
 		
 		div(ng-show="creating")
@@ -41,6 +46,8 @@
 				button.btn(ng-class="{ 'btn-success': is_running, 'btn-default': !is_running }" ui-sref="app.processes({ id: app_url })" title="Click to continue to app.")
 					span(ng-show="is_running") App is Running. Continue!
 					span(ng-hide="is_running") .. waiting ..
+				p(ng-show="is_running") Go to your app: 
+					a(href="{{ app_domain }}" target="_blank") {{ app_domain }}
 			.col-lg-6.col-sm-6.col-md-6
 				pre
 					span(ng-repeat="log in logs track by $index") {{ log }}

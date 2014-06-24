@@ -24,17 +24,13 @@ angular.module('nodegear', ['ngTable'])
 })
 
 .controller('ServerController', function ($scope, $http) {
-	var socket = io.connect();
+	var socket = io('/server_stats');
 
 	$scope.servers = [];
 
 	$http.get('/admin/servers').success(function(data) {
 		$scope.servers = data.servers;
 	})
-
-	socket.emit('watch_servers', {
-		watch: true
-	});
 
 	socket.on('server_stats', function(data) {
 		for (var i = 0; i < $scope.servers.length; i++) {

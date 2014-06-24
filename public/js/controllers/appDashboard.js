@@ -8,14 +8,8 @@ define([
 	'../services/servers'
 ], function(angular, app, moment, io) {
 	app.registerController('AppDashboardController', function ($scope, app, csrf, $rootScope) {
-		var socket = io.connect();
-		
 		$scope._app = app;
 		$scope.app = app.app;
-
-		socket.emit('watch_processes', {
-			watch: true
-		});
 
 		app.getProcesses(function() {
 			$scope.reloadScope();
@@ -100,18 +94,21 @@ define([
 			}
 		};
 
-		socket.on('process_stats', $scope.process_stats);
-		socket.on('process_log', $scope.processLog);
-		socket.on('app_event', $scope.app_event);
-		socket.on('app_running', $scope.app_running);
+		var process_stats = io('/process_stats')
+			, app_running = io('/app_running')
+			, app_event = io('/app_event')
+			, process_log = io('/process_log')
+
+		process_stats.on('process_stats', $scope.process_stats);
+		process_log.on('process_log', $scope.processLog);
+		app_event.on('app_event', $scope.app_event);
+		app_running.on('app_running', $scope.app_running);
 
 		$scope.$on('$destroy', function() {
-			socket.removeListener('process_log', $scope.processLog);
-			socket.removeListener('app_event', $scope.app_event);
-			socket.removeListener('app_running', $scope.app_running);
-			socket.removeListener('watch_processes', $scope.process_stats);
-
-			socket.emit('watch_processes', { watch: false });
+			process_log.removeListener('process_log', $scope.processLog);
+			app_event.removeListener('app_event', $scope.app_event);
+			app_running.removeListener('app_running', $scope.app_running);
+			process_stats.removeListener('process_stats', $scope.process_stats);
 		})
 
 		$scope.reloadScope = function() {
@@ -124,7 +121,7 @@ define([
 			process.startStopDisabled = true;
 			process.log_to_status = true;
 
-			socket.emit('subscribe_log', {
+			process_log.emit('subscribe_log', {
 				pid: process._id,
 				id: app.app._id
 			});
@@ -147,7 +144,7 @@ define([
 			process.startStopDisabled = true;
 			process.log_to_status = true;
 
-			socket.emit('subscribe_log', {
+			process_log.emit('subscribe_log', {
 				pid: process._id,
 				id: app.app._id
 			});
@@ -174,7 +171,7 @@ define([
 			if (process.log_to_status) {
 				process.log_to_status = false;
 
-				socket.emit('unsubscribe_log', {
+				process_log.emit('unsubscribe_log', {
 					id: app.app._id,
 					pid: process._id
 				});
@@ -183,7 +180,7 @@ define([
 			} else {
 				process.log_to_status = true;
 
-				socket.emit('subscribe_log', {
+				process_log.emit('subscribe_log', {
 					id: app.app._id,
 					pid: process._id
 				});
