@@ -20,6 +20,18 @@ try {
 
 exports.credentials = credentials;
 
+if (process.platform.match(/^win/) == null) {
+	try {
+		var spawn_process = require('child_process').spawn
+		var readHash = spawn_process('git', ['rev-parse', '--short', 'HEAD']);
+		readHash.stdout.on('data', function (data) {
+			exports.hash = data.toString().trim();
+		})
+	} catch (e) {
+		console.log("\n~= Unable to obtain git commit hash =~\n")
+	}
+}
+
 // Create SMTP transport method
 if (process.env.NG_TEST) {
 	exports.transport_enabled = false;

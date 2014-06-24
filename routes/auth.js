@@ -6,6 +6,7 @@ var passport = require('passport')
 	, config = require('../config')
 	, speakeasy = require('speakeasy')
 	, async = require('async')
+	, express = require('express')
 
 exports.unauthorized = function (app, template) {
 	// Unrestricted -- non-authorized people can access!
@@ -17,16 +18,18 @@ exports.unauthorized = function (app, template) {
 		'verifyEmail'
 	], {
 		prefix: 'auth'
-	})
+	});
 
-	app.post('/auth/password', doLogin)
-		.post('/auth/register', doRegister)
-		.post('/auth/forgot', doForgot)
-		.get('/auth/forgot', showForgot)
-		.post('/auth/forgot/reset', performReset)
+	var auth = express.Router();
+	
+	auth.post('/password', doLogin)
+		.post('/register', doRegister)
+		.post('/forgot', doForgot)
+		.get('/forgot', showForgot)
+		.post('/forgot/reset', performReset)
 
-		.post('/auth/tfa', util.authorizedPassTFA, getTFA, checkTFA)
-		.post('/auth/verifyEmail', function (req, res, next) {
+		.post('/tfa', util.authorizedPassTFA, getTFA, checkTFA)
+		.post('/verifyEmail', function (req, res, next) {
 			if (req.user && !req.user.email_verified) {
 				next();
 
@@ -35,8 +38,11 @@ exports.unauthorized = function (app, template) {
 
 			util.authorized(req, res, next);
 		}, doVerifyEmail)
-		.get('/auth/loggedin', isLoggedIn)
-		.get('/logout', doLogout)
+		.get('/loggedin', isLoggedIn)
+	
+	app.get('/logout', doLogout)
+
+	app.use('/auth', auth);
 }
 
 exports.router = function (app, templates) {

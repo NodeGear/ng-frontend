@@ -13,7 +13,6 @@ var express = require('express')
 	, socketPassport = require('passport.socketio')
 	, redis = require("redis")
 	, backend = redis.createClient(config.credentials.redis_port, config.credentials.redis_host)
-	, toobusy = require('toobusy-js')
 	, staticVersioning = require('./staticVersioning')
 	, monitor = require('./monitor')
 	, models = require('ng-models').init(mongoose, config)
@@ -40,26 +39,7 @@ exports.backend.on("error", function (err) {
 	console.log("Backend Error", err);
 });
 
-if (process.platform.match(/^win/) == null) {
-	try {
-		var spawn_process = require('child_process').spawn
-		var readHash = spawn_process('git', ['rev-parse', '--short', 'HEAD']);
-		readHash.stdout.on('data', function (data) {
-			config.hash = data.toString().trim();
-		})
-	} catch (e) {
-		console.log("\n~= Unable to obtain git commit hash =~\n")
-	}
-}
-
 mongoose.connect(config.credentials.db, config.credentials.db_options);
-if (process.env.NODE_ENV == 'production') {
-	// production mode
-	console.log("Production");
-} else {
-	// development mode
-	console.log("Development");
-}
 
 var sessionStore = new MongoStore({
 	mongoose_connection: mongoose.connection,
@@ -78,13 +58,10 @@ app.enable('trust proxy');
 app.set('port', process.env.PORT || 3000); // Port
 app.set('views', __dirname + '/views');
 app.set('view engine', 'jade'); // Templating engine
-app.set('view cache', true); // Cache views
 app.set('app version', config.version); // App version
 app.set('x-powered-by', false);
 
-if ('development' == app.get('env')) {
-	app.set('view cache', false); // Tell Jade not to cache views
-}
+app.set('view cache', config.production);
 
 app.locals.pretty = process.env.NODE_ENV != 'production' // Pretty HTML outside production mode
 app.locals.stripe_pub = config.credentials.stripe.pub;
@@ -92,29 +69,7 @@ app.locals.cdn = (config.credentials.cdn && config.credentials.cdn.enabled) ? co
 app.locals.version = config.version;
 app.locals.versionHash = config.hash;
 
-app.use(monitor());
-
-// Toobusy middleware..
-/*app.use(function(req, res, next) {
-	if (process.env.NODE_ENV != 'production') {
-		next();
-		return;
-	}
-
-	if (toobusy()) {
-		res.format({
-			html: function() {
-				res.status(503);
-				res.render('too_busy');
-			},
-			json: function() {
-				res.send(503, "");
-			}
-		});
-	} else {
-		next();
-	}
-});*/
+//app.use(monitor());
 
 app.use(staticVersioning());
 
@@ -126,12 +81,12 @@ app.use(function(req, res, next) {
 });
 
 app.use(require('serve-static')(path.join(__dirname, 'public')));
-
+app.use(require('morgan')(config.production ? 'default' : 'dev'));
 app.use(require('body-parser')());
 app.use(require('cookie-parser')());
 app.use(session({
 	secret: "K3hsadkasdoijqwpoie",
-	name: 'autoskolasemera',
+	name: 'ng',
 	store: sessionStore,
 	proxy: true
 }));
@@ -159,7 +114,7 @@ app.use(bugsnag.errorHandler);
 
 var server = http.createServer(app)
 server.listen(app.get('port'), function(){
-	console.log('Express server listening on port ' + app.get('port'));
+	console.log('NodeGear Frontend listening on port ' + app.get('port'));
 });
 exports.io = io = require('socket.io').listen(server)
 

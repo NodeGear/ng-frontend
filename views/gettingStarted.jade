@@ -11,12 +11,12 @@
 			ul
 				li Replace <code>project</code> with the name of your project.
 	h5#dns DNS Settings
-	p You automatically receive a subdomain on <code>app.<span ng-bind="user.username">username</span>.ngapp.io</code>. However, it is recommended you have your own domain name routed to your application. To do that, create <code>CNAME</code>/<code>A</code> records in your DNS and set the following records:
+	p You automatically receive a subdomain on <code>app.<span ng-bind="user.username">username</span>.ngapp.io</code>. However, it is recommended you have your own domain name routed to your application. To do that, create <code>CNAME</code> records in your DNS and set the following records:
 	p: small <strong>Note:</strong> You can choose which server you deploy to for each process of your app. One app can run on multiple servers. It is advised you use a DNS provider that can determine the latency for the user to the host, and provide A records based on that.
 	dl.dl-horizontal
-		dt: abbr(title="(routes users based on geographical location)") CNAME
-		dd: i ngapp.io
-		dt Canada
-		dd: i 198.50.168.250
-		dt Northern France
-		dd: i 5.39.78.156
+		dt Location
+		dd: abbr(title="(routes users based on geographical location)") CNAME
+		dt USA
+		dd: i us.server.nodegear.io
+		dt Europe
+		dd: i fr.server.nodegear.io

@@ -2,7 +2,7 @@ define([
 	'angular',
 	'../app'
 ], function(angular, app) {
-	app.registerController('VerifyEmailController', function($scope, $http) {
+	app.registerController('VerifyEmailController', function($scope, $http, $state) {
 		$scope.status = "";
 		$scope.csrf = "";
 		$scope.codeTextTransform = "none";
@@ -13,6 +13,9 @@ define([
 
 			$scope.status = "Loading...";
 			$http.get('/profile/profile').success(function(data, status) {
+				if (data.status != 200) {
+					return $state.transitionTo('login');
+				}
 				$scope.status = "We sent a token to "+data.user.email+".";
 			}).error(function(data) {
 
