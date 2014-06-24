@@ -17,6 +17,7 @@ var express = require('express')
 	, monitor = require('./monitor')
 	, models = require('ng-models').init(mongoose, config)
 	, redis_channel = require('./redis_channel')
+	, bodyParser = require('body-parser');
 
 var app = exports.app = express();
 
@@ -85,7 +86,10 @@ app.use(require('serve-static')(path.join(__dirname, 'public')));
 app.use(require('morgan')(config.production ? 'default' : 'dev'));
 
 app.use(bugsnag.requestHandler);
-app.use(require('body-parser')());
+app.use(bodyParser.urlencoded({
+	extended: true
+}));
+app.use(bodyParser.json());
 app.use(require('cookie-parser')());
 app.use(session({
 	secret: "K3hsadkasdoijqwpoie",
