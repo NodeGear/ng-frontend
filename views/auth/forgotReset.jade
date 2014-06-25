@@ -9,13 +9,14 @@ html
 		link(href="/favicon.ico" type="image/x-icon" rel="icon")
 		link(href="/favicon.ico" type="image/x-icon" rel="shortcut icon")
 		
-		link(rel="stylesheet" href="#{cdn}/css/#{version}/bootstrap.nodegear.css")
-		link(rel="stylesheet" href="#{cdn}/css/#{version}/nodegear.css")
+		link(rel="stylesheet" href="#{cdn}/#{version}/css/bootstrap.nodegear.css")
+		link(rel="stylesheet" href="#{cdn}/#{version}/css/font-awesome.min.css")
+		link(rel="stylesheet" href="#{cdn}/#{version}/css/nodegear.css")
 
 	body(style="background-color:#fff;")
 		.container
 			.row
-				.col-md-4.col-md-offset-4.col-lg-4.col-lg-offset-4.col-sm-6.col-sm-offset-3.col-xs-10.col-xs-offset-1.authentication
+				.col-md-4.col-md-offset-4.col-sm-6.col-sm-offset-3.col-xs-10.col-xs-offset-1.authentication
 					h4.text-center Password Reset
 					form(action="/auth/forgot/reset" method="POST")
 						input(type="hidden" name="_csrf" value=token)

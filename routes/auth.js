@@ -15,7 +15,8 @@ exports.unauthorized = function (app, template) {
 		'forgot',
 		'register',
 		'tfa',
-		'verifyEmail'
+		'verifyEmail',
+		'passwordReset'
 	], {
 		prefix: 'auth'
 	});
@@ -27,6 +28,7 @@ exports.unauthorized = function (app, template) {
 		.post('/forgot', doForgot)
 		.get('/forgot', showForgot)
 		.post('/forgot/reset', performReset)
+		.post('/passwordReset', passwordReset)
 
 		.post('/tfa', util.authorizedPassTFA, getTFA, checkTFA)
 		.post('/verifyEmail', function (req, res, next) {
@@ -78,7 +80,7 @@ function doLogin (req, res) {
 	v.check(req.body.auth, 'Please enter a valid Username/Email').len(4);
 	
 	// validate password
-	v.check(req.body.password, 'Please enter a valid password').len(4)
+	v.check(req.body.password, 'Please enter a valid password').len(6)
 	
 	if (errs.length > 0) {
 		res.format({
@@ -109,44 +111,66 @@ function doLogin (req, res) {
 			throw err;
 		}
 		
-		if (!user || user.password != models.User.getHash(req.body.password)) {
-			errs.push("Incorrect credentials")
-		}
-		
-		if (errs.length > 0) {
-			res.format({
-				html: function() {
-					res.redirect('/')
-				},
-				json: function() {
-					res.send({
-						status: 404,
-						message: "Incorrect Credentials"
-					});
-				}
-			});
-			
-			return;
-		}
-		
-		req.login(user, function(err) {
-			if (err) throw err;
-			
-			res.format({
-				json: function() {
-					res.send({
-						status: 200,
-						tfa: user.tfa_enabled,
-						email_verification: user.email_verified
-					})
-				},
-				html: function() {
-					res.redirect('/apps');
-				}
-			});
-		})
-	})
+		if (user && !user.is_new_pwd) {
+			// The old way, force user to set a new password
+			if (user.password != models.User.getHash(req.body.password)) {
+				errs.push("Incorrect credentials");
+			}
 
+			authCallback(errs, user, req, res);
+		} else if (user && user.is_new_pwd) {
+			user.comparePassword(req.body.password, function (matches) {
+				if (!matches) {
+					errs.push("Incorrect credentials");
+				}
+
+				authCallback(errs, user, req, res);
+			});
+		}
+	})
+}
+
+function authCallback (errs, user, req, res) {
+	if (errs.length > 0) {
+		res.format({
+			html: function() {
+				res.redirect('/')
+			},
+			json: function() {
+				res.send({
+					status: 404,
+					message: "Incorrect Credentials"
+				});
+			}
+		});
+		
+		return;
+	}
+
+	req.login(user, function(err) {
+		if (err) throw err;
+		
+		var passwordUpdateRequired = false;
+		if (user.updatePassword || !user.is_new_pwd) {
+			passwordUpdateRequired = true;
+		}
+
+		req.session.passwordUpdateRequired = passwordUpdateRequired;
+
+		res.format({
+			json: function() {
+				res.send({
+					status: 200,
+					tfa: user.tfa_enabled,
+					email_verification: user.email_verified,
+					passwordUpdateRequired: passwordUpdateRequired
+				})
+			},
+			html: function() {
+				res.redirect('/apps');
+			}
+		});
+	})
 }
 
 function doRegister (req, res) {
@@ -177,7 +201,7 @@ function doRegister (req, res) {
 	}
 
 	// validate password
-	v.check(password, 'Please enter a valid password').len(5);
+	v.check(password, 'Please enter a valid password').len(6);
 
 	if (errs.length > 0) {
 		res.format({
@@ -227,40 +251,42 @@ function doRegister (req, res) {
 			usernameLowercase: username.toLowerCase(),
 			name: name
 		})
-		user.setPassword(password);
+		models.User.hashPassword(password, function (hash) {
+			user.password = hash;
+			user.is_new_pwd = true;
 
-		var emailVerification = new models.EmailVerification({
-			email: email,
-			user: user._id
-		})
-
-		emailVerification.generateCode(function(code) {
-			emailVerification.save();
-
-			user.sendEmail('NodeGear Registrations <registration@nodegear.com>', 'Confirm Your NodeGear Account', 'emails/register.jade', {
-				user: user,
-				code: code,
-				host: req.host
-			});
-			user.save();
-
-			// log in now
-			req.login(user, function(err) {
-				if (err) throw err;
-				
-				res.format({
-					html: function() {
-						res.redirect('/apps');
-					},
-					json: function() {
-						res.send({
-							status: 200
-						})
-					}
-				})
+			var emailVerification = new models.EmailVerification({
+				email: email,
+				user: user._id
 			})
 
-		})
+			emailVerification.generateCode(function(code) {
+				emailVerification.save();
+
+				user.sendEmail('NodeGear Registrations <registration@nodegear.com>', 'Confirm Your NodeGear Account', 'emails/register.jade', {
+					user: user,
+					code: code,
+					host: req.host
+				});
+				user.save();
+
+				// log in now
+				req.login(user, function(err) {
+					if (err) throw err;
+					
+					res.format({
+						html: function() {
+							res.redirect('/apps');
+						},
+						json: function() {
+							res.send({
+								status: 200
+							})
+						}
+					})
+				});
+			});
+		});
 	});
 }
 
@@ -393,6 +419,33 @@ function showForgot (req, res) {
 			code: forgotNotification.code
 		})
 	});
+}
+
+function passwordReset (req, res) {
+	if (req.user && req.user._id && req.session.passwordUpdateRequired === true) {
+		// Do the reset
+		if (!req.body.pwd || req.body.pwd.length < 6) {
+			return res.send({
+				status: 400,
+				message: "Bad or Invalid Password"
+			});
+		}
+
+		models.User.hashPassword(req.body.pwd, function (hash) {
+			req.user.password = hash;
+			req.user.updatePassword = false;
+			req.user.is_new_pwd = true;
+			req.session.passwordUpdateRequired = false;
+
+			req.user.save();
+
+			res.send({
+				status: 200
+			})
+		})
+	} else {
+		res.send(400);
+	}
 }
 
 function performReset (req, res) {

@@ -55,6 +55,7 @@ module.exports = function(app) {
 
 	self.setup = function () {
 		for (var i = 0; i < routes.length; i++) {
+			console.log(routes[i].route)
 			app.get('/view/'+routes[i].route, self.getView.bind(routes[i]));
 		}
 	}

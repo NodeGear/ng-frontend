@@ -11,44 +11,56 @@ block content
 			dl.dl-horizontal
 				dt(title="_id") _id
 				dd= aUser._id
+				.clearfix
 				dt Created
 				dd= aUser.created
-				
+				.clearfix
 				dt(title="Username") Username
 				dd= aUser.username
+				.clearfix
 				dt(title="Username") Username Lowercase
 				dd= aUser.usernameLowercase
-				
+				.clearfix
 				dt(title="Name") Name
 				dd= aUser.name
-
+				.clearfix
 				dt(title="Email") Email
 				dd= aUser.email
+				.clearfix
 				dt(title="Email Verified") Email Verified
 				dd= aUser.email_verified
-
+				.clearfix
 				dt(title="Password") Password
 				dd= aUser.password.split('').slice(0, 10).join('')
 					| &hellip;
-				
+				.clearfix
 				dt(title="Admin") Admin
 				dd= aUser.admin
-				
+				.clearfix
 				dt(title="Disabled") Disabled
 				dd= aUser.disabled
-				
+				.clearfix
 				dt(title="Balance") Balance
 				dd= aUser.balance
+				.clearfix
 				dt(title="Stripe Customer") Stripe Customer
 				dd= aUser.stripe_customer
-				
+				.clearfix
 				dt(title="Default Payment Method") Default Payment Method
 				dd: a(href="/admin/paymentMethod/#{aUser.default_payment_method}")= aUser.default_payment_method
-				
+				.clearfix
+				dt(title="Uses New Password Scheme") New PWD Scheme
+				dd= aUser.is_new_pwd
+				.clearfix
+				dt(title="User has to update their password next time they log in") Force update pwd
+				dd= aUser.updatePassword
+				.clearfix
 				dt(title="Tfa Enabled") Tfa Enabled
 				dd= aUser.tfa_enabled
+				.clearfix
 				dt(title="Tfa") Tfa
 				dd= aUser.tfa
+				
 		.col-sm-6
 			h4.text-center User Apps
 			table.table

@@ -52,5 +52,14 @@ define([
 				dummy: $couchPotatoProvider.resolveDependencies(['controllers/tfa'])
 			}
 		})
+		.state('resetPassword', {
+			url: '/password/reset',
+			pageTitle: "Password Reset",
+			templateUrl: "/view/auth/passwordReset",
+			controller: "PasswordResetController",
+			resolve: {
+				dummy: $couchPotatoProvider.resolveDependencies(['controllers/auth_passwordReset'])
+			}
+		})
 	});
 });

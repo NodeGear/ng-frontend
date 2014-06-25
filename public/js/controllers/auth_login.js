@@ -35,8 +35,10 @@ define([
 					}
 					if (!data.email_verification) {
 						// Requires user to verify email
-						$state.transitionTo('verifyEmail');
-						return;
+						return $state.transitionTo('verifyEmail');
+					}
+					if (data.passwordUpdateRequired) {
+						return $state.transitionTo('resetPassword');
 					}
 					
 					$scope.status = "Login Successful"

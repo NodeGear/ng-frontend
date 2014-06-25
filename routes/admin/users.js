@@ -109,11 +109,8 @@ function doEditUser (req, res) {
 	u.stripe_customer = _u.stripe_customer;
 	u.admin = _u.admin;
 	u.disabled = _u.disabled;
+	u.updatePassword = _u.updatePassword;
 
-	if (_u.password && _u.password.length > 0) {
-		u.setPassword(_u.password);
-	}
-	
 	if (u.tfa_enabled && !_u.tfa_enabled) {
 		// is disabling TFA
 		u.tfa_enabled = false;
@@ -153,7 +150,16 @@ function doEditUser (req, res) {
 		}
 	}
 
-	u.save();
+	if (_u.password && _u.password.length > 0) {
+		models.User.hashPassword(_u.password, function(hash) {
+			u.password = hash;
+			u.is_new_pwd = true;
+
+			u.save();
+		});
+	} else {
+		u.save();
+	}
 
 	res.send(200, {})
 }
