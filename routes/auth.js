@@ -480,18 +480,23 @@ function performReset (req, res) {
 			return;
 		}
 
-		forgotNotification.user.setPassword(req.body.password);
-		forgotNotification.user.sendEmail('NodeGear User Daemon <users@nodegear.com>', 'NodeGear Password Reset Complete', 'emails/forgotComplete.jade', {
-			user: forgotNotification.user,
-			host: req.host
+		models.User.hashPassword(req.body.password, function (hash) {
+			forgotNotification.user.password = hash;
+			forgotNotification.user.is_new_pwd = true;
+			forgotNotification.user.updatePassword = false;
+			
+			forgotNotification.user.sendEmail('NodeGear User Daemon <users@nodegear.com>', 'NodeGear Password Reset Complete', 'emails/forgotComplete.jade', {
+				user: forgotNotification.user,
+				host: req.host
+			});
+
+			forgotNotification.user.save();
+			forgotNotification.used = true;
+			forgotNotification.usedDate = Date.now();
+			forgotNotification.save();
+
+			res.redirect('/');
 		});
-
-		forgotNotification.user.save();
-		forgotNotification.used = true;
-		forgotNotification.usedDate = Date.now();
-		forgotNotification.save();
-
-		res.redirect('/');
 	});
 }
 

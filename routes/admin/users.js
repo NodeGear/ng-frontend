@@ -28,11 +28,11 @@ function getUsers (req, res) {
 					sort += (desc ? '-' : '') + s + ' ';
 				}
 			}
-			if (req.query.limit) {
-				limit = parseInt(req.query.limit);
+			if (req.query.count) {
+				limit = parseInt(req.query.count);
 			}
-			if (req.query.offset) {
-				offset = parseInt(req.query.offset);
+			if (req.query.page) {
+				offset = (parseInt(req.query.page) - 1) * limit;
 			}
 
 			var query = {};

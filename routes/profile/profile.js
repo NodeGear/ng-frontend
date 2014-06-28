@@ -53,7 +53,7 @@ function updateProfile (req, res) {
 		function(cb) {
 			var username = user.username.toLowerCase();
 			if (username.length > 0) {
-				if (username === req.user.username) {
+				if (username === req.user.usernameLowercase) {
 					return cb(null);
 				}
 
@@ -63,14 +63,14 @@ function updateProfile (req, res) {
 				}
 
 				models.User.find({
-					username: username,
-					disabled: false
+					usernameLowercase: username
 				}).select('_id').exec(function(err, users) {
 					if (err) return cb(err);
 
 					if (users.length == 0) {
 						// Username free
 						req.user.username = user.username;
+						req.user.usernameLowercase = user.username.toLowerCase();
 
 						cb(null);
 					} else {
