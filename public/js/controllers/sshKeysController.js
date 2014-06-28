@@ -2,7 +2,7 @@ define([
 	'app',
 	'socketio',
 	'../services/csrf'
-], function(app) {
+], function(app, io) {
 	app.registerController('KeysController', function ($scope, $http, csrf) {
 		$http.get('/ssh/keys').success(function(data) {
 			$scope.keys = data.keys;
