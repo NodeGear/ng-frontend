@@ -1,5 +1,6 @@
 define([
 	'app',
+	'socketio',
 	'../services/csrf'
 ], function(app) {
 	app.registerController('KeysController', function ($scope, $http, csrf) {
@@ -26,6 +27,7 @@ define([
 			}
 		}
 
+		var socket = io('/git_install');
 		socket.on('git:install', $scope.systemKey);
 
 		$scope.$on('$destroy', function() {
@@ -50,8 +52,6 @@ define([
 	})
 
 	app.registerController('KeyController', function ($scope, $http, $state, csrf, key) {
-		var socket = io.connect();
-
 		$scope.key = key;
 
 		$scope.installKey = function (data) {
@@ -68,6 +68,7 @@ define([
 			}
 		}
 
+		var socket = io('/git_install');
 		socket.on('git:install', $scope.installKey);
 
 		$scope.$on('$destroy', function() {
