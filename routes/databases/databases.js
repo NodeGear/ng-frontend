@@ -126,7 +126,7 @@ function addDatabase (req, res) {
 						db.close();
 
 						complete(err, {
-							db_host: config.credentials.admin_mongodb.host,
+							db_host: config.credentials.admin_mongodb.ip,
 							db_user: req.user._id.toString(),
 							db_name: database._id,
 							db_port: 27017
@@ -152,7 +152,7 @@ function addDatabase (req, res) {
 					if (err) throw err;
 
 					complete(err, {
-						db_host: config.credentials.admin_mysql.host,
+						db_host: config.credentials.admin_mysql.ip,
 						db_user: uid,
 						db_name: database._id,
 						db_port: 3306
