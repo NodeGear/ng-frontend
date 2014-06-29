@@ -1,7 +1,8 @@
 define([
 	'angular',
-	'couchPotato'
-	], function(angular, couchPotato) {
+	'couchPotato',
+	'ga'
+	], function(angular, couchPotato, ga) {
 		var app = angular.module('nodegear', ['scs.couch-potato', 'ui.router', 'ngSanitize']);
 
 		couchPotato.configureApp(app);
@@ -34,6 +35,13 @@ define([
 				} else {
 					$rootScope.pageTitle = "NodeGear Page";
 				}
+
+				setTimeout(function () {
+					ga('send', 'pageview', {
+						'page': window.location.protocol + '//' + window.location.hostname + window.location.pathname + window.location.search,
+						'title': $rootScope.pageTitle
+					});
+				}, 100);
 			})
 		});
 		

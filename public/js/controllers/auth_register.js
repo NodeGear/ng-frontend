@@ -22,7 +22,18 @@ define([
 		$scope.init = function (csrf) {
 			$scope.csrf = csrf;
 
-			$('form[name=register] input[name=full_name]').trigger('focus');
+			var email = (new RegExp("[\\?&]email=([^&#]*)")).exec(location.search);
+			$scope.user.email = email == null ? "" : decodeURIComponent(email[1].replace(/\+/g, " "));
+			var name = (new RegExp("[\\?&]name=([^&#]*)")).exec(location.search);
+			$scope.user.name = name == null ? "" : decodeURIComponent(name[1].replace(/\+/g, " "));
+
+			setTimeout(function() {
+				if (name != null) {
+					$('form[name=register] input[ng-model="user.username"]').trigger('focus');
+				} else {
+					$('form[name=register] input[name=full_name]').trigger('focus');
+				}
+			}, 100);
 		}
 
 		$scope.registerUser = function () {

@@ -64,7 +64,7 @@ define([
 		} else {
 			$('form[name=login] input[type=email]').trigger('focus');
 		}
-
+		
 		$scope.$watch('user.auth', function(auth) {
 			if (isLocalStorageCapable) {
 				if (typeof auth !== 'undefined' && auth.length > 0) {
