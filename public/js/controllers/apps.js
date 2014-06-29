@@ -90,7 +90,7 @@ define([
 						processnum = ":" + processnum;
 					}
 
-					col.column = $scope.chart.data.addColumn('number', col.app.name + processnum + ' CPU Usage');
+					col.column = $scope.chart.data.addColumn('number', col.app.name + processnum);
 				}
 				if (col.stale) {
 					newRow.push(0);
@@ -154,6 +154,7 @@ define([
 					//curveType: "function",
 					width: element[0].clientWidth,
 					height: 400,
+					title: 'CPU Usage',
 					vAxis: {
 						minValue: 0,
 						maxValue: 100
