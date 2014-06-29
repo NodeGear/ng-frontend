@@ -17,10 +17,32 @@
 			h4.text-center Offline Gears
 	br
 	.row
+		.col-sm-12
+			#graph1(apps-graph style="height: 400px;")
+			.clearfix
+	.row
 		.col-xs-12
 			table.table
+				thead
+					tr
+						th Running Applications
 				tbody
-					tr(ng-repeat="app in apps")
+					tr(ng-repeat="app in apps | filter:{ isRunning: true }")
+						td
+							span.link-larger.label.label-success(title="Processes Online") {{ app.running }}
+							| &nbsp;
+							span.link-larger.label.label-danger(title="Processes Offline") {{ app.stopped }}
+							| &nbsp;&nbsp;
+							a.link-larger(ui-sref="app.processes({ id: app.nameUrl })") {{ app.name }}
+							span.link-larger {{ app.server }}
+							span.pull-right(ng-repeat="stat in app.stat_processes" style="padding: 10px;")
+								| CPU: {{ stat.monitor.cpu_percent }}%
+								| RAM: {{ stat.monitor.rssString }}
+				thead
+					tr
+						th Stopped Applications
+				tbody
+					tr(ng-repeat="app in apps | filter:{ isRunning: false }")
 						td
 							span.link-larger.label.label-success(title="Processes Online") {{ app.running }}
 							| &nbsp;

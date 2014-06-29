@@ -13,6 +13,8 @@ define([
 
 		var socket = io('/process_stats');
 
+		$scope.columns = {};
+
 		$scope.process_stats = function(data) {
 			if (!$scope.apps) return;
 
@@ -35,8 +37,29 @@ define([
 
 				if (!found) {
 					app.stat_processes.push(data);
+					
 					found = data;
 				}
+
+				if (typeof $scope.columns[data._id] == 'undefined') {
+					var processnum = 1;
+					for (var p in $scope.columns) {
+						if (!$scope.columns.hasOwnProperty(p)) continue;
+						if ($scope.columns[p].app._id == app._id) {
+							// This app has > 1 processes running..
+							processnum++;
+						}
+					}
+					
+					$scope.columns[data._id] = {
+						column: -1, // to be set
+						processnum: processnum
+					}
+				}
+
+				$scope.columns[data._id].data = data;
+				$scope.columns[data._id].app = app;
+				$scope.columns[data._id].stale = false;
 
 				found.monitor.rssString = found.monitor.rss + ' KB';
 				if (found.monitor.rss > 1024) {
@@ -52,9 +75,51 @@ define([
 			}
 		};
 
+		$scope.secondInterval = function () {
+			var newRow = [new Date()];
+			for (var o in $scope.columns) {
+				if (!$scope.columns.hasOwnProperty(o)) continue;
+
+				var col = $scope.columns[o];
+				if (col.column == -1) {
+					// Add to the table
+					var processnum = col.processnum
+					if (processnum == 1) {
+						processnum = "";
+					} else {
+						processnum = ":" + processnum;
+					}
+
+					col.column = $scope.chart.data.addColumn('number', col.app.name + processnum + ' CPU Usage');
+				}
+				if (col.stale) {
+					newRow.push(0);
+					continue;
+				}
+
+				newRow.push(col.data.monitor.cpu_percent);
+				col.stale = true;
+			}
+
+			if (newRow.length == 1) {
+				// the graph doesn't have enough columns..
+				return;
+			}
+
+			if ($scope.chart.data.getNumberOfRows() > 30) {
+				$scope.chart.data.removeRow(0);
+			}
+			$scope.chart.data.insertRows($scope.chart.data.getNumberOfRows(), [newRow])
+			$scope.chart.chart.draw($scope.chart.data, $scope.chart.options);
+
+		}
+
+		var secondInterval = setInterval($scope.secondInterval, 1000);
+
 		socket.on('process_stats', $scope.process_stats);
 		$scope.$on('$destroy', function() {
-			socket.removeListener('watch_processes', $scope.process_stats);
+			socket.removeListener('process_stats', $scope.process_stats);
+			clearInterval(secondInterval);
 		});
 
 		if (!$scope.apps) return;
@@ -65,57 +130,43 @@ define([
 			} else {
 				$scope.appsOff++;
 			}
+
+			if ($scope.apps[i].running > 0) {
+				$scope.apps[i].isRunning = true;
+			} else {
+				$scope.apps[i].isRunning = false;
+			}
 		}
 	});
 
-	app.registerDirective('appProcessPie', function() {
+	app.registerDirective('appsGraph', function () {
 		return {
 			restrict: 'A',
-			scope: {
-				app: '=app'
-			},
-			link: function(scope, element, attrs) {
-				require(['d3'], function(d3) {
-					var radius = 39 / 2;
-					var color = d3.scale.category20();
+			scope: '@',
+			link: function (scope, element, attrs) {
+				// Create and populate the data table.
+				var data = new google.visualization.DataTable();
+				data.addColumn('date', 'Time');
+				
+				// Create and draw the visualization.
+				var lineChart = new google.visualization.LineChart(element[0]);
+				var options = {
+					//curveType: "function",
+					width: element[0].clientWidth,
+					height: 400,
+					vAxis: {
+						minValue: 0,
+						maxValue: 100
+					}
+				};
 
-					var data = [{
-						label: 'Stopped',
-						value: scope.app.stopped
-					}, {
-						label: 'Running',
-						value: scope.app.running
-					}];
+				//lineChart.draw(data, options);
 
-					if (scope.app.running == 0 && scope.app.stopped == 0) return;
-
-					var pie = d3.layout.pie()
-						.value(function(d) {
-							return d.value;
-						});
-
-					var arc = d3.svg.arc()
-						.innerRadius(radius / 2)
-						.outerRadius(radius);
-
-					var svg = d3.select(element[0])
-						.data([data])
-						.attr('width', 39)
-						.attr('height', 39)
-						.append('g')
-						.attr('transform', 'translate('+radius+','+radius+')');
-
-					var arcs = svg.selectAll("g.slice")
-						.data(pie)
-						.enter()
-							.append('g')
-							.attr('class', 'slice');
-					
-					arcs.append('path')
-						.attr('fill', function(d, i) { return color(i); })
-						.attr('d', arc);
-
-				})
+				scope.chart = {
+					data: data,
+					chart: lineChart,
+					options: options
+				};
 			}
 		}
 	})
