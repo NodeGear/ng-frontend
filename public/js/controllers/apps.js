@@ -141,7 +141,7 @@ define([
 
 	app.registerDirective('appsGraph', function () {
 		return {
-			restrict: 'A',
+			restrict: 'EA',
 			scope: '@',
 			link: function (scope, element, attrs) {
 				// Create and populate the data table.

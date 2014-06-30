@@ -1,10 +1,68 @@
-.pagestyle(ng-controller="AppDashboardController" ng-init="setCsrf('#{token}')")
+.pagestyle(ng-controller="AppDashboardController" ng-init="setCsrf('#{token}'); showDashboard = true;")
 	.pull-right
+		.btn-group
+			button.btn.btn-md.btn-default(ng-click="showDashboard = !showDashboard" ng-class="{ 'btn-info': showDashboard, 'btn-default': !showDashboard }")
+				i.fa.fa-dashboard.fa-fw
+			button.btn.btn-md.btn-default(ng-click="showDashboard = !showDashboard" ng-class="{ 'btn-info': !showDashboard, 'btn-default': showDashboard }")
+				i.fa.fa-th-list.fa-fw
 		.btn-group
 			button.btn.btn-md.btn-success(ui-sref="app.processes.addProcess({ id: app.nameUrl })") Add Process
 	p.lead You have {{ _app.processes.length }} process
 		span(ng-show="_app.processes.length > 1") es
-	table.table.table-striped(ng-hide="_app.processes.length == 0")
+	.row(ng-show="showDashboard")
+		.col-md-6(ng-repeat="process in _app.processes")
+			.panel.panel-default.process-box(ng-class="{ 'panel-success': process.running && !process.startStopDisabled, 'panel-danger': !process.running && !process.startStopDisabled, 'panel-info': process.startStopDisabled }")
+				.panel-heading
+					h3.text-center.panel-title {{ process.name }}
+						i.fa.fa-flag.fa-fw.pull-left(ng-hide="process.running" style="color: #000;")
+					.clearfix
+				.panel-body
+					.row
+						.col-sm-2
+							.btn-group-vertical
+								button.btn.btn-sm.btn-success(ng-click="startProcess(process)" ng-disabled="process.startStopDisabled || process.running" title="Start Process")
+									i.fa.fa-play.fa-fw
+								button.btn.btn-sm.btn-danger(ng-click="stopProcess(process)" ng-disabled="process.startStopDisabled || !process.running" title="Stop Process")
+									i.fa.fa-power-off.fa-fw
+								button.btn.btn-sm.btn-info(ng-click="process.showInfo = !process.showInfo" title="Show Information" ng-class="{ active: process.showInfo }")
+									i.fa.fa-info.fa-fw
+								a.btn.btn-sm.btn-default(ui-sref="app.processes.editProcess({ id: app.nameUrl, pid: process._id })" title="Show Information")
+									i.fa.fa-edit.fa-fw
+						.col-sm-10
+							.row(ng-hide="process.showInfo")
+								.col-xs-6
+									.thumbnail.svg-thumbnail
+										svg.rtm(process-graph process="process" type="cpu_percent" max="100" thickness="18")
+										h1 {{ process.stat.monitor.cpu_percent }}%
+										span CPU Usage
+								.col-xs-6
+									.thumbnail.svg-thumbnail
+										svg.rtm(process-graph process="process" type="rss" max="262144" thickness="18")
+										h1 {{ process.stat.monitor.rssString }}
+										span RAM Used
+							.row(ng-show="process.showInfo")
+								.col-xs-8
+									p
+										strong Server: 
+										span {{ process.server.name }}
+										br
+										strong Cost: 
+										span £{{ process.server.price_per_hour }} per hour
+										br
+										strong Uptime: 
+										span ??
+								.col-xs-4
+									.thumbnail.svg-thumbnail.thumbnail-small.pull-right
+										svg.rtm(process-graph process="process" type="cpu_percent" max="100" small thickness="10")
+										h1 {{ process.stat.monitor.cpu_percent }}%
+										span CPU Usage
+									.clearfix
+									.thumbnail.svg-thumbnail.thumbnail-small.pull-right
+										svg.rtm(process-graph process="process" type="rss" max="262144" small thickness="10")
+										h1 {{ process.stat.monitor.rssString }}
+										span RAM Used
+									.clearfix
+	table.table.table-striped(ng-hide="_app.processes.length == 0 || showDashboard")
 		thead
 			tr
 				th.col-sm-2 Process Name

@@ -14,6 +14,20 @@ define([
 		app.getProcesses(function() {
 			$scope.reloadScope();
 
+			for (var i = 0; i < app.processes.length; i++) {
+				app.processes[i].stat = {
+					monitor: {
+						cpu_percent: 0,
+						cpu_stime: 0,
+						cpu_time: 0,
+						cpu_utime: 0,
+						mem_total: 0,
+						rss: 0,
+						rssString: 'N/A'
+					}
+				}
+			}
+
 			app.getEvents(function() {
 				$scope.reloadScope();
 			});
@@ -80,12 +94,12 @@ define([
 
 				process.stat = data;
 
-				process.stat.monitor.rssString = process.stat.monitor.rss + ' KB';
+				process.stat.monitor.rssString = process.stat.monitor.rss + 'KB';
 				if (process.stat.monitor.rss > 1024) {
-					process.stat.monitor.rssString = Math.round(process.stat.monitor.rss / 1024) + ' MB';
+					process.stat.monitor.rssString = Math.round(process.stat.monitor.rss / 1024) + 'MB';
 				}
 				if (process.stat.monitor.rss > 1024 * 1024) {
-					process.stat.monitor.rssString = Math.round(process.stat.monitor.rss / 1024 / 1024) + ' GB';
+					process.stat.monitor.rssString = Math.round(process.stat.monitor.rss / 1024 / 1024) + 'GB';
 				}
 			}
 
@@ -189,6 +203,126 @@ define([
 			}
 		}
 	});
+
+	app.registerDirective('processGraph', function () {
+		return {
+			restrict: 'A',
+			scope: {
+				process: '=',
+			},
+			link: function (scope, element, attributes) {
+				require(['d3'], function (d3) {
+					var svg;
+					var create = function () {
+						svg = d3.select(element[0])
+						var elem = svg[0][0];
+						var width = elem.clientWidth;
+						var height = elem.clientHeight;
+						var radius = Math.min(width, height) / 2;
+
+						var proc = [{
+							type: 'usage',
+							value: 0,
+						}, {
+							type: 'free',
+							value: 100
+						}];
+
+						var pie = d3.layout.pie()
+							.sort(null)
+							.value(function(d) {
+								return d.value;
+							})
+
+						var arc = d3.svg.arc()
+							.innerRadius(radius - parseInt(attributes.thickness))
+							.outerRadius(radius);
+
+						var g = svg
+							.append('g')
+							.attr('width', width)
+							.attr('height', height)
+							.attr('transform', 'translate('+(width/2)+','+(height/2)+')');
+
+						var path = g.selectAll('path')
+							.data(pie(proc))
+						.enter()
+							.append('path');
+
+						var colors = ['rgb(174,199,232)', '#1e76a5'];
+
+						path
+							.attr('fill', function (d, i) {
+								if (d.data.type == 'free') return colors[0];
+								else return colors[1];
+							})
+							.attr('d', arc)
+							.each(function(d) {
+								this._current = d;
+							});
+
+						scope.$watch('process.stat', function (newStat) {
+							if (typeof newStat == 'undefined') return;
+
+							proc[0].value = (newStat.monitor[attributes.type] / parseInt(attributes.max)) * 100;
+							proc[1].value = 100 - proc[0].value;
+
+							path
+								.data(pie(proc))
+								.transition()
+								.duration(200)
+								.attrTween('d', function (a) {
+									var i = d3.interpolate(this._current, a);
+									this._current = i(0);
+									return function(t) {
+										return arc(i(t));
+									}
+								})
+						});
+
+						if (!scope.process.running) {
+							path.attr('fill', '#CCC');
+						}
+
+						scope.$watch('process.running', function (running) {
+							if (running) {
+								path
+									.transition()
+									.duration(500)
+									.attr('fill', function (d, i) {
+										if (d.data.type == 'free') return colors[0];
+										else return colors[1];
+									})
+							} else {
+								path.transition().duration(500).attr('fill', '#CCC');
+							}
+						});
+					}
+
+					if (!attributes.small && !scope.process.showInfo) {
+						return create();
+					}
+
+					// and here my watch begins
+					var watch = scope.$watch('process.showInfo', watchFn);
+					function watchFn (showInfo) {
+						if (typeof showInfo == 'undefined' || !showInfo) {
+							return;
+						}
+
+						if (attributes.small && showInfo) {
+							create();
+							// prevent further calls to create();
+							create = function(){};
+
+							// clears the $watch
+							watch();
+						}
+					}
+				})
+			}
+		}
+	})
 
 	app.registerController('AppProcessController', function ($scope, process, csrf, $http, $state, app, servers) {
 		$scope.process = process.process;

@@ -95,7 +95,9 @@ app.use(session({
 	secret: "K3hsadkasdoijqwpoie",
 	name: 'ng',
 	store: sessionStore,
-	proxy: true
+	proxy: true,
+	saveUninitialized: false,
+	resave: false
 }));
 
 app.use(passport.initialize());
