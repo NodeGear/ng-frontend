@@ -4,6 +4,7 @@ var mongoose = require('mongoose')
 	, util = require('../../util')
 	, billing = require('./billing')
 	, async = require('async')
+	, app = require('../../app')
 
 exports.unauthorized = function (app, template) {
 	// Unrestricted -- non-authorized people can access!
@@ -14,6 +15,9 @@ exports.unauthorized = function (app, template) {
 		}, {
 			route: 'profile/settings',
 			view: 'profile/profileView'
+		}, {
+			route: 'profile/security',
+			view: 'profile/security'
 		}
 	]);
 
@@ -25,6 +29,8 @@ exports.unauthorized = function (app, template) {
 exports.router = function (app, template) {
 	app.put('/profile/profile', updateProfile)
 		.get('/profile', getProfile)
+		.get('/profile/security', getSecurity)
+		.delete('/profile/security/:session_id', destroySession)
 	
 	billing.router(app)
 }
@@ -38,6 +44,105 @@ function getProfile (req, res) {
 			email: req.user.email,
 			admin: req.user.admin
 		}
+	})
+}
+
+function getSecurity (req, res) {
+	models.UserSession.find({
+		user: req.user._id
+	}, function (err, dbSessions) {
+		var keys = [];
+		var currentSessionIndex = -1;
+		for (var i = 0; i < dbSessions.length; i++) {
+			keys.push('sess:'+dbSessions[i].session);
+			if (dbSessions[i].session == req.sessionID) {
+				currentSessionIndex = i;
+			}
+		}
+
+		if (keys.length == 0) {
+			return res.send({
+				sessions: []
+			})
+		}
+
+		app.backend.mget(keys, function (err, sessionObjects) {
+			if (err) throw err;
+
+			async.map(sessionObjects, function (session, cb) {
+				try {
+					session = JSON.parse(session);
+					if (!req.user._id.equals(session.passport.user)) {
+						throw new Error("User not Valid");
+					}
+
+					session = {
+						lastAccess: session.lastAccess,
+						expiry: new Date(session.cookie.expires).getTime(),
+						ip: session.ip,
+						ips: session.ips,
+						currentSession: false
+					};
+
+					cb(null, session);
+				} catch (e) {
+					cb(null);
+				}
+			}, function (err, sessions) {
+				if (currentSessionIndex != -1 && currentSessionIndex < sessions.length) {
+					sessions[currentSessionIndex].currentSession = true;
+				}
+
+				for (var i = 0; i < sessions.length; i++) {
+					console.log(dbSessions[i]);
+					sessions[i]._id = dbSessions[i]._id;
+				}
+
+				async.reject(sessions, function (session, cb) {
+					cb(typeof session == 'undefined' || !session)
+				}, function (sessions) {
+					res.send({
+						status: 200,
+						sessions: sessions
+					})
+				})
+			})
+		})
+	})
+}
+
+function destroySession (req, res) {
+	try {
+		var session_id = mongoose.Types.ObjectId(req.params.session_id);
+	} catch (e) {
+		return res.send(400);
+	}
+
+	models.UserSession.findOne({
+		_id: session_id,
+		user: req.user._id
+	}, function (err, session) {
+		if (err) throw err;
+
+		if (!session) {
+			return res.send({ status: 404, message: "Not Found" });
+		}
+		res.send({
+			status: 200,
+			message: "Session Deleted."
+		});
+
+		process.nextTick(function () {
+			models.UserSession.remove({
+				_id: session_id,
+				user: req.user._id
+			}, function (err) {
+				if (err) throw err;
+			});
+			app.backend.del('sess:'+session.session, function (err) {
+				if (err) throw err;
+			});
+		})
 	})
 }
 

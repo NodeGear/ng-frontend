@@ -1,0 +1,21 @@
+.pagestyle
+	h5 Active Sessions 
+		small(ng-bind="status")
+	.table-responsive
+		table.table
+			thead
+				tr
+					th Last Access
+					th Expiry
+					th IP
+					th IPs
+					th &nbsp;
+			tbody
+				tr(ng-repeat="session in sessions" ng-class="{ info: session.currentSession }")
+					td(title="{{ session.lastAccess.format() }}") {{ session.lastAccess.fromNow() }}
+					td(title="{{ session.expiry.format() }}") {{ session.expiry.fromNow() }}
+					td {{ session.ip }}
+					td {{ session.ips }}
+					td: a.pull-right.btn.btn-xs.btn-danger(ng-click="destroySession(session)")
+						i.fa.fa-fw.fa-trash-o
+						|  Destroy Session

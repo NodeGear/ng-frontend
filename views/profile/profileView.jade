@@ -4,6 +4,7 @@
 			h4
 				i.fa.fa-user.fa-fw
 				|  Account Settings
+				a.btn.btn-default.pull-right(ui-sref="profile.security") Security
 
 	.row
 		.col-md-6(ng-controller="AccountSettingsController" ng-init="init('#{token}')")

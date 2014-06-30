@@ -16,6 +16,15 @@ define([
 				dummy: $couchPotatoProvider.resolveDependencies(['controllers/tfa', 'controllers/accountSettings'])
 			}
 		})
+		.state('profile.security', {
+			url: '/security',
+			pageTitle: 'Profile Security',
+			templateUrl: '/view/profile/security',
+			controller: 'ProfileSecurityCtrl',
+			resolve: {
+				dummy: $couchPotatoProvider.resolveDependencies(['controllers/profileSecurity'])
+			}
+		})
 		.state('profile.billing', {
 			url: '/billing',
 			pageTitle: 'Billing',

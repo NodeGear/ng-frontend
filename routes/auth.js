@@ -150,6 +150,14 @@ function authCallback (errs, user, req, res) {
 	req.login(user, function(err) {
 		if (err) throw err;
 		
+		var session = new models.UserSession({
+			user: user._id,
+			session: req.sessionID
+		});
+		session.save(function (err) {
+			if (err) throw err;
+		});
+
 		var passwordUpdateRequired = false;
 		if (user.updatePassword || !user.is_new_pwd) {
 			passwordUpdateRequired = true;
@@ -274,6 +282,14 @@ function doRegister (req, res) {
 				req.login(user, function(err) {
 					if (err) throw err;
 					
+					var session = new models.UserSession({
+						user: user._id,
+						session: req.sessionID
+					});
+					session.save(function (err) {
+						if (err) throw err;
+					});
+
 					res.format({
 						html: function() {
 							res.redirect('/apps');
@@ -656,6 +672,13 @@ function checkTFA (req, res) {
 }
 
 function doLogout (req, res) {
+	models.UserSession.remove({
+		user: req.user._id,
+		session: req.sessionID
+	}, function (err) {
+		if (err) throw err;
+	});
+
 	req.logout();
 	req.session.destroy();
 

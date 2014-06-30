@@ -5,7 +5,7 @@ var express = require('express')
 	, mongoose = require('mongoose')
 	, util = require('./util')
 	, session = require('express-session')
-	, MongoStore = require('connect-mongo')(session)
+	, RedisStore = require('connect-redis')(session)
 	, passport = require('passport')
 	, auth = require('./auth')
 	, config = require('./config')
@@ -42,10 +42,11 @@ exports.backend.on("error", function (err) {
 
 mongoose.connect(config.credentials.db, config.credentials.db_options);
 
-var sessionStore = new MongoStore({
-	mongoose_connection: mongoose.connection,
-	auto_reconnect: true,
-	stringify: false
+var sessionStore = new RedisStore({
+	host: config.credentials.redis_host,
+	port: config.credentials.redis_port,
+	ttl: 604800000,
+	pass: config.credentials.redis_key
 });
 
 var db = mongoose.connection
@@ -97,7 +98,11 @@ app.use(session({
 	store: sessionStore,
 	proxy: true,
 	saveUninitialized: false,
-	resave: false
+	resave: false,
+	cookie: {
+		secure: config.production,
+		maxAge: 604800000
+	}
 }));
 
 app.use(passport.initialize());
@@ -112,7 +117,15 @@ app.use(function(req, res, next) {
 		res.locals.requiresTFA = req.user.tfa_enabled && req.session.confirmedTFA !== true;
 		res.locals.loggedIn = !(res.locals.requiresTFA || !req.user.email_verified || req.session.passwordUpdateRequired);
 	}
-	
+
+	req.session.lastAccess = Date.now();
+	if (req.session.ip != req.ip) {
+		req.session.ip = req.ip;
+	}
+	if (!req.session.ips || req.session.ips.length != req.ips.length) {
+		req.session.ips = req.ips;
+	}
+
 	next();
 });
 

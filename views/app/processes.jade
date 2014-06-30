@@ -5,6 +5,7 @@
 				i.fa.fa-dashboard.fa-fw
 			button.btn.btn-md.btn-default(ng-click="showDashboard = !showDashboard" ng-class="{ 'btn-info': !showDashboard, 'btn-default': showDashboard }")
 				i.fa.fa-th-list.fa-fw
+		| &nbsp;
 		.btn-group
 			button.btn.btn-md.btn-success(ui-sref="app.processes.addProcess({ id: app.nameUrl })") Add Process
 	p.lead You have {{ _app.processes.length }} process
