@@ -139,8 +139,6 @@ function viewApps (req, res) {
 			_app.running = running;
 			_app.stopped = stopped;
 
-			console.log(_app)
-
 			cb(null, _app);
 		})
 	}, function(err, apps) {

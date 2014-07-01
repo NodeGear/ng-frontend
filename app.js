@@ -1,3 +1,12 @@
+var config = require('./config');
+
+var newrelic = {
+	getBrowserTimingHeader: function () {}
+};
+if (config.production) {
+	newrelic = require('newrelic');
+}
+
 var express = require('express')
 	, routes = require('./routes')
 	, http = require('http')
@@ -8,7 +17,6 @@ var express = require('express')
 	, RedisStore = require('connect-redis')(session)
 	, passport = require('passport')
 	, auth = require('./auth')
-	, config = require('./config')
 	, bugsnag = require('bugsnag')
 	, socketPassport = require('passport.socketio')
 	, redis = require("redis")
@@ -70,6 +78,7 @@ app.locals.stripe_pub = config.credentials.stripe.pub;
 app.locals.cdn = (config.credentials.cdn && config.credentials.cdn.enabled) ? config.credentials.cdn.url : "";
 app.locals.version = config.version;
 app.locals.versionHash = config.hash;
+app.locals.newrelic = newrelic;
 
 //app.use(monitor());
 
