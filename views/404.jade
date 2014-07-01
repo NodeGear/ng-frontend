@@ -9,7 +9,6 @@ html
 		link(rel="stylesheet" href="#{cdn}/#{version}/css/font-awesome.min.css")
 		link(rel="stylesheet" href="#{cdn}/#{version}/css/nodegear.css")
 
-		!= newrelic.getBrowserTimingHeader()
 
 	body(style="background-color:#fff;")
 		.jumbotron(style="margin-top: 20px;")
@@ -23,3 +22,5 @@ html
 		
 		.text-center
 			a.text-muted(href="/") Powered by NodeGear
+		
+		!= newrelic.getBrowserTimingHeader()

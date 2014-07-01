@@ -9,7 +9,6 @@ html
 
 		link(rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css")
 
-		!= newrelic.getBrowserTimingHeader()
 
 	body
 		.jumbotron(style="margin-top:20px;")
@@ -22,3 +21,5 @@ html
 					|  and 
 					a(href="http://status.nodegear.io") status page
 					|  for service updates.
+		
+		!= newrelic.getBrowserTimingHeader()

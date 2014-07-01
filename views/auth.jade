@@ -13,7 +13,6 @@ html
 		link(rel="stylesheet" href="#{cdn}/#{version}/css/font-awesome.min.css")
 		link(rel="stylesheet" href="#{cdn}/#{version}/css/nodegear.css")
 
-		!= newrelic.getBrowserTimingHeader()
 
 	body(style="background-color:#fff;")
 		.container
@@ -24,3 +23,4 @@ html
 						p.text-center Hold on, we're loading the interface...
 		
 		script(src="#{cdn}/#{version}/js/vendor/require.min.js" data-main="#{cdn}/#{version}/js/ng_auth.js")
+		!= newrelic.getBrowserTimingHeader()
