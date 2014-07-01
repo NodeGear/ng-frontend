@@ -1,6 +1,6 @@
 {
   "name": "NodeGear",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "private": true,
   "scripts": {
     "start": "node app.js",
@@ -14,7 +14,7 @@
     "body-parser": "latest",
     "bugsnag": "latest",
     "connect-mongo": "latest",
-    "connect-redis": "^2.0.0",
+    "connect-redis": "latest",
     "cookie-parser": "latest",
     "express": "latest",
     "express-session": "latest",
