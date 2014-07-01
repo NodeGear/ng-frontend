@@ -1,8 +1,9 @@
 var models = require('ng-models');
 
-exports.router = function(router) {
-	router.get('/admin/databases', get)
-}
+exports.map = [{
+	url: '/databases',
+	call: get
+}];
 
 function get (req, res) {
 	models.Database.find({}).populate('user').exec(function(err, databases) {

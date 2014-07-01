@@ -1,8 +1,9 @@
 var models = require('ng-models')
 
-exports.router = function (app) {
-	app.get('/admin/tickets', getTickets)
-}
+exports.map = [{
+	url: '/tickets',
+	call: getTickets
+}]
 
 function getTickets (req, res) {
 	models.Ticket.find({}).populate('user app message.user').exec(function(err, tickets) {

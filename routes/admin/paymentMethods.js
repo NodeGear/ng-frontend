@@ -1,9 +1,18 @@
 var models = require('ng-models')
 
-exports.router = function (app) {
-	app.get('/admin/paymentMethods', getPaymentMethods)
-		.get('/admin/paymentMethod/:id', getPM, viewPM)
-}
+exports.map = [{
+	url: '/paymentMethods',
+	call: getPaymentMethods
+}, {
+	url: '/paymentMethod/:payment_method',
+	params: {
+		payment_method: getPM
+	},
+	children: [{
+		url: '',
+		call: viewPM
+	}]
+}]
 
 function getPaymentMethods (req, res) {
 	var sort = '-created';
@@ -18,9 +27,9 @@ function getPaymentMethods (req, res) {
 	})
 }
 
-function getPM (req, res, next) {
+function getPM (req, res, next, id) {
 	models.PaymentMethod.findOne({
-		_id: req.params.id
+		_id: id
 	}).populate('user').exec(function(err, paymentMethod) {
 		if (err) throw err;
 

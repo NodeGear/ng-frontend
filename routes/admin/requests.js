@@ -1,9 +1,10 @@
 var models = require('ng-models')
 var app = require('../../app')
 
-exports.router = function (app) {
-	app.get('/admin/performance', getPerformance)
-}
+exports.map = [{
+	url: '/performance',
+	call: getPerformance
+}]
 
 function getPerformance (req, res) {
 	res.render('admin/monitor');

@@ -94,7 +94,6 @@ function getSecurity (req, res) {
 				}
 
 				for (var i = 0; i < sessions.length; i++) {
-					console.log(dbSessions[i]);
 					sessions[i]._id = dbSessions[i]._id;
 				}
 

@@ -1,11 +1,18 @@
 var models = require('ng-models')
 
-exports.router = function (app) {
-	app.get('/admin/transactions', getTransactions)
-		.get('/admin/transaction/:id', getTransaction, viewTransaction)
-}
+exports.map = [{
+	url: '/transactions',
+	call: 'getAll'
+}, {
+	url: '/transaction/:id',
+	middleware: ['middleware'],
+	children: [{
+		url: '',
+		call: 'get'
+	}]
+}];
 
-function getTransactions (req, res) {
+exports.getAll = function (req, res) {
 	var sort = '-created';
 	if (req.query.sort) {
 		sort = req.query.sort;
@@ -18,7 +25,7 @@ function getTransactions (req, res) {
 	})
 }
 
-function getTransaction (req, res, next) {
+exports.middleware = function (req, res, next) {
 	models.Transaction.findOne({
 		_id: req.params.id
 	}).populate('user payment_method').exec(function(err, transaction) {
@@ -28,6 +35,6 @@ function getTransaction (req, res, next) {
 	})
 }
 
-function viewTransaction (req, res) {
+exports.get = function (req, res) {
 	res.render('admin/transaction/transaction')
 }

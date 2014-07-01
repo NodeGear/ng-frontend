@@ -1,11 +1,25 @@
 var models = require('ng-models')
 
-exports.router = function (app) {
-	app.get('/admin/users', getUsers)
-		.get('/admin/user/:id', getUser, showUser)
-		.get('/admin/user/:id/edit', getUser, editUser)
-		.put('/admin/user/:id', getUser, doEditUser)
-}
+exports.map = [{
+	url: '/users',
+	call: getUsers
+}, {
+	url: '/user/:user_id',
+	params: {
+		user_id: getUser
+	},
+	children: [{
+		url: '',
+		call: showUser
+	}, {
+		url: '/edit',
+		call: editUser
+	}, {
+		url: '',
+		method: 'put',
+		call: doEditUser
+	}]
+}]
 
 function getUsers (req, res) {
 	res.format({
@@ -14,7 +28,7 @@ function getUsers (req, res) {
 		},
 		json: function () {
 			var sort = '-created';
-			var limit = 20;
+			var limit = 25;
 			var offset = 0;
 
 			if (req.query.sorting) {
@@ -71,8 +85,8 @@ function getUsers (req, res) {
 	})
 }
 
-function getUser (req, res, next) {
-	models.User.findById(req.params.id, function(err, user) {
+function getUser (req, res, next, id) {
+	models.User.findById(id, function(err, user) {
 		res.locals.aUser = user;
 		next();
 	});

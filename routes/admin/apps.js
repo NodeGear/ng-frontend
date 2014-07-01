@@ -1,23 +1,77 @@
 var models = require('ng-models')
 
-exports.router = function (app) {
-	app.get('/admin/apps', getApps)
-		.get('/admin/app/:id', getApp, showApp)
-}
+exports.map = [{
+	url: '/apps',
+	call: getApps
+}, {
+	url: '/app/:app_id',
+	params: {
+		app_id: getApp
+	},
+	children: [{
+		url: '',
+		call: showApp
+	}]
+}]
 
 function getApps (req, res) {
-	models.App.find({
-		deleted: false
-	}).populate('user').exec(function(err, apps) {
-		res.locals.apps = apps;
-		
-		res.render('admin/apps')
+	res.format({
+		json: function () {
+			var sort = '-created';
+			var limit = 25;
+			var offset = 0;
+
+			if (req.query.sorting) {
+				sort = "";
+				for (var s in req.query.sorting) {
+					var desc = false;
+					if (req.query.sorting[s] == 'desc') {
+						desc = true;
+					}
+
+					sort += (desc ? '-' : '') + s + ' ';
+				}
+			}
+			if (req.query.count) {
+				limit = parseInt(req.query.count);
+			}
+			if (req.query.page) {
+				offset = (parseInt(req.query.page) - 1) * limit;
+			}
+
+			var query = {};
+			if (req.query.filter) {
+				query = req.query.filter;
+				for (var q in query) {
+					if (!isNaN(parseInt(query[q]))) {
+						query[q] = parseInt(query[q]);
+					} else {
+						query[q] = new RegExp(query[q], 'gi');
+					}
+				}
+			}
+
+			models.App.find(query)
+			.sort(sort)
+			.limit(limit)
+			.skip(offset)
+			.lean()
+			.populate('user')
+			.exec(function(err, apps) {
+				if (err) throw err;
+
+				res.send({
+					apps: apps
+				})
+			})
+		},
+		html: function () {
+			res.render('admin/app/apps')
+		}
 	})
 }
 
-function getApp (req, res, next) {
-	var id = req.params.id;
-	
+function getApp (req, res, next, id) {
 	models.App.findById(id).populate('user').exec(function(err, app) {
 		res.locals.app = app;
 		next();
@@ -25,5 +79,14 @@ function getApp (req, res, next) {
 }
 
 function showApp (req, res) {
-	res.render('admin/app')
+	res.format({
+		json: function () {
+			res.send({
+				app: res.locals.app
+			})
+		},
+		html: function () {
+			res.render('admin/app/app')
+		}
+	})
 }

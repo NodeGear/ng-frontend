@@ -1,21 +1,20 @@
 angular.module('nodegear')
 
-.controller('UserController', function ($scope, $http) {
-	$scope.csrf = "";
-	$scope.user_id = "";
-	$scope.user = {};
+.controller('AppController', function ($scope, $http) {
+	$scope.id = "";
+	$scope.app = {};
 	$scope.status = "";
 
-	$scope.init = function (csrf, userid) {
-		$scope.csrf = csrf;
-		$scope.user_id = userid;
+	$scope.init = function (id) {
+		$scope.id = id;
 
-		$scope.getUser();
+		$scope.get();
 	}
 
-	$scope.getUser = function () {
-		$http.get('/admin/user/'+$scope.user_id).success(function(data) {
-			$scope.user = data.user;
+	$scope.get = function () {
+		$http.get('/admin/app/'+$scope.id)
+		.success(function(data) {
+			$scope.app = data.app;
 		})
 	}
 
@@ -29,10 +28,8 @@ angular.module('nodegear')
 	}
 })
 
-.controller('UsersController', function ($scope, $http, ngTableParams) {
-	$scope.users = [];
-
-	$scope.tableParams = new ngTableParams({
+.controller('AppsController', function ($scope, $http, ngTableParams) {
+	$scope.applicationsTable = new ngTableParams({
 		page: 1,
 		count: 25,
 		sorting: {
@@ -49,11 +46,11 @@ angular.module('nodegear')
 				}
 				qs += ""+k+"="+url[k]+"&";
 			}
-			$http.get("/admin/users"+qs).success(function(data) {
+			$http.get("/admin/apps"+qs).success(function(data) {
 				// update table params
 				params.total(data.total);
 				// set new data
-				$defer.resolve(data.users);
+				$defer.resolve(data.apps);
 			});
 		}
 	});

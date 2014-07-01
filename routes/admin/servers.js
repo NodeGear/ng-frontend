@@ -1,8 +1,9 @@
 var models = require('ng-models');
 
-exports.router = function(router) {
-	router.get('/admin/servers', get)
-}
+exports.map = [{
+	url: '/servers',
+	call: get
+}];
 
 function get (req, res) {
 	res.format({
