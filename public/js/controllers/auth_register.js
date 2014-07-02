@@ -62,10 +62,39 @@ define([
 					$scope.status = data.message;
 				}
 
+				if (typeof analytics !== 'undefined') {
+					var anal_data = {
+						type: data.status == 200 ? 'success' : 'error'
+					};
+					if (data.status == 200) {
+						analytics.alias(data._id);
+						analytics.identify(data._id, {
+							_id: data._id,
+							name: $scope.user.name,
+							username: $scope.user.username,
+							email: $scope.user.email,
+							createdAt: new Date
+						});
+					} else {
+						anal_data.errors = data.taken;
+						anal_data.message = data.message;
+					}
+
+					analytics.track('signup', anal_data);
+				}
+
 				if (!$scope.$$phase) {
 					$scope.$digest();
 				}
 			}).error(function (data, status) {
+				if (typeof analytics !== 'undefined') {
+					analytics.track('signup', {
+						type: failed,
+						status: status,
+						data: data
+					});
+				}
+
 				if (status == 429) {
 					$scope.status = data.message + ' Retry ' + moment(Date.now()+data.retry).fromNow();
 				} else {

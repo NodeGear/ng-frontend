@@ -1,7 +1,6 @@
 define([
 	'angular',
-	'couchPotato',
-	'ga'
+	'couchPotato'
 	], function(angular, couchPotato, ga) {
 		var app = angular.module('nodegear', ['scs.couch-potato', 'ui.router', 'ngSanitize']);
 
@@ -35,11 +34,11 @@ define([
 				} else {
 					$rootScope.pageTitle = "NodeGear Page";
 				}
-
+				
 				setTimeout(function () {
-					ga('send', 'pageview', {
-						'page': window.location.protocol + '//' + window.location.hostname + window.location.pathname + window.location.search,
-						'title': $rootScope.pageTitle
+					analytics.page($rootScope.pageTitle, {
+						url: window.location.protocol + '//' + window.location.hostname + window.location.pathname + window.location.search,
+						title: $rootScope.pageTitle
 					});
 				}, 100);
 			})

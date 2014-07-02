@@ -18,11 +18,26 @@ define([
 			}).success(function(data, status) {
 				if (data.status == 200) {
 					$scope.status = "Reset Successful"
-					window.location = "/";
+					analytics.track('password reset', {
+						type: 'success'
+					}, function () {
+						window.location = "/";
+					});
 				} else {
+					analytics.track('password reset', {
+						type: 'fail',
+						message: data.message
+					});
+
 					$scope.status = data.message;
 				}
 			}).error(function (data, status) {
+				analytics.track('password reset', {
+					type: 'error',
+					status: status,
+					message: data.message
+				});
+				
 				if (status == 429) {
 					$scope.status = data.message + ' Retry ' + moment(Date.now()+data.retry).fromNow();
 				} else {

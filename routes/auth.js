@@ -117,7 +117,7 @@ function doLogin (req, res) {
 		if (err) {
 			throw err;
 		}
-
+		
 		if (user && !user.is_new_pwd) {
 			// The old way, force user to set a new password
 			if (user.password != models.User.getHash(req.body.password)) {
@@ -133,6 +133,8 @@ function doLogin (req, res) {
 
 				authCallback(errs, user, req, res);
 			});
+		} else {
+			authCallback(['Incorrect credentials'], user, req, res);
 		}
 	})
 }
@@ -303,7 +305,8 @@ function doRegister (req, res) {
 						},
 						json: function() {
 							res.send({
-								status: 200
+								status: 200,
+								user_id: user._id
 							})
 						}
 					})

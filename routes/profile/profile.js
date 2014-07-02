@@ -39,6 +39,7 @@ function getProfile (req, res) {
 	res.send({
 		status: 200,
 		user: {
+			_id: req.user._id,
 			name: req.user.name,
 			username: req.user.username,
 			email: req.user.email,

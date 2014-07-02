@@ -27,7 +27,16 @@ define([
 				} else {
 					$scope.status = data.message;
 				}
+
+				data.type = data.status == 200 ? 'success' : 'fail';
+				analytics.track('forgotten email', data);
 			}).error(function (data, status) {
+				analytics.track('forgotten email', {
+					type: 'error',
+					status: status,
+					message: data.message
+				});
+				
 				if (status == 429) {
 					$scope.status = data.message + ' Retry ' + moment(Date.now()+data.retry).fromNow();
 				} else {

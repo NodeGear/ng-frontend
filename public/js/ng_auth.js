@@ -6,7 +6,8 @@ require.config({
 		moment: 'vendor/moment',
 		bootstrap: 'vendor/bootstrap',
 		couchPotato: 'vendor/angular-couch-potato',
-		ga: '//www.google-analytics.com/analytics'
+		ga: '//www.google-analytics.com/analytics',
+		bugsnag: '//d2wy8f7a9ursnm.cloudfront.net/bugsnag-2.min'
 	},
 	shim: {
 		angular: {
@@ -14,6 +15,9 @@ require.config({
 		},
 		ga: {
 			exports: 'ga'
+		},
+		bugsnag: {
+			exports: 'Bugsnag'
 		},
 		uiRouter: {
 			deps: ['angular']
@@ -34,11 +38,13 @@ require([
 	'vendor/flat-ui.combined',
 	'routes/auth'
 ], function(angular) {
-	require(['ga'], function (ga) {
-		ga('create', 'UA-52383117-1', 'auto');
-		ga('send', 'pageview');
+	analytics.ready(function () {
+		if (/(127.0.0.1)|(localhost)/.test(window.location.hostname)) {
+			Bugsnag.releaseStage = 'development';
+		}
+		Bugsnag.notifyReleaseStages = ['production'];
 	});
-
+	
 	var $html = angular.element(document.getElementsByTagName('html')[0]);
 	
 	angular.element().ready(function() {

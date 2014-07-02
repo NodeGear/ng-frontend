@@ -16,9 +16,19 @@ define([
 				if (data.status != 200) {
 					return $state.transitionTo('login');
 				}
-				$scope.status = "We sent a token to "+data.user.email+".";
-			}).error(function(data) {
+				if (!data.user || !data.user.email) {
+					if (Bugsnag) {
+						Bugsnag.notify('Signup:Verify Loading /profile/profile email not present', data, 'warning');
+					}
+				}
 
+				$scope.status = "We sent a token to "+data.user.email+".";
+			}).error(function(data, status) {
+				if (!Bugsnag) return;
+				Bugsnag.notify('Signup:Verify Error Loading /profile/profile', {
+					data: data,
+					status: status
+				}, 'error');
 			})
 		}
 
@@ -37,11 +47,20 @@ define([
 				_csrf: $scope.csrf,
 				code: $scope.code.toUpperCase()
 			}).success(function(data, status) {
-				if (data.status == 200) {
-					$scope.status = "Verification Successful"
-					window.location = "/&no_router";
-				} else {
+				analytics.track('signup email verification', {
+					type: data.status == 200 ? 'success' : 'fail',
+					status: data.status,
+					message: data.message
+				}, function () {
+					if (data.status == 200) {
+						window.location = "/&no_router";
+					}
+				});
+				
+				if (data.status != 200) {
 					$scope.status = data.message;
+				} else {
+					$scope.status = "Verification Successful"
 				}
 			});
 		}

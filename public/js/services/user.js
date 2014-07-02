@@ -9,7 +9,8 @@ define([
 		self.getUser = function(cb) {
 			$http.get('/profile').success(function(data) {
 				$rootScope.user = self.user = data.user;
-
+				analytics.identify(data.user._id, data.user);
+				
 				cb();
 			});
 		}

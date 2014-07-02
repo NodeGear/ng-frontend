@@ -29,7 +29,7 @@ define([
 						$scope.status = "Not Authenticated, redirecting...";
 						$state.transitionTo('login')
 					}
-				})
+				});
 
 				return;
 			}
@@ -67,6 +67,14 @@ define([
 					$scope.tfa.enabled = true;
 					$scope.tfa.hide = false;
 					$scope.tfa.qr = data.qr;
+
+					analytics.track('enable tfa', {
+						type: 'success'
+					});
+				} else {
+					analytics.track('enable tfa', {
+						type: 'fail'
+					});
 				}
 			})
 		}
@@ -82,9 +90,18 @@ define([
 					$scope.tfa.confirmed = false;
 					$scope.tfa.showConfirm = false;
 					$scope.tfa.hide = false;
+
+					analytics.track('disable tfa', {
+						type: 'success'
+					});
 				} else {
 					$scope.tfa.status = data.message;
 					$scope.tfa.hide = false;
+
+					analytics.track('disable tfa', {
+						type: 'fail',
+						message: data.message
+					});
 				}
 			})
 		}
@@ -102,17 +119,37 @@ define([
 			}).success(function(data) {
 				if (data.status == 200) {
 					if ($scope.loginAction == true) {
-						window.location = "/";
+						analytics.track('login via tfa', {
+							type: 'success',
+							status: 200
+						}, function () {
+							window.location = "/";
+						});
+
 						$scope.tfa.status = "Success!";
 					
 						return;
 					}
+
+					analytics.track('verify tfa', {
+						type: 'success'
+					});
 				
 					$scope.tfa.showConfirm = false;
 					$scope.tfa.enabled = true;
 					$scope.tfa.hide = false;
 					$scope.tfa.status = "Two Factor Authentication has been enabled."
 				} else {
+					if ($scope.loginAction == true) {
+						analytics.track('login via tfa', {
+							type: 'fail'
+						});
+					} else {
+						analytics.track('verify tfa', {
+							type: 'fail'
+						});
+					}
+
 					$scope.tfa.status = data.message;
 					$scope.tfa.hide = false;
 				}

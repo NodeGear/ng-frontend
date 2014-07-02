@@ -28,28 +28,46 @@ define([
 				auth: user.auth,
 				password: pwd
 			}).success(function(data, status) {
+				data.type = data.status == 200 ? 'success' : 'fail';
+
 				if (data.status == 200) {
 					if (data.tfa) {
+						analytics.track('login', data);
+
 						// Requires tfa..
 						$state.transitionTo('tfa')
 						return;
 					}
 					if (!data.email_verification) {
+						analytics.track('login', data);
+
 						// Requires user to verify email
 						return $state.transitionTo('verifyEmail');
 					}
 					if (data.passwordUpdateRequired) {
+						analytics.track('login', data);
+						
 						return $state.transitionTo('resetPassword');
 					}
 					
-					$scope.status = "Login Successful"
-					window.location = "/";
+					$scope.status = "Login Successful";
+					analytics.track('login', data, function () {
+						window.location = "/";
+					});
 				} else {
+					analytics.track('login', data);
+
 					$scope.status = "";
 					$scope.loginFailedReason = data.message;
 					$scope.loginFailed = true;
 				}
 			}).error(function (data, status) {
+				analytics.track('login', {
+					type: 'error',
+					status: status,
+					message: data.message
+				});
+
 				if (status == 429) {
 					$scope.status = data.message + ' Retry ' + moment(Date.now()+data.retry).fromNow();
 				} else {

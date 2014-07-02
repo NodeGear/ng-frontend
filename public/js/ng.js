@@ -7,8 +7,7 @@ require.config({
 		moment: 'vendor/moment',
 		bootstrap: 'vendor/bootstrap',
 		couchPotato: 'vendor/angular-couch-potato',
-		socketio: '/socket.io/socket.io.js',
-		ga: '//www.google-analytics.com/analytics'
+		socketio: '/socket.io/socket.io.js'
 	},
 	shim: {
 		angular: {
@@ -16,9 +15,6 @@ require.config({
 		},
 		socketio: {
 			exports: 'io'
-		},
-		ga: {
-			exports: 'ga'
 		},
 		uiRouter: {
 			deps: ['angular']
@@ -41,12 +37,7 @@ require([
 	'jquery',
 	'vendor/flat-ui.combined',
 	'routes/routes'
-], function(angular, ga) {
-	require(['ga'], function (ga) {
-		ga('create', 'UA-52383117-1', 'auto');
-		ga('send', 'pageview');
-	});
-
+], function(angular) {
 	var $html = angular.element(document.getElementsByTagName('html')[0]);
 	
 	angular.element().ready(function() {
