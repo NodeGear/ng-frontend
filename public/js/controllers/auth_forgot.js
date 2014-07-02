@@ -1,7 +1,7 @@
 define([
-	'angular',
-	'../app'
-], function(angular, app) {
+	'../app',
+	'moment'
+], function(app, moment) {
 	app.registerController('ForgotController', function($scope, $http, $rootScope) {
 		$scope.status = "";
 		$scope.authDetail = "";
@@ -26,6 +26,12 @@ define([
 					$scope.authDetailDisabled = true;
 				} else {
 					$scope.status = data.message;
+				}
+			}).error(function (data, status) {
+				if (status == 429) {
+					$scope.status = data.message + ' Retry ' + moment(Date.now()+data.retry).fromNow();
+				} else {
+					$scope.status = status + ' Request Failed. Try again later.';
 				}
 			});
 		}

@@ -1,8 +1,8 @@
 define([
-	'angular',
 	'../app',
+	'moment',
 	'./tfa'
-], function(angular, app) {
+], function(app, moment) {
 	app.registerController('SignUpController', function($scope, $http, $state) {
 		$scope.status = "";
 		$scope.user = {};
@@ -64,6 +64,12 @@ define([
 
 				if (!$scope.$$phase) {
 					$scope.$digest();
+				}
+			}).error(function (data, status) {
+				if (status == 429) {
+					$scope.status = data.message + ' Retry ' + moment(Date.now()+data.retry).fromNow();
+				} else {
+					$scope.status = status + ' Request Failed. Try again later.';
 				}
 			});
 		}

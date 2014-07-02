@@ -1,6 +1,7 @@
 define([
-	'../app'
-], function(app) {
+	'../app',
+	'moment'
+], function(app, moment) {
 	app.registerController('SignInController', function($scope, $http, $rootScope, $state) {
 		$scope.status = "";
 		$scope.user = {
@@ -47,6 +48,12 @@ define([
 					$scope.status = "";
 					$scope.loginFailedReason = data.message;
 					$scope.loginFailed = true;
+				}
+			}).error(function (data, status) {
+				if (status == 429) {
+					$scope.status = data.message + ' Retry ' + moment(Date.now()+data.retry).fromNow();
+				} else {
+					$scope.status = status + ' Request Failed. Try again later.';
 				}
 			});
 		}

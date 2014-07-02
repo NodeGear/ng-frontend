@@ -32,6 +32,7 @@
     "nodemailer": "latest",
     "passport": "latest",
     "passport.socketio": "latest",
+    "ratelimiter": "^1.0.1",
     "redis": "latest",
     "serve-static": "latest",
     "socket.io": "latest",

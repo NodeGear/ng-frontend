@@ -8,6 +8,8 @@ var passport = require('passport')
 	, async = require('async')
 	, express = require('express')
 	, mongoose = require('mongoose')
+	, redis = require('../app').backend
+	, authLimiter = require('./authLimiter')
 
 exports.unauthorized = function (app, template) {
 	// Unrestricted -- non-authorized people can access!
@@ -24,14 +26,14 @@ exports.unauthorized = function (app, template) {
 
 	var auth = express.Router();
 
-	auth.post('/password', doLogin)
-		.post('/register', doRegister)
-		.post('/forgot', doForgot)
+	auth.post('/password', authLimiter.restrict(50, 'auth:password'), authLimiter.auth(100), doLogin)
+		.post('/register', authLimiter.restrict(50, 'auth:register'), doRegister)
+		.post('/forgot', authLimiter.restrict(10, 'auth:forgot'), doForgot)
 		.get('/forgot', showForgot)
-		.post('/forgot/reset', performReset)
+		.post('/forgot/reset', authLimiter.restrict(10, 'auth:reset'), performReset)
 		.post('/passwordReset', passwordReset)
 
-		.post('/tfa', util.authorizedPassTFA, getTFA, checkTFA)
+		.post('/tfa', util.authorizedPassTFA, authLimiter.restrict(50, 'auth:tfa'), getTFA, checkTFA)
 		.post('/verifyEmail', function (req, res, next) {
 			if (req.user && !req.user.email_verified) {
 				next();
@@ -40,7 +42,7 @@ exports.unauthorized = function (app, template) {
 			}
 
 			util.authorized(req, res, next);
-		}, doVerifyEmail)
+		}, authLimiter.verifyEmail(10), doVerifyEmail)
 		.get('/loggedin', isLoggedIn)
 
 	app.get('/logout', doLogout)
@@ -208,7 +210,7 @@ function doRegister (req, res) {
 	v.check(username, 'Please enter a valid username').len(4);
 	v.check(name, 'Please enter a valid name').len(4);
 
-	if (!username.match(/^[a-z0-9_-]{3,15}$/)) {
+	if (username && !username.match(/^[a-z0-9_-]{3,15}$/)) {
 		// Errornous username
 		errs.push('Please enter a valid username');
 	}
@@ -754,7 +756,7 @@ function takeoverProfile (req, res) {
 		})).save(function(err) {
 			if (err) throw err;
 		});
-		
+
 		req.session.pretending = true;
 		req.session.pretender = req.user._id;
 		req.session.pretender_location = req.get('referrer');
