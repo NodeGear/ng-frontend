@@ -1,0 +1,26 @@
+extends layout
+
+append js
+	script(src="#{cdn}/js/controllers/admin/securityLog.js" defer)
+
+block content
+	div(ng-controller="SecLogCtrl")
+		.row
+			.col-lg-12.col-md-12.col-sm-12
+				h1.page-header Security Logs
+		.row
+			.col-lg-12.col-md-12.col-sm-12
+				table.table(ng-table="tableParams" show-filter="true")
+					tbody
+						tr(ng-repeat="log in $data")
+							td(data-title="'Created'" sortable="'created'") {{ log.created }}
+							td(data-title="'Pretender'" filter="{ 'pretender': 'text' }" sortable="'pretender'")
+								a(href="/admin/user/{{ log.pretender._id }}") {{ log.pretender.name }}
+							td(data-title="'Victim'" filter="{ 'victim': 'text' }" sortable="'victim'")
+								a(href="/admin/user/{{ log.victim._id }}") {{ log.victim.name }}
+							td(data-title="'Request'"): pre
+								code {{ log.requestBody }}
+							td(data-title="'URL'" filter="{ 'url': 'text' }" sortable="'url'") {{ log.url }}
+							td(data-title="'Req. Method'" filter="{ 'method': 'text' }" sortable="'method'") {{ log.method }}
+							td(data-title="'Status Code'" filter="{ 'statusCode': 'text' }" sortable="'statusCode'") {{ log.statusCode }}
+							td(data-title="'IP Address'" filter="{ 'ip': 'text' }" sortable="'ip'") {{ log.ip }}

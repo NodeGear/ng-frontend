@@ -4,7 +4,9 @@ block content
 	.row
 		.col-lg-12.col-md-12.col-sm-12
 			h1.page-header User #{aUser.name}
-				a.btn.btn-default.pull-right(href="/admin/user/#{aUser._id}/edit") Edit
+				.btn-group.pull-right
+					a.btn.btn-default(href="/admin/user/#{aUser._id}/edit") Edit
+					a.btn.btn-default(href="/auth/takeover/#{aUser._id}") Login as this User
 	.row
 		.col-sm-6
 			h4.text-center User Details
@@ -60,9 +62,8 @@ block content
 				.clearfix
 				dt(title="Tfa") Tfa
 				dd= aUser.tfa
-				
+
 		.col-sm-6
 			h4.text-center User Apps
 			table.table
 				thead
-					

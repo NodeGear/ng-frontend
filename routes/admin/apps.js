@@ -60,9 +60,12 @@ function getApps (req, res) {
 			.exec(function(err, apps) {
 				if (err) throw err;
 
-				res.send({
-					apps: apps
-				})
+				models.App.count({}, function(err, total) {
+                    res.send(200, {
+                        total: total,
+                        apps: apps
+                    })
+                })
 			})
 		},
 		html: function () {

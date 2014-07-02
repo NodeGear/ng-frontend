@@ -33,6 +33,7 @@ exports.router = function(app) {
 
 	// Handle HTTP reqs
 	apps.httpRouter(app);
+	auth.httpRouter(app);
 
 	// No HTML requests beyond this point
 
@@ -48,7 +49,7 @@ exports.router = function(app) {
 	});
 
 	auth.router(app);
-	
+
 	apps.router(app)
 	profile.router(app)
 	tickets.router(app)

@@ -7,6 +7,7 @@ var passport = require('passport')
 	, speakeasy = require('speakeasy')
 	, async = require('async')
 	, express = require('express')
+	, mongoose = require('mongoose')
 
 exports.unauthorized = function (app, template) {
 	// Unrestricted -- non-authorized people can access!
@@ -22,7 +23,7 @@ exports.unauthorized = function (app, template) {
 	});
 
 	var auth = express.Router();
-	
+
 	auth.post('/password', doLogin)
 		.post('/register', doRegister)
 		.post('/forgot', doForgot)
@@ -41,13 +42,17 @@ exports.unauthorized = function (app, template) {
 			util.authorized(req, res, next);
 		}, doVerifyEmail)
 		.get('/loggedin', isLoggedIn)
-	
+
 	app.get('/logout', doLogout)
 
 	app.use('/auth', auth);
 }
 
-exports.router = function (app, templates) {
+exports.httpRouter = function (app) {
+	app.get('/auth/takeover/:target_id', takeoverProfile)
+}
+
+exports.router = function (app) {
 	// Restricted -- only authorized people can access!
 	app.put('/auth/tfa', getTFA, enableTFA)
 		.delete('/auth/tfa', getTFA, disableTFA)
@@ -67,7 +72,7 @@ function doLogin (req, res) {
 	v.error = function (err) {
 		errs.push(err)
 	}
-	
+
 	var isEmail = false;
 
 	try {
@@ -78,10 +83,10 @@ function doLogin (req, res) {
 	}
 
 	v.check(req.body.auth, 'Please enter a valid Username/Email').len(4);
-	
+
 	// validate password
 	v.check(req.body.password, 'Please enter a valid password').len(6)
-	
+
 	if (errs.length > 0) {
 		res.format({
 			html: function() {
@@ -110,7 +115,7 @@ function doLogin (req, res) {
 		if (err) {
 			throw err;
 		}
-		
+
 		if (user && !user.is_new_pwd) {
 			// The old way, force user to set a new password
 			if (user.password != models.User.getHash(req.body.password)) {
@@ -143,13 +148,13 @@ function authCallback (errs, user, req, res) {
 				});
 			}
 		});
-		
+
 		return;
 	}
 
 	req.login(user, function(err) {
 		if (err) throw err;
-		
+
 		var session = new models.UserSession({
 			user: user._id,
 			session: req.sessionID
@@ -197,12 +202,12 @@ function doRegister (req, res) {
 		var username = req.body.user.username;
 		var password = req.body.user.password;
 	}
-	
+
 	// validate email
 	v.check(email, 'Please enter a valid email address').isEmail();
 	v.check(username, 'Please enter a valid username').len(4);
 	v.check(name, 'Please enter a valid name').len(4);
-	
+
 	if (!username.match(/^[a-z0-9_-]{3,15}$/)) {
 		// Errornous username
 		errs.push('Please enter a valid username');
@@ -225,7 +230,7 @@ function doRegister (req, res) {
 				})
 			}
 		})
-		
+
 		return;
 	}
 
@@ -281,7 +286,7 @@ function doRegister (req, res) {
 				// log in now
 				req.login(user, function(err) {
 					if (err) throw err;
-					
+
 					var session = new models.UserSession({
 						user: user._id,
 						session: req.sessionID
@@ -500,7 +505,7 @@ function performReset (req, res) {
 			forgotNotification.user.password = hash;
 			forgotNotification.user.is_new_pwd = true;
 			forgotNotification.user.updatePassword = false;
-			
+
 			forgotNotification.user.sendEmail('NodeGear User Daemon <users@nodegear.com>', 'NodeGear Password Reset Complete', 'emails/forgotComplete.jade', {
 				user: forgotNotification.user,
 				host: req.host
@@ -532,7 +537,7 @@ function enableTFA (req, res) {
 		google_auth_qr: true,
 		name: "NodeGear:"+req.user.email
 	});
-	
+
 	req.user.tfa_enabled = false;
 
 	var tfa = req.user.tfa;
@@ -584,11 +589,11 @@ function checkTFAEnabled (req, res) {
 		data.confirmed = req.user.tfa.confirmed;
 		data.enabled = true;
 	}
-	
+
 	if (data.enabled) {
 		data.qr = "https://chart.googleapis.com/chart?chs=166x166&chld=L|0&cht=qr&chl=otpauth://totp/NodeGear:"+req.user.email+"%3Fsecret="+req.user.tfa.key;
 	}
-	
+
 	res.send(data);
 }
 
@@ -602,7 +607,7 @@ function disableTFA (req, res) {
 	}
 
 	req.user.tfa_enabled = false;
-	
+
 	models.TFA.remove({
 		_id: req.user.tfa._id
 	}, function(err) {
@@ -615,7 +620,7 @@ function disableTFA (req, res) {
 	req.user.sendEmail("NodeGear Security Guard <security@nodegear.com>", "Two Factor Auth Disabled!", "emails/tfa/removed.jade", {
 		user: req.user
 	});
-	
+
 	res.send({
 		status: 200
 	})
@@ -643,7 +648,7 @@ function checkTFA (req, res) {
 		key: req.user.tfa.key,
 		encoding: 'base32'
 	});
-	
+
 	if (token == req.body.token) {
 		if (!req.user.tfa.confirmed) {
 			req.user.tfa.confirmed = true;
@@ -655,15 +660,15 @@ function checkTFA (req, res) {
 				user: req.user
 			});
 		}
-		
+
 		req.session.confirmedTFA = true;
-		
+
 		res.send({
 			status: 200
 		});
 	} else {
 		req.session.confirmedTFA = false;
-		
+
 		res.send({
 			status: 404,
 			message: "Auth failed: Incorrect Token"
@@ -672,6 +677,29 @@ function checkTFA (req, res) {
 }
 
 function doLogout (req, res) {
+	if (req.session.pretending === true) {
+		// Logout the faceless man
+		console.log(req.session.pretender)
+		models.User.findById(req.session.pretender, function(err, user) {
+			if (err) throw err;
+
+			console.log(user);
+			var location = req.session.pretender_location;
+
+			delete req.session.pretending;
+			delete req.session.pretender;
+			delete req.session.pretender_location;
+
+			req.login(user, function (err) {
+				if (err) throw err;
+
+				res.redirect(location);
+			});
+		});
+
+		return;
+	}
+
 	models.UserSession.remove({
 		user: req.user._id,
 		session: req.sessionID
@@ -691,5 +719,50 @@ function doLogout (req, res) {
 		html: function() {
 			res.redirect('/')
 		}
+	})
+}
+
+function takeoverProfile (req, res) {
+	if (!req.user.admin) {
+		res.redirect('back');
+		return;
+	}
+
+	var uid = req.params.target_id;
+	try {
+		uid = mongoose.Types.ObjectId(uid)
+	} catch (e) {
+		res.redirect('back');
+		return;
+	}
+
+	models.User.findById(uid, function(err, user) {
+		if (err || !user) {
+			res.redirect('/');
+			return;
+		}
+
+		(new models.SecurityLog({
+			ip: req.ip,
+			pretender: req.user._id,
+			victim: user._id,
+			url: req.url,
+			method: req.method,
+			statusCode: 200,
+			requestBody: {
+			}
+		})).save(function(err) {
+			if (err) throw err;
+		});
+		
+		req.session.pretending = true;
+		req.session.pretender = req.user._id;
+		req.session.pretender_location = req.get('referrer');
+
+		req.login(user, function(err) {
+			if (err) throw err;
+
+			res.redirect('/');
+		})
 	})
 }

@@ -8,7 +8,7 @@ html
 		title(ng-bind-template="{{ pageTitle }} - NodeGear") NodeGear
 		link(href="/favicon.ico" type="image/x-icon" rel="icon")
 		link(href="/favicon.ico" type="image/x-icon" rel="shortcut icon")
-		
+
 		//- all css goes here
 		block css
 			link(rel="stylesheet" href="#{cdn}/#{version}/css/bootstrap.nodegear.css")
@@ -16,6 +16,18 @@ html
 			link(rel="stylesheet" href="#{cdn}/#{version}/css/nodegear.css")
 
 	body
+		if pretending
+			.container-liquid
+				.row
+					.col-sm-12(style="padding: 15px; margin: 0; background: #f2dede; color: #a94442;")
+						p.text-center(style="margin:0;")
+							strong(style="text-decoration: underline;") BE RESPONSIBLE
+							|  #{pretender.name}! =&gt; You are logged in as 
+							i #{user.name}.
+							br
+							i(title="You have been warned.") Your actions 
+								strong are
+								|  recorded.
 		.container-liquid
 			.row
 				.col-sm-3(ng-class="{ 'col-sm-3': !kiosk_enabled }" ng-hide="kiosk_enabled")

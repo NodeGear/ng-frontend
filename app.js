@@ -25,7 +25,8 @@ var express = require('express')
 	, monitor = require('./monitor')
 	, models = require('ng-models').init(mongoose, config)
 	, redis_channel = require('./redis_channel')
-	, bodyParser = require('body-parser');
+	, bodyParser = require('body-parser')
+	, pretend = require('./pretend');
 
 var app = exports.app = express();
 
@@ -127,16 +128,21 @@ app.use(function(req, res, next) {
 		res.locals.loggedIn = !(res.locals.requiresTFA || !req.user.email_verified || req.session.passwordUpdateRequired);
 	}
 
-	req.session.lastAccess = Date.now();
-	if (req.session.ip != req.ip) {
-		req.session.ip = req.ip;
-	}
-	if (!req.session.ips || req.session.ips.length != req.ips.length) {
-		req.session.ips = req.ips;
+	if (req.user) {
+		req.session.lastAccess = Date.now();
+		if (req.session.ip != req.ip) {
+			req.session.ip = req.ip;
+		}
+		if (!req.session.ips || req.session.ips.length != req.ips.length) {
+			req.session.ips = req.ips;
+		}
 	}
 
 	next();
 });
+
+// Allow admins to look like another user.
+app.use(pretend());
 
 // routes
 routes.router(app);
