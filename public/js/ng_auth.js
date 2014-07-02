@@ -38,13 +38,6 @@ require([
 	'vendor/flat-ui.combined',
 	'routes/auth'
 ], function(angular) {
-	analytics.ready(function () {
-		if (/(127.0.0.1)|(localhost)/.test(window.location.hostname)) {
-			Bugsnag.releaseStage = 'development';
-		}
-		Bugsnag.notifyReleaseStages = ['production'];
-	});
-	
 	var $html = angular.element(document.getElementsByTagName('html')[0]);
 	
 	angular.element().ready(function() {
