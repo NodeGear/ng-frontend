@@ -18,7 +18,17 @@ try {
 	process.exit(1);
 }
 
+var pub_config = require('./config.public.json');
+
+exports.public_config = pub_config;
 exports.credentials = credentials;
+
+exports.version = require('./package.json').version;
+exports.hash = 'dirty';
+exports.production = process.env.NODE_ENV == "production";
+exports.stripe = stripe(credentials.stripe.secret);
+exports.port = process.env.PORT || credentials.port;
+exports.path = __dirname;
 
 if (process.platform.match(/^win/) == null) {
 	try {
@@ -26,10 +36,20 @@ if (process.platform.match(/^win/) == null) {
 		var readHash = spawn_process('git', ['rev-parse', '--short', 'HEAD']);
 		readHash.stdout.on('data', function (data) {
 			exports.hash = data.toString().trim();
+			require('./app').app.locals.versionHash = exports.hash;
 		})
 	} catch (e) {
 		console.log("\n~= Unable to obtain git commit hash =~\n")
 	}
+}
+
+exports.configure = function (app) {
+	app.locals.pretty = exports.production // Pretty HTML outside production mode
+	app.locals.stripe_pub = credentials.stripe.pub;
+	app.locals.cdn = (credentials.cdn && credentials.cdn.enabled) ? credentials.cdn.url : "";
+	app.locals.version = exports.version;
+	app.locals.versionHash = exports.hash;
+	app.locals.production = exports.production;
 }
 
 // Create SMTP transport method
@@ -41,14 +61,4 @@ if (process.env.NG_TEST) {
 exports.transport = mailer.createTransport("SMTP", {
 	service: "Mandrill",
 	auth: credentials.smtp
-})
-
-exports.version = require('./package.json').version;
-exports.hash = '';
-exports.production = process.env.NODE_ENV == "production";
-
-exports.stripe = stripe(credentials.stripe.secret);
-
-exports.port = process.env.PORT || credentials.port;
-
-exports.path = __dirname;
+});

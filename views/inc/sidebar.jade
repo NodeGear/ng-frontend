@@ -27,6 +27,9 @@ ul.nav.sidenav(role="navigation")
 		i.fa.fa-sign-out.fa-fw
 		|  Logout
 
+	p.text-center.hidden-xs(style="margin-top: 20px;")
+		small.text-muted v#{version}-##{versionHash}
+
 	.kiosk-toggle
 		a(ng-click="toggleKiosk()")
 			span.caret

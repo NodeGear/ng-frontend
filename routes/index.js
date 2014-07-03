@@ -17,7 +17,8 @@ exports.router = function(app) {
 		profile,
 		tickets,
 		databases,
-		ssh
+		ssh,
+		require('./conf')
 	]);
 
 	templates.add('gettingStarted');

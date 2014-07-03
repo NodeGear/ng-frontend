@@ -74,12 +74,8 @@ app.set('x-powered-by', false);
 
 app.set('view cache', config.production);
 
-app.locals.pretty = process.env.NODE_ENV != 'production' // Pretty HTML outside production mode
-app.locals.stripe_pub = config.credentials.stripe.pub;
-app.locals.cdn = (config.credentials.cdn && config.credentials.cdn.enabled) ? config.credentials.cdn.url : "";
-app.locals.version = config.version;
-app.locals.versionHash = config.hash;
 app.locals.newrelic = newrelic;
+config.configure(app);
 
 //app.use(monitor());
 

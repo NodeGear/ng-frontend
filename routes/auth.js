@@ -117,7 +117,7 @@ function doLogin (req, res) {
 		if (err) {
 			throw err;
 		}
-		
+
 		if (user && !user.is_new_pwd) {
 			// The old way, force user to set a new password
 			if (user.password != models.User.getHash(req.body.password)) {
@@ -306,6 +306,8 @@ function doRegister (req, res) {
 						json: function() {
 							res.send({
 								status: 200,
+								message: "Registration Successful",
+								redirect_invitation: true,
 								user_id: user._id
 							})
 						}

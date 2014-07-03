@@ -61,5 +61,10 @@ define([
 				dummy: $couchPotatoProvider.resolveDependencies(['controllers/auth_passwordReset'])
 			}
 		})
+		.state('invitation', {
+			url: '/invitation',
+			pageTitle: 'Invitation',
+			templateUrl: '/view/invitation_thanks'
+		})
 	});
 });
