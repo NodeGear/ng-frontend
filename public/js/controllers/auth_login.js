@@ -31,6 +31,10 @@ define([
 				data.type = data.status == 200 ? 'success' : 'fail';
 
 				if (data.status == 200) {
+					if (data.redirect_invitation && data.redirect_invitation == true) {
+						return $state.transitionTo('invitation')
+					}
+
 					if (data.tfa) {
 						analytics.track('login', data);
 
@@ -46,7 +50,7 @@ define([
 					}
 					if (data.passwordUpdateRequired) {
 						analytics.track('login', data);
-						
+
 						return $state.transitionTo('resetPassword');
 					}
 					

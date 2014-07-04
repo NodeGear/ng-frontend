@@ -1,0 +1,30 @@
+extends layout
+
+append js
+	script(src="#{cdn}/js/controllers/admin/invitations.js" defer)
+
+block content
+	div(ng-controller="InvitationsController")
+		.row
+			.col-lg-12.col-md-12.col-sm-12
+				h1.page-header Invitations
+		.row
+			.col-lg-12.col-md-12.col-sm-12
+				table.table(ng-table="pendingInvitesTable" show-filter="true")
+					tbody
+						tr(ng-repeat="invitation in $data")
+							td(data-title="'Created'" sortable="'created'") {{ invitation.created }}
+							td(data-title="'User Name'"): a(href="/admin/user/{{ invitation.user._id }}") {{ invitation.user.name }}
+							td(data-title="'User Email'") {{ invitation.user.email }}
+							td
+								.btn-group
+									a.btn.btn-default.btn-xs(href="/admin/invitation/{{ invitation._id }}/approve") Approve User
+
+				table.table(ng-table="invitesTable" show-filter="true")
+					tbody
+						tr(ng-repeat="invitation in $data")
+							td(data-title="'Created'" sortable="'created'") {{ invitation.created }}
+							td(data-title="'User Name'"): a(href="/admin/user/{{ invitation.user._id }}") {{ invitation.user.name }}
+							td(data-title="'User Email'") {{ invitation.user.email }}
+							td(data-title="'Approved By'" filter="{ 'confirmed_by': 'text' }" sortable="'confirmed_by'") {{ confirmed_by.user.email }}
+							td(data-title="'Approved'" sortable="'confirmed'") {{ invitation.confirmed }}

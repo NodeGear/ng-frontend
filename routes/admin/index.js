@@ -5,7 +5,7 @@ exports.router = function (app) {
 	var admin = express.Router();
 	admin.get('/', renderAdmin);
 
-	var pages = ['transactions', 'users', 'apps', 'tickets', 'paymentMethods', 'requests', 'databases', 'servers', 'secLog'];
+	var pages = ['transactions', 'users', 'apps', 'tickets', 'paymentMethods', 'requests', 'databases', 'servers', 'secLog', 'invitations'];
 	pages.forEach(function (page) {
 		(new Page(require('./'+page))).route(admin);
 	})

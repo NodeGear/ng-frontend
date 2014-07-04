@@ -10,6 +10,7 @@ var passport = require('passport')
 	, mongoose = require('mongoose')
 	, redis = require('../app').backend
 	, authLimiter = require('./authLimiter')
+	, jade = require('jade');
 
 exports.unauthorized = function (app, template) {
 	// Unrestricted -- non-authorized people can access!
@@ -156,6 +157,13 @@ function authCallback (errs, user, req, res) {
 		return;
 	}
 
+	if (config.public_config.invitation_only && !user.invitation_complete) {
+		return res.send({
+			status: 200,
+			redirect_invitation: true
+		});
+	}
+
 	req.login(user, function(err) {
 		if (err) throw err;
 
@@ -272,6 +280,42 @@ function doRegister (req, res) {
 			user.password = hash;
 			user.is_new_pwd = true;
 
+			if (config.public_config.invitation_only) {
+				// Do not send invitation email
+				var invitation = new models.Invitation({
+					user: user._id
+				});
+				invitation.save();
+
+				var options = {
+					from: 'NodeGear Invitation <invites@nodegear.com>',
+					to: user.name+" <"+user.email+">",
+					cc: 'Matej Kramny <matej@nodegear.com>, Alan Campbell <alan.campbell@nodegear.com>',
+					replyTo: 'Matej Kramny <matej@nodegear.com>',
+					subject: 'NodeGear Invitation',
+					html: jade.renderFile(config.path + '/views/emails/invited.jade', {
+						user: user
+					})
+				};
+				config.transport.sendMail(options, function(error, response){
+					if (error) {
+						console.log(error);
+					} else {
+						console.log("Message sent: " + response.message);
+					}
+				});
+
+				user.save();
+
+				return res.send({
+					status: 200,
+					message: "Registration Successful",
+					redirect_invitation: true,
+					user_id: user._id
+				});
+			}
+
+			// Send email verification code..
 			var emailVerification = new models.EmailVerification({
 				email: email,
 				user: user._id
