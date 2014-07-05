@@ -31,6 +31,8 @@ module.exports = function () {
 				if (err) throw err;
 
 				res.locals.pretender = user;
+				res.locals.requiresTFA = false;
+				res.locals.loggedIn = true;
 
 				// Log the action to SecurityLog db
 				function logRequest(){

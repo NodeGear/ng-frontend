@@ -26,5 +26,5 @@ block content
 							td(data-title="'Created'" sortable="'created'") {{ invitation.created }}
 							td(data-title="'User Name'"): a(href="/admin/user/{{ invitation.user._id }}") {{ invitation.user.name }}
 							td(data-title="'User Email'") {{ invitation.user.email }}
-							td(data-title="'Approved By'" filter="{ 'confirmed_by': 'text' }" sortable="'confirmed_by'") {{ confirmed_by.user.email }}
+							td(data-title="'Approved By'"): a(href="/admin/user/{{ invitation.confirmed_by._id }}") {{ invitation.confirmed_by.name }}
 							td(data-title="'Approved'" sortable="'confirmed'") {{ invitation.confirmed }}

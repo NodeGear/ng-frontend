@@ -2,6 +2,10 @@
 	display: none !important;
 }
 
+body {
+	font-family: Roboto, Lato, Helvetica;
+}
+
 .link-larger {
 	font-size: 1.6em;
 }

@@ -37,7 +37,9 @@ function getAll (req, res) {
 			if (req.query.filter) {
 				query = req.query.filter;
 				for (var q in query) {
-					if (!isNaN(parseInt(query[q]))) {
+					if (q == 'isConfirmed') {
+						query[q] = !!query[q];
+					} else if (!isNaN(parseInt(query[q]))) {
 						query[q] = parseInt(query[q]);
 					} else {
 						query[q] = new RegExp(query[q], 'gi');
@@ -50,7 +52,20 @@ function getAll (req, res) {
 			.limit(limit)
 			.skip(offset)
 			.lean()
-			.populate('user confirmed_by')
+			.populate({
+				path: 'user',
+				select: 'name _id',
+				options: {
+					lean: true
+				}
+			})
+			.populate({
+				path: 'confirmed_by',
+				select: 'name _id',
+				options: {
+					lean: true
+				}
+			})
 			.exec(function(err, invites) {
 				if (err) throw err;
 
@@ -92,9 +107,13 @@ function approve (req, res) {
 				host: req.host
 			});
 			invitation.user.save();
+			invitation.save();
 
 			res.send({
-				message: "User Invited. They were sent an email confirmation email. Might also want to personally notify them."
+				message: "User Invited. They were sent an email confirmation email. Might also want to personally notify them.",
+				links: [{
+					back: (req.secure ? 'https' : 'http') + '://' + req.host + '/admin/invitations'
+				}]
 			})
 		});
 	})

@@ -10,7 +10,7 @@ angular.module('nodegear')
 	}, {
 		total: 0,
 		getData: function($defer, params) {
-			var qs = "?";
+			var qs = "?filter[isConfirmed]=&";
 			var url = params.url();
 			for (var k in url) {
 				if (!url.hasOwnProperty(k)) {
@@ -18,7 +18,7 @@ angular.module('nodegear')
 				}
 				qs += ""+k+"="+url[k]+"&";
 			}
-			qs += "isConfirmed=false";
+
 			$http.get("/admin/invitations"+qs).success(function(data) {
 				// update table params
 				params.total(data.total);
@@ -37,7 +37,7 @@ angular.module('nodegear')
 	}, {
 		total: 0,
 		getData: function($defer, params) {
-			var qs = "?";
+			var qs = "?filter[isConfirmed]=true&";
 			var url = params.url();
 			for (var k in url) {
 				if (!url.hasOwnProperty(k)) {
@@ -45,7 +45,7 @@ angular.module('nodegear')
 				}
 				qs += ""+k+"="+url[k]+"&";
 			}
-			qs += "isConfirmed=true";
+
 			$http.get("/admin/invitations"+qs).success(function(data) {
 				// update table params
 				params.total(data.total);

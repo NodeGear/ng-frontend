@@ -157,7 +157,7 @@ function authCallback (errs, user, req, res) {
 		return;
 	}
 
-	if (config.public_config.invitation_only && !user.invitation_complete) {
+	if (config.public_config.invitation_only && user.invitation_complete === false) {
 		return res.send({
 			status: 200,
 			redirect_invitation: true
@@ -734,7 +734,6 @@ function doLogout (req, res) {
 		models.User.findById(req.session.pretender, function(err, user) {
 			if (err) throw err;
 
-			console.log(user);
 			var location = req.session.pretender_location;
 
 			delete req.session.pretending;

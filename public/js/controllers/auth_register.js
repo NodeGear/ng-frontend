@@ -23,9 +23,9 @@ define([
 			$scope.csrf = csrf;
 
 			var email = (new RegExp("[\\?&]email=([^&#]*)")).exec(location.search);
-			$scope.user.email = email == null ? "" : decodeURIComponent(email[1].replace(/\+/g, " "));
+			$scope.user.email = email == null ? "" : decodeURIComponent(email[1]).replace(/\+/g, " ");
 			var name = (new RegExp("[\\?&]name=([^&#]*)")).exec(location.search);
-			$scope.user.name = name == null ? "" : decodeURIComponent(name[1].replace(/\+/g, " "));
+			$scope.user.name = name == null ? "" : decodeURIComponent(name[1]).replace(/\+/g, " ");
 
 			setTimeout(function() {
 				if (name != null) {
