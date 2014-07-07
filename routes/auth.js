@@ -351,7 +351,7 @@ function doRegister (req, res) {
 							res.send({
 								status: 200,
 								message: "Registration Successful",
-								redirect_invitation: true,
+								redirect_invitation: false,
 								user_id: user._id
 							})
 						}
