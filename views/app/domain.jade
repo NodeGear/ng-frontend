@@ -13,12 +13,10 @@
 							input.form-control(type="text" ng-model="domain.domain" placeholder="mydomain.com" required)
 					.form-group
 						.col-md-7.col-lg-8.col-sm-7.col-md-offset-4.col-lg-offset-3.col-sm-offset-3
-							.checkbox
-								label
-									input(type="checkbox" ng-model="domain.is_subdomain")
-									|  Is Subdomain (on 
-									small {{ domain.domain }}.{{ user.username }}.ngapp.io
-									| )
+							button.btn(ng-class="{ 'btn-default': domain.is_subdomain, 'btn-success': !domain.is_subdomain }" ng-click="domain.is_subdomain = !domain.is_subdomain")
+									| This is an external domain
+							br
+							small(style="line-height: initial;") Tick this if you want to use your external domain (e.g. example.com)
 			.modal-footer
 				button.btn.btn-danger.pull-left(ng-hide="addDomain" ng-click="deleteDomain()") Delete Domain
 				span.text-muted(ng-class="{ 'pull-left': addDomain }" ng-bind="status") Loading..

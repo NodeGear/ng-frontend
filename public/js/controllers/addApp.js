@@ -43,7 +43,8 @@ define([
 				name: $scope.name,
 				template: $scope.template,
 				custom_location: $scope.custom_location,
-				custom_branch: $scope.custom_branch
+				custom_branch: $scope.custom_branch,
+				docker: $scope.docker
 			}).success(function(data, status) {
 				if (data.status == 200) {
 					$scope.app_id = data.id;

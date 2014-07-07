@@ -31,6 +31,10 @@ define([
 			});
 		});
 
+		$scope.toggleSubdomain = function () {
+			$scope.domain.is_subdomain = true;
+		}
+
 		$scope.deleteDomain = function() {
 			$scope.status = "Deleting Domain... ";
 

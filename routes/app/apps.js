@@ -58,12 +58,23 @@ function doAddApp (req, res) {
 			{
 				name: 'ghost',
 				location: 'git://github.com/NodeGear/ghost-dist.git',
-				branch: 'master'
+				branch: 'master',
+				command: '',
+				image: ''
 			},
 			{
 				name: 'custom',
+				command: '',
+				image: '',
 				location: req.body.custom_location,
 				branch: req.body.custom_branch
+			},
+			{
+				name: 'docker',
+				command: req.body.docker.command,
+				image: req.body.docker.image,
+				location: '',
+				branch: ''
 			}
 		];
 		
@@ -76,7 +87,10 @@ function doAddApp (req, res) {
 			}
 		}
 
-		if (template.location.length == 0 || template.branch.length == 0) {
+		if (template.name == 'docker' && (template.command.length == 0 || template.image.length == 0)) {
+		}
+
+		if (template.name != 'docker' && (template.location.length == 0 || template.branch.length == 0)) {
 			errs.push("Template Location|Branch Invalid");
 		}
 		
@@ -99,12 +113,17 @@ function doAddApp (req, res) {
 
 	var app = new models.App({
 		name: name,
+		app_type: template.name == 'docker' ? 'docker' : 'node',
 		nameLowercase: name.toLowerCase(),
 		user: req.user._id,
 		script: "index.js",
 		nameUrl: nameUrl,
 		location: template.location,
-		branch: template.branch
+		branch: template.branch,
+		docker: {
+			command: template.command,
+			image: template.image
+		}
 	})
 	app.save(function(err) {
 		if (err) throw err;
