@@ -1,0 +1,13 @@
+{
+  "name": "ng-frontend",
+  "version": "0.0.0",
+  "dependencies": {
+    "angular": "latest",
+    "requirejs": "latest",
+    "fontawesome": "latest",
+    "jquery": "latest",
+    "bootstrap": "latest",
+    "moment": "latest",
+    "d3": "latest"
+  }
+}

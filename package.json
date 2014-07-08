@@ -45,6 +45,21 @@
   },
   "devDependencies": {
     "should": "latest",
-    "supertest": "latest"
+    "supertest": "latest",
+    "grunt": "latest",
+    "grunt-concurrent": "latest",
+    "grunt-contrib-clean": "latest",
+    "grunt-contrib-concat": "latest",
+    "grunt-contrib-connect": "latest",
+    "grunt-contrib-copy": "latest",
+    "grunt-contrib-cssmin": "latest",
+    "grunt-contrib-jshint": "latest",
+    "grunt-contrib-uglify": "latest",
+    "grunt-contrib-watch": "latest",
+    "grunt-contrib-jade": "latest",
+    "grunt-nodemon": "latest",
+    "grunt-newer": "latest",
+    "load-grunt-tasks": "latest",
+    "grunt-contrib-less": "latest"
   }
 }

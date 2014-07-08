@@ -1,10 +1,10 @@
 require.config({
 	paths: {
-		angular: 'vendor/angular',
+		angular: '../vendor/angular/angular.min',
 		uiRouter: 'vendor/angular-ui-router',
-		jquery: 'vendor/jquery',
-		moment: 'vendor/moment',
-		bootstrap: 'vendor/bootstrap',
+		jquery: '../vendor/jquery/dist/jquery.min',
+		moment: '../vendor/moment/moment',
+		bootstrap: '../vendor/bootstrap/dist/js/bootstrap.min',
 		couchPotato: 'vendor/angular-couch-potato',
 		ga: '//www.google-analytics.com/analytics',
 		bugsnag: '//d2wy8f7a9ursnm.cloudfront.net/bugsnag-2.min'
@@ -29,15 +29,14 @@ require.config({
 });
 
 require([
+	'jquery',
 	'angular',
 	'couchPotato',
 	'uiRouter',
 	'vendor/angular-sanitize',
 	'app',
-	'jquery',
-	'vendor/flat-ui.combined',
 	'routes/auth'
-], function(angular) {
+], function($, angular) {
 	var $html = angular.element(document.getElementsByTagName('html')[0]);
 	
 	angular.element().ready(function() {

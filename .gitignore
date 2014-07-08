@@ -2,3 +2,5 @@ node_modules
 credentials.json
 coverage/
 *.log
+public/vendor
+dist/
