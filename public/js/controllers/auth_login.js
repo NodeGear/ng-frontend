@@ -17,7 +17,8 @@ define([
 		}
 		
 		$scope.authenticate = function(user) {
-			$scope.status = "Authenticating.."
+			$scope.forceShowStatus = false;
+			$scope.status = "Authenticating..";
 		
 			var pwd = user.password;
 			user.password = "";
@@ -74,7 +75,9 @@ define([
 					status: status,
 					message: data.message
 				});
+				$rootScope.bodyClass = 'body-error';
 
+				$scope.forceShowStatus = true;
 				if (status == 429) {
 					$scope.status = data.message + ' Retry ' + moment(Date.now()+data.retry).fromNow();
 				} else {
