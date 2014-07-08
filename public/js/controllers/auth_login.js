@@ -2,7 +2,7 @@ define([
 	'../app',
 	'moment'
 ], function(app, moment) {
-	app.registerController('SignInController', function($scope, $http, $rootScope, $state) {
+	app.registerController('SignInController', ['$scope', '$rootScope', '$http', '$state', function($scope, $rootScope, $http, $state) {
 		$scope.status = "";
 		$scope.user = {
 			auth: "",
@@ -22,7 +22,7 @@ define([
 			var pwd = user.password;
 			user.password = "";
 			$scope.loginFailed = false;
-		
+
 			$http.post('/auth/password', {
 				_csrf: $scope.csrf,
 				auth: user.auth,
@@ -31,6 +31,8 @@ define([
 				data.type = data.status == 200 ? 'success' : 'fail';
 
 				if (data.status == 200) {
+					$rootScope.bodyClass = 'body-success';
+
 					if (data.redirect_invitation && data.redirect_invitation == true) {
 						return $state.transitionTo('invitation')
 					}
@@ -64,6 +66,7 @@ define([
 					$scope.status = "";
 					$scope.loginFailedReason = data.message;
 					$scope.loginFailed = true;
+					$rootScope.bodyClass = 'body-error';
 				}
 			}).error(function (data, status) {
 				analytics.track('login', {
@@ -105,6 +108,7 @@ define([
 		});
 		$scope.$watch('user.password', function(pwd) {
 			$scope.loginFailed = false;
+			$rootScope.bodyClass = '';
 		})
-	});
+	}]);
 });

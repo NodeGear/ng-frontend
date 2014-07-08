@@ -10,7 +10,7 @@
 @font-size-base: 15px;
 @font-family-base: @font-family-sans-serif;
 
-@ng-header-background: darken(#F93439, 15%);//darken(#bfe2ca, 25%);
+@ng-background: darken(#bfe2ca, 25%);
 
 @border-radius-base: 2px;
 @border-radius-large: @border-radius-base;
@@ -20,6 +20,7 @@
 @import '../vendor/bootstrap/less/bootstrap.less';
 @import '../vendor/fontawesome/less/font-awesome.less';
 
+// Some bootstrap shiz.
 .form-control-focus-custom(@color: @input-border-focus) {
   @color-rgba: rgba(red(@color), green(@color), blue(@color), .6);
   &:focus {
@@ -44,9 +45,42 @@
 	display: none !important;
 }
 
+body {
+	background: #FFF;
+	-webkit-transition: background-color 0.5s;
+	transition: background-color 0.5s;
+}
+
 @media (min-width: 768px) {
 	.authentication {
 		margin-top: 100px;
+
+		h1, p {
+			-webkit-transition: color 0.5s, font-weight 0.5s;
+			transition: color 0.5s, font-weight 0.5s;
+		}
+	}
+	.authentication-box {
+		background: #FFF;
+		padding-top: 15px;
+		padding-bottom: 15px;
+		border-radius: @border-radius-base;
+	}
+
+	body.body-error .authentication, body.body-success .authentication {
+		h1 {
+			font-weight: 300;
+		}
+		h1, p {
+			color: white;
+		}
+	}
+
+	body.body-error {
+		background: @brand-danger;
+	}
+	body.body-success {
+		background: @ng-background;
 	}
 }
 
@@ -68,14 +102,3 @@
 .has-error {
   .form-control-validation-custom(@state-danger-text; @state-danger-text; @state-danger-bg);
 }
-
-/*
-input.form-control, button.btn {
-	border-radius: 2px;
-	outline: none;
-	font-weight: 200;
-}
-input.form-control:focus {
-	box-shadow: none;
-	border-color: lighten(@ng-header-background, 20%);
-}*/
