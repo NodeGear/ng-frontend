@@ -64,7 +64,10 @@ define([
 		.state('invitation', {
 			url: '/invitation',
 			pageTitle: 'Invitation',
-			templateUrl: '/view/invitation_thanks'
+			templateUrl: '/view/invitation_thanks',
+			controller: ['$rootScope', function ($rootScope) {
+				$rootScope.bodyClass = 'body-success';
+			}]
 		})
 	});
 });

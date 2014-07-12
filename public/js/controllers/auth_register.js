@@ -3,12 +3,21 @@ define([
 	'moment',
 	'./tfa'
 ], function(app, moment) {
-	app.registerController('SignUpController', function($scope, $http, $state) {
+	app.registerController('SignUpController', ['$rootScope', '$scope', '$http', '$state', function($rootScope, $scope, $http, $state) {
 		$scope.status = "";
 		$scope.user = {};
-		$scope.help_text = {};
+		$scope.errors = {};
 		$scope.csrf = "";
-		
+
+		$rootScope.bodyClass = '';
+
+		var isLocalStorageCapable = false;
+		try {
+			isLocalStorageCapable = 'localStorage' in window && window['localStorage'] !== null;
+		} catch (e) {
+			isLocalStorageCapable = false;
+		}
+
 		$scope.resetUser = function() {
 			$scope.user = {
 				name: "",
@@ -16,14 +25,19 @@ define([
 				email: "",
 				password: ""
 			};
-			$scope.help_text = {};
+			$scope.errors = {};
 		};
 
 		$scope.init = function (csrf) {
 			$scope.csrf = csrf;
 
+			if (isLocalStorageCapable && localStorage["login_auth"]) {
+				$scope.user.email = localStorage["login_auth"];
+			}
+
 			var email = (new RegExp("[\\?&]email=([^&#]*)")).exec(location.search);
-			$scope.user.email = email == null ? "" : decodeURIComponent(email[1]).replace(/\+/g, " ");
+			if (email && email.length > 0)
+				$scope.user.email = email == null ? "" : decodeURIComponent(email[1]).replace(/\+/g, " ");
 			var name = (new RegExp("[\\?&]name=([^&#]*)")).exec(location.search);
 			$scope.user.name = name == null ? "" : decodeURIComponent(name[1]).replace(/\+/g, " ");
 
@@ -39,7 +53,7 @@ define([
 		$scope.registerUser = function () {
 			$scope.status = "Registering.."
 			
-			$scope.help_text = {};
+			$scope.errors = {};
 			
 			$http.post('/auth/register', {
 				_csrf: $scope.csrf,
@@ -47,19 +61,15 @@ define([
 			}).success(function(data, status) {
 				if (data.status == 200) {
 					$scope.status = data.message;
+					
 					if (data.redirect_invitation) {
 						return $state.transitionTo('invitation');
 					}
+
 					$state.transitionTo('verifyEmail');
 				} else {
-					if (data.taken) {
-						$scope.help_text = {};
-						if (data.taken.username) {
-							$scope.help_text.username = "Username is taken";
-						}
-						if (data.taken.email) {
-							$scope.help_text.email = "Email is already in use";
-						}
+					if (data.errors) {
+						$scope.errors = data.errors;
 					}
 
 					$scope.status = data.message;
@@ -105,5 +115,15 @@ define([
 		}
 
 		$scope.resetUser();
-	});
+
+		$scope.$watch('user.email', function(email) {
+			if (isLocalStorageCapable) {
+				if (typeof email !== 'undefined' && email.length > 0) {
+					localStorage["login_auth"] = email;
+				} else {
+					localStorage["login_auth"] = "";
+				}
+			}
+		});
+	}]);
 });

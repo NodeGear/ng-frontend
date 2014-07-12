@@ -41,7 +41,7 @@
     "stripe": "latest",
     "tail": "latest",
     "toobusy-js": "latest",
-    "validator": "2.1.0"
+    "validator": "latest"
   },
   "devDependencies": {
     "should": "latest",

@@ -24,6 +24,12 @@ define([
 			user.password = "";
 			$scope.loginFailed = false;
 
+			if (pwd.length == 0) {
+				$scope.loginFailed = true;
+
+				return;
+			}
+
 			$http.post('/auth/password', {
 				_csrf: $scope.csrf,
 				auth: user.auth,
@@ -75,6 +81,7 @@ define([
 					status: status,
 					message: data.message
 				});
+
 				$rootScope.bodyClass = 'body-error';
 
 				$scope.forceShowStatus = true;
