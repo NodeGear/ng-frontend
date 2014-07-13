@@ -1,6 +1,6 @@
 require('./prepare');
 
-var app = require('../app');
+var app = require('../lib/app');
 var request = require('supertest').agent(app.app)
 
 var should = require('should')

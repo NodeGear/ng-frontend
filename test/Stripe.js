@@ -1,9 +1,9 @@
 require('./prepare');
 
-var app = require('../app');
+var app = require('../lib/app');
 var request = require('supertest').agent(app.app)
 
-var stripe = require('../config').stripe
+var stripe = require('../lib/config').stripe
 
 var should = require('should')
 	, models = require('ng-models')

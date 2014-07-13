@@ -1,10 +1,14 @@
-require('./prepare');
-
-var app = require('../app');
+var app = require('../lib/app');
 var request = require('supertest').agent(app.app)
 
 var should = require('should')
 	, models = require('ng-models')
+
+if (!process.env.NG_TEST) {
+	console.log("\nNot in TEST environment. Please export NG_TEST variable\n");
+}
+
+should(process.env.NG_TEST).be.ok;
 
 describe('Account', function() {
 	var password, user;
@@ -28,10 +32,14 @@ describe('Account', function() {
 			admin: false,
 			balance: 0,
 			tfa_enabled: false,
-			tfa: null
+			tfa: null,
+			invitation_complete: true
 		});
-		user.setPassword(password);
-		user.save();
+		
+		models.User.hashPassword(password, function (pwd) {
+			user.password = pwd;
+			user.save();
+		});
 	});
 
 	it('should log in', function(done) {
