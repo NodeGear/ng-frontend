@@ -26,39 +26,35 @@ describe('Account', function() {
 
 		user = new models.User({
 			username: "account",
+			usernameLowercase: "account",
 			name: "Account Tester",
 			email: "account@test.nodegear.com",
 			email_verified: true,
+			disabled: false,
 			admin: false,
 			balance: 0,
 			tfa_enabled: false,
 			tfa: null,
+			is_new_pwd: true,
 			invitation_complete: true
-		});
-		
-		models.User.hashPassword(password, function (pwd) {
-			user.password = pwd;
-			user.save();
 		});
 	});
 
 	it('should log in', function(done) {
-		request
-			.post('/auth/password')
-			.send({
-				auth: user.email,
-				password: password
-			})
-			.accept('json')
-			.expect(200)
-			.end(function(err, req) {
-				should(err).be.equal(null);
-				
-				var body = req.res.body;
-				body.status.should.be.equal(200)
-				
-				done();
-			})
+		models.User.hashPassword(password, function (pwd) {
+			user.password = pwd;
+			user.save(function () {
+				request
+					.post('/auth/password')
+					.send({
+						auth: user.email,
+						password: password
+					})
+					.accept('json')
+					.expect(200)
+					.end(done)
+			});
+		});
 	})
 	
 	it('should fetch user profile', function(done) {
@@ -113,10 +109,12 @@ describe('Account', function() {
 				u.name.should.be.equal("Hello Tester");
 				u.username.should.be.equal("free");
 				u.email.should.be.equal("free@test.nodegear.com");
-				u.password.should.be.equal(models.User.getHash("password"));
-				user = u;
+				u.comparePassword('password', function (same) {
+					should(same).be.true;
+					done();
+				});
 
-				done();
+				user = u;
 			})
 		})
 	})
@@ -181,9 +179,10 @@ describe('Account', function() {
 				u.name.should.be.equal("Hello Tester");
 				u.username.should.be.equal("free");
 				u.email.should.be.equal("free@test.nodegear.com");
-				u.password.should.be.equal(models.User.getHash("password"));
-
-				done();
+				u.comparePassword('password', function (same) {
+					should(same).be.true;
+					done();
+				});
 			})
 		})
 
@@ -220,9 +219,10 @@ describe('Account', function() {
 				u.name.should.be.equal("Hello Tester");
 				u.username.should.be.equal("free");
 				u.email.should.be.equal("free@test.nodegear.com");
-				u.password.should.be.equal(models.User.getHash("newpassword"));
-
-				done();
+				u.comparePassword('newpassword', function (same) {
+					should(same).be.true;
+					done();
+				});
 			})
 		})
 	})
@@ -259,7 +259,7 @@ describe('Account', function() {
 					user: {
 						name: "Fuuuuuk",
 						username: "taken",
-						email: "taken@test..com"
+						email: "taken@test.com"
 					}
 				})
 				.expect(200)

@@ -1,5 +1,3 @@
-require('./prepare');
-
 var app = require('../lib/app');
 var request = require('supertest').agent(app.app)
 
@@ -19,32 +17,39 @@ describe('Stripe & Payment', function() {
 			name: "Stripe Tester",
 			email: "stripe@test.nodegear.com",
 			email_verified: true,
+			disabled: false,
 			admin: false,
 			balance: 0,
 			tfa_enabled: false,
-			tfa: null
+			tfa: null,
+			is_new_pwd: true,
+			invitation_complete: true
 		});
-		user.setPassword(password);
-		user.save();
 	});
 
 	it('should log in', function(done) {
-		request
-			.post('/auth/password')
-			.send({
-				auth: user.email,
-				password: password
-			})
-			.accept('json')
-			.expect(200)
-			.end(function(err, req) {
-				should(err).be.equal(null);
-				
-				var body = req.res.body;
-				body.status.should.be.equal(200)
-				
-				done();
-			})
+		models.User.hashPassword(password, function (pwd) {
+			user.password = pwd;
+			user.save(function () {
+		
+				request
+					.post('/auth/password')
+					.send({
+						auth: user.email,
+						password: password
+					})
+					.accept('json')
+					.expect(200)
+					.end(function(err, req) {
+						should(err).be.equal(null);
+						
+						var body = req.res.body;
+						body.status.should.be.equal(200)
+						
+						done();
+					})
+			});
+		});
 	})
 
 	var card_token = null, invalid_card_token = null;
@@ -425,7 +430,7 @@ describe('Stripe & Payment', function() {
 					should(err).be.equal(null);
 
 					req.res.body.status.should.be.equal(200);
-					req.res.body.balance.should.be.equal(5);
+					parseFloat(req.res.body.balance).should.be.equal(5);
 
 					done();
 				})
