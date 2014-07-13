@@ -12,9 +12,8 @@ describe('Authentication', function() {
 	});
 
 	describe('Login', function() {
-
-		describe('Malformed Requests', function () {
-			it('empty body', function (done) {
+		describe('fails malformed reqs', function () {
+			it('an empty body', function (done) {
 				request
 					.post('/auth/password')
 					.accept('json')
@@ -22,7 +21,7 @@ describe('Authentication', function() {
 					.expect(400)
 					.end(done);
 			});
-			it('malformed req', function (done) {
+			it('a malformed req', function (done) {
 				request
 					.post('/auth/password')
 					.accept('json')
@@ -30,7 +29,7 @@ describe('Authentication', function() {
 					.end(done);
 			});
 
-			it('not an email', function (done) {
+			it('is not an email', function (done) {
 				request
 					.post('/auth/password')
 					.accept('json')
