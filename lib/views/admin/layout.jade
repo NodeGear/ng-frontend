@@ -11,10 +11,8 @@ html(ng-app="nodegear")
 		
 		//- all css goes here
 		block css
-			link(rel="stylesheet" href="#{cdn}/css/bootstrap.min.css")
-			link(rel="stylesheet" href="#{cdn}/css/nodegear.css")
-			link(rel="stylesheet" href="#{cdn}/css/font-awesome.min.css")
-			link(rel="stylesheet" href="#{cdn}/css/ngTable.min.css")
+			link(rel="stylesheet" href="#{cdn}/css/new.css")
+			link(rel="stylesheet" href="#{cdn}/css/ngTable.css")
 
 	body
 		.container-fluid
@@ -68,11 +66,11 @@ html(ng-app="nodegear")
 								br
 			
 		block js
-			script(src="#{cdn}/js/vendor/jquery.js" defer)
-			script(src="#{cdn}/js/vendor/bootstrap.js" defer)
-			script(src="#{cdn}/js/vendor/angular.js" defer)
+			script(src="#{cdn}/vendor/jquery/dist/jquery.min.js" defer)
+			script(src="#{cdn}/vendor/bootstrap/dist/js/bootstrap.min.js" defer)
+			script(src="#{cdn}/vendor/angular/angular.min.js" defer)
 			script(src="#{cdn}/js/vendor/ngTable.min.js" defer)
-			script(src="#{cdn}/js/vendor/moment.js" defer)
+			script(src="#{cdn}/vendor/moment/min/moment.min.js" defer)
 			script(src="/socket.io/socket.io.js" defer)
 			script(src="#{cdn}/js/controllers/admin/admin.js" defer)
 			

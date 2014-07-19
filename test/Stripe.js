@@ -40,14 +40,7 @@ describe('Stripe & Payment', function() {
 					})
 					.accept('json')
 					.expect(200)
-					.end(function(err, req) {
-						should(err).be.equal(null);
-						
-						var body = req.res.body;
-						body.status.should.be.equal(200)
-						
-						done();
-					})
+					.end(done);
 			});
 		});
 	})

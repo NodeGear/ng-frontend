@@ -26,6 +26,9 @@ define([
 
 			if (pwd.length == 0) {
 				$scope.loginFailed = true;
+				setTimeout(function () {
+					$('form[name=login] input[type=password]').trigger('focus');
+				}, 10);
 
 				return;
 			}
@@ -35,54 +38,61 @@ define([
 				auth: user.auth,
 				password: pwd
 			}).success(function(data, status) {
-				data.type = data.status == 200 ? 'success' : 'fail';
+				data.type = 'success';
 
-				if (data.status == 200) {
-					$rootScope.bodyClass = 'body-success';
+				$rootScope.bodyClass = 'body-success';
 
-					if (data.redirect_invitation && data.redirect_invitation == true) {
-						return $state.transitionTo('invitation')
-					}
+				if (data.redirect_invitation && data.redirect_invitation == true) {
+					return $state.transitionTo('invitation')
+				}
 
-					if (data.tfa) {
-						analytics.track('login', data);
-
-						// Requires tfa..
-						$state.transitionTo('tfa')
-						return;
-					}
-					if (!data.email_verification) {
-						analytics.track('login', data);
-
-						// Requires user to verify email
-						return $state.transitionTo('verifyEmail');
-					}
-					if (data.passwordUpdateRequired) {
-						analytics.track('login', data);
-
-						return $state.transitionTo('resetPassword');
-					}
-					
-					$scope.status = "Login Successful";
-					analytics.track('login', data, function () {
-						window.location = "/";
-					});
-				} else {
+				if (data.tfa) {
 					analytics.track('login', data);
 
-					$scope.status = "";
+					// Requires tfa..
+					$state.transitionTo('tfa')
+					return;
+				}
+				if (!data.email_verification) {
+					analytics.track('login', data);
+
+					// Requires user to verify email
+					return $state.transitionTo('verifyEmail');
+				}
+				if (data.passwordUpdateRequired) {
+					analytics.track('login', data);
+
+					return $state.transitionTo('resetPassword');
+				}
+				
+				$scope.status = "Login Successful";
+				analytics.track('login', data, function () {
+					window.location = "/";
+				});
+			}).error(function (data, status) {
+				if (status == 400) {
+					// Login Failed
+					$scope.status = '';
 					$scope.loginFailedReason = data.message;
 					$scope.loginFailed = true;
-					$rootScope.bodyClass = 'body-error';
+					setTimeout(function () {
+						$('form[name=login] input[type=password]').trigger('focus');
+					}, 10);
+					
+					analytics.track('login', {
+						type: 'fail',
+						status: status,
+						message: data.message
+					});
+
+					return;
 				}
-			}).error(function (data, status) {
+
 				analytics.track('login', {
 					type: 'error',
 					status: status,
 					message: data.message
 				});
-
-				$rootScope.bodyClass = 'body-error';
 
 				$scope.forceShowStatus = true;
 				if (status == 429) {

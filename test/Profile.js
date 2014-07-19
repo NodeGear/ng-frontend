@@ -16,8 +16,11 @@ describe('Account', function() {
 	before(function () {
 		password = "password";
 		
+		models.User.remove({}, function (e) {});
+
 		new models.User({
 			username: "taken",
+			usernameLowercase: 'taken',
 			name: "Taken User",
 			email: "taken@test.nodegear.com",
 			email_verified: true,
@@ -90,14 +93,7 @@ describe('Account', function() {
 					}
 				})
 				.expect(200)
-				.end(function(err, req) {
-					should(err).be.equal(null);
-
-					var body = req.res.body;
-					body.status.should.be.equal(200);
-
-					done()
-				})
+				.end(done)
 		})
 
 		it('should check user details have changed', function(done) {
@@ -133,19 +129,18 @@ describe('Account', function() {
 						newPassword: "newPassword"
 					}
 				})
-				.expect(200)
+				.expect(400)
 				.end(function(err, req) {
 					should(err).be.equal(null);
 
 					var body = req.res.body;
-					body.status.should.not.be.equal(200);
 					body.message.should.not.be.empty;
 
 					done()
 				})
 		})
 
-		it('should change user password (password length)', function(done) {
+		it('should not change user password (password length)', function(done) {
 			request
 				.put('/profile/profile')
 				.accept('json')
@@ -158,17 +153,9 @@ describe('Account', function() {
 						newPassword: "short"
 					}
 				})
-				.expect(200)
-				.end(function(err, req) {
-					should(err).be.equal(null);
-
-					var body = req.res.body;
-					body.status.should.not.be.equal(200);
-					body.message.should.not.be.empty;
-
-					done()
-				})
-		})
+				.expect(400)
+				.end(done);
+		});
 
 		it('should check user password has not changed', function(done) {
 			models.User.findOne({
@@ -183,7 +170,7 @@ describe('Account', function() {
 					should(same).be.true;
 					done();
 				});
-			})
+			});
 		})
 
 		it('should change user password', function(done) {
@@ -200,14 +187,7 @@ describe('Account', function() {
 					}
 				})
 				.expect(200)
-				.end(function(err, req) {
-					should(err).be.equal(null);
-
-					var body = req.res.body;
-					body.status.should.be.equal(200);
-
-					done()
-				})
+				.end(done)
 		})
 
 		it('should check user password has changed', function(done) {
@@ -239,19 +219,18 @@ describe('Account', function() {
 						email: "taken@test.nodegear.com"
 					}
 				})
-				.expect(200)
+				.expect(400)
 				.end(function(err, req) {
 					should(err).be.equal(null);
 
 					var body = req.res.body;
-					body.status.should.not.be.equal(200);
 					body.errs.should.be.instanceof(Array).and.have.lengthOf(1);
 
 					done()
 				})
 		})
 
-		it('should not update to user profile (username)', function(done) {
+		it('should not update user profile (username taken)', function(done) {
 			request
 				.put('/profile/profile')
 				.accept('json')
@@ -262,13 +241,12 @@ describe('Account', function() {
 						email: "taken@test.com"
 					}
 				})
-				.expect(200)
+				.expect(400)
 				.end(function(err, req) {
 					should(err).be.equal(null);
 
 					var body = req.res.body;
-					body.status.should.not.be.equal(200);
-					body.errs.should.be.instanceof(Array).and.have.lengthOf(2);
+					body.errs.should.be.instanceof(Array).and.have.lengthOf(1);
 
 					done()
 				})

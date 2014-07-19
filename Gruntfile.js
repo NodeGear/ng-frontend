@@ -18,12 +18,12 @@ module.exports = function(grunt) {
 				tasks: ['newer:copy:js']
 			},
 			styles: {
-				files: ['public/css/{,*/}*.less'],
+				files: ['public/css/{,**/}*.less'],
 				tasks: ['newer:less:development']
 			},
 			livereload: {
 				files: [
-					'dist/{,*/}*.{css,js,png,jpg,jpeg,gif,webp,svg,html}'
+					'dist/{,**/}*.{css,js,png,jpg,jpeg,gif,webp,svg,html}'
 				],
 				options: {
 					livereload: true
@@ -68,13 +68,13 @@ module.exports = function(grunt) {
 				expand: true,
 				cwd: 'public/js',
 				dest: 'dist/js/',
-				src: '{,*/}*.js'
+				src: '{,**/}*.js'
 			},
 			img: {
 				expand: true,
 				cwd: 'public/img',
 				dest: 'dist/img/',
-				src: '{,*/}*.{png,jpg,jpeg,gif}'
+				src: '{,**/}*.{png,jpg,jpeg,gif}'
 			},
 			vendor: {
 				files: [{
@@ -88,7 +88,7 @@ module.exports = function(grunt) {
 				expand: true,
 				cwd: 'public/fonts',
 				dest: 'dist/fonts/',
-				src: '{,*/}*.{woff,ttf,svg,eot}'
+				src: '{,**/}*.{woff,ttf,svg,eot}'
 			}
 		},
 
@@ -131,7 +131,7 @@ module.exports = function(grunt) {
 				logConcurrentOutput: true,
 				options: {
 					cwd: __dirname,
-					watch: ['lib/**']
+					watch: ['lib/']
 				}
 			}
 		}

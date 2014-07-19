@@ -2,7 +2,7 @@ define([
 	'../app',
 	'moment'
 ], function(app, moment) {
-	app.registerController('PasswordResetController', ['$scope', '$http', function($scope, $http) {
+	app.registerController('PasswordResetController', ['$scope', '$http', '$state', function($scope, $http, $state) {
 		$scope.status = "";
 		$scope.password = {
 			fail: false,
@@ -16,22 +16,24 @@ define([
 			$http.post('/auth/passwordReset', {
 				pwd: $scope.password.pwd
 			}).success(function(data, status) {
-				if (data.status == 200) {
-					$scope.status = "Reset Successful"
-					analytics.track('password reset', {
-						type: 'success'
-					}, function () {
-						window.location = "/";
-					});
-				} else {
+				$scope.status = "Reset Successful"
+				analytics.track('password reset', {
+					type: 'success'
+				}, function () {
+					window.location = "/";
+				});
+			}).error(function (data, status) {
+				if (status == 400) {
 					analytics.track('password reset', {
 						type: 'fail',
 						message: data.message
 					});
 
 					$scope.status = data.message;
+
+					return;
 				}
-			}).error(function (data, status) {
+
 				analytics.track('password reset', {
 					type: 'error',
 					status: status,
@@ -60,5 +62,11 @@ define([
 				$scope.password.fail = false;
 			}
 		});
+
+		$http.get('/auth/loggedin').success(function (data) {
+			if (!data.hasSession) {
+				$state.transitionTo('login');
+			}
+		})
 	}]);
 });

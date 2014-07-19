@@ -7,7 +7,6 @@ define([
 		$scope.status = "";
 		$scope.user = {};
 		$scope.errors = {};
-		$scope.csrf = "";
 
 		$rootScope.bodyClass = '';
 
@@ -28,9 +27,7 @@ define([
 			$scope.errors = {};
 		};
 
-		$scope.init = function (csrf) {
-			$scope.csrf = csrf;
-
+		$scope.init = function () {
 			if (isLocalStorageCapable && localStorage["login_auth"]) {
 				$scope.user.email = localStorage["login_auth"];
 			}
@@ -51,59 +48,47 @@ define([
 		}
 
 		$scope.registerUser = function () {
-			$scope.status = "Registering.."
-			
-			$scope.errors = {};
+			$scope.status = "Registering..";
 			
 			$http.post('/auth/register', {
 				_csrf: $scope.csrf,
 				user: $scope.user
-			}).success(function(data, status) {
-				if (data.status == 200) {
-					$scope.status = data.message;
-					
-					if (data.redirect_invitation) {
-						return $state.transitionTo('invitation');
-					}
+			}).success(function (data, status) {
+				$scope.status = data.message;
 
-					$state.transitionTo('verifyEmail');
-				} else {
-					if (data.errors) {
-						$scope.errors = data.errors;
-					}
+				$scope.errors = {};
+				
+				analytics.alias(data._id);
+				analytics.identify(data._id, {
+					_id: data._id,
+					name: $scope.user.name,
+					username: $scope.user.username,
+					email: $scope.user.email,
+					createdAt: new Date,
+					invitation: data.redirect_invitation
+				});
 
-					$scope.status = data.message;
+				analytics.track('signup', {
+					type: 'success'
+				});
+
+				if (data.redirect_invitation) {
+					return $state.transitionTo('invitation');
 				}
-
-				var anal_data = {
-					type: data.status == 200 ? 'success' : 'error'
-				};
-				if (data.status == 200) {
-					analytics.alias(data._id);
-					analytics.identify(data._id, {
-						_id: data._id,
-						name: $scope.user.name,
-						username: $scope.user.username,
-						email: $scope.user.email,
-						createdAt: new Date
-					});
-				} else {
-					anal_data.errors = data.taken;
-					anal_data.message = data.message;
-				}
-
-				analytics.track('signup', anal_data);
-
-				if (!$scope.$$phase) {
-					$scope.$digest();
-				}
+				
+				$state.transitionTo('verifyEmail');
 			}).error(function (data, status) {
-				if (typeof analytics !== 'undefined') {
-					analytics.track('signup', {
-						type: failed,
-						status: status,
-						data: data
-					});
+				$scope.status = "";
+				analytics.track('signup', {
+					type: status == 400 ? 'fail' : 'error',
+					status: status,
+					data: data
+				});
+
+				if (status == 400) {
+					$scope.errors = data.fields;
+					$scope.taken = data.takenFields;
+					return;
 				}
 
 				if (status == 429) {

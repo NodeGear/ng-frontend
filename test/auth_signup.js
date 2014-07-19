@@ -63,10 +63,10 @@ describe('Authentication', function() {
 					.end(function (err, req) {
 						should(err).be.equal(null);
 
-						req.res.body.errors.should.have.property('email', true);
-						req.res.body.errors.should.have.property('username', true);
-						req.res.body.errors.should.have.property('password', true);
-						req.res.body.errors.should.have.property('name', true);
+						req.res.body.fields.should.have.property('email', true);
+						req.res.body.fields.should.have.property('username', true);
+						req.res.body.fields.should.have.property('password', true);
+						req.res.body.fields.should.have.property('name', true);
 
 						done()
 					});
@@ -86,10 +86,10 @@ describe('Authentication', function() {
 					.end(function (err, req) {
 						should(err).be.equal(null);
 
-						req.res.body.errors.should.have.property('email', false);
-						req.res.body.errors.should.have.property('username', true);
-						req.res.body.errors.should.have.property('password', true);
-						req.res.body.errors.should.have.property('name', true);
+						req.res.body.fields.should.have.property('email', false);
+						req.res.body.fields.should.have.property('username', true);
+						req.res.body.fields.should.have.property('password', true);
+						req.res.body.fields.should.have.property('name', true);
 
 						done()
 					});
@@ -108,10 +108,10 @@ describe('Authentication', function() {
 					.end(function (err, req) {
 						should(err).be.equal(null);
 
-						req.res.body.errors.should.have.property('email', true);
-						req.res.body.errors.should.have.property('username', false);
-						req.res.body.errors.should.have.property('password', true);
-						req.res.body.errors.should.have.property('name', true);
+						req.res.body.fields.should.have.property('email', true);
+						req.res.body.fields.should.have.property('username', false);
+						req.res.body.fields.should.have.property('password', true);
+						req.res.body.fields.should.have.property('name', true);
 
 						done()
 					});
@@ -130,10 +130,10 @@ describe('Authentication', function() {
 					.end(function (err, req) {
 						should(err).be.equal(null);
 
-						req.res.body.errors.should.have.property('email', true);
-						req.res.body.errors.should.have.property('username', true);
-						req.res.body.errors.should.have.property('password', true);
-						req.res.body.errors.should.have.property('name', false);
+						req.res.body.fields.should.have.property('email', true);
+						req.res.body.fields.should.have.property('username', true);
+						req.res.body.fields.should.have.property('password', true);
+						req.res.body.fields.should.have.property('name', false);
 
 						done()
 					});
@@ -152,10 +152,10 @@ describe('Authentication', function() {
 					.end(function (err, req) {
 						should(err).be.equal(null);
 
-						req.res.body.errors.should.have.property('email', true);
-						req.res.body.errors.should.have.property('username', true);
-						req.res.body.errors.should.have.property('password', false);
-						req.res.body.errors.should.have.property('name', true);
+						req.res.body.fields.should.have.property('email', true);
+						req.res.body.fields.should.have.property('username', true);
+						req.res.body.fields.should.have.property('password', false);
+						req.res.body.fields.should.have.property('name', true);
 
 						done()
 					});
@@ -176,10 +176,10 @@ describe('Authentication', function() {
 					.end(function (err, req) {
 						should(err).be.equal(null);
 
-						req.res.body.errors.should.have.property('email', true);
-						req.res.body.errors.should.have.property('username', false);
-						req.res.body.errors.should.have.property('password', true);
-						req.res.body.errors.should.have.property('name', true);
+						req.res.body.fields.should.have.property('email', true);
+						req.res.body.fields.should.have.property('username', false);
+						req.res.body.fields.should.have.property('password', true);
+						req.res.body.fields.should.have.property('name', true);
 
 						done()
 					});
@@ -198,10 +198,10 @@ describe('Authentication', function() {
 					.end(function (err, req) {
 						should(err).be.equal(null);
 
-						req.res.body.errors.should.have.property('email', true);
-						req.res.body.errors.should.have.property('username', false);
-						req.res.body.errors.should.have.property('password', true);
-						req.res.body.errors.should.have.property('name', true);
+						req.res.body.fields.should.have.property('email', true);
+						req.res.body.fields.should.have.property('username', false);
+						req.res.body.fields.should.have.property('password', true);
+						req.res.body.fields.should.have.property('name', true);
 
 						done()
 					});
@@ -220,10 +220,10 @@ describe('Authentication', function() {
 					.end(function (err, req) {
 						should(err).be.equal(null);
 
-						req.res.body.errors.should.have.property('email', true);
-						req.res.body.errors.should.have.property('username', false);
-						req.res.body.errors.should.have.property('password', true);
-						req.res.body.errors.should.have.property('name', true);
+						req.res.body.fields.should.have.property('email', true);
+						req.res.body.fields.should.have.property('username', false);
+						req.res.body.fields.should.have.property('password', true);
+						req.res.body.fields.should.have.property('name', true);
 
 						done()
 					});
@@ -242,10 +242,10 @@ describe('Authentication', function() {
 					.end(function (err, req) {
 						should(err).be.equal(null);
 
-						req.res.body.errors.should.have.property('email', true);
-						req.res.body.errors.should.have.property('username', false);
-						req.res.body.errors.should.have.property('password', true);
-						req.res.body.errors.should.have.property('name', true);
+						req.res.body.fields.should.have.property('email', true);
+						req.res.body.fields.should.have.property('username', false);
+						req.res.body.fields.should.have.property('password', true);
+						req.res.body.fields.should.have.property('name', true);
 
 						done()
 					});
@@ -264,10 +264,10 @@ describe('Authentication', function() {
 					.end(function (err, req) {
 						should(err).be.equal(null);
 
-						req.res.body.errors.should.have.property('email', true);
-						req.res.body.errors.should.have.property('username', true);
-						req.res.body.errors.should.have.property('password', true);
-						req.res.body.errors.should.have.property('name', true);
+						req.res.body.fields.should.have.property('email', true);
+						req.res.body.fields.should.have.property('username', true);
+						req.res.body.fields.should.have.property('password', true);
+						req.res.body.fields.should.have.property('name', true);
 
 						done()
 					});
@@ -286,10 +286,10 @@ describe('Authentication', function() {
 					.end(function (err, req) {
 						should(err).be.equal(null);
 
-						req.res.body.errors.should.have.property('email', true);
-						req.res.body.errors.should.have.property('username', true);
-						req.res.body.errors.should.have.property('password', true);
-						req.res.body.errors.should.have.property('name', true);
+						req.res.body.fields.should.have.property('email', true);
+						req.res.body.fields.should.have.property('username', true);
+						req.res.body.fields.should.have.property('password', true);
+						req.res.body.fields.should.have.property('name', true);
 
 						done()
 					});
@@ -308,10 +308,10 @@ describe('Authentication', function() {
 					.end(function (err, req) {
 						should(err).be.equal(null);
 
-						req.res.body.errors.should.have.property('email', true);
-						req.res.body.errors.should.have.property('username', true);
-						req.res.body.errors.should.have.property('password', true);
-						req.res.body.errors.should.have.property('name', true);
+						req.res.body.fields.should.have.property('email', true);
+						req.res.body.fields.should.have.property('username', true);
+						req.res.body.fields.should.have.property('password', true);
+						req.res.body.fields.should.have.property('name', true);
 
 						done()
 					});
@@ -330,10 +330,10 @@ describe('Authentication', function() {
 					.end(function (err, req) {
 						should(err).be.equal(null);
 
-						req.res.body.errors.should.have.property('email', true);
-						req.res.body.errors.should.have.property('username', true);
-						req.res.body.errors.should.have.property('password', true);
-						req.res.body.errors.should.have.property('name', true);
+						req.res.body.fields.should.have.property('email', true);
+						req.res.body.fields.should.have.property('username', true);
+						req.res.body.fields.should.have.property('password', true);
+						req.res.body.fields.should.have.property('name', true);
 
 						done()
 					});
