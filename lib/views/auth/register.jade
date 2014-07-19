@@ -10,13 +10,14 @@
 			.form-group(style="margin-bottom:10px;" ng-class="{ 'has-error': errors.name == true }")
 				input.form-control.input-lg.text-center(placeholder="Full Name" type="text" name="full_name" autofocus="" ng-model="user.name")
 				p.help-block(ng-show="errors.name == true") Name is Invalid
-			.form-group(style="margin-bottom:10px;" ng-class="{ 'has-error': errors.email == true }")
+			.form-group(style="margin-bottom:10px;" ng-class="{ 'has-error': errors.email == true || taken.email == true }")
 				input.form-control.input-lg.text-center(placeholder="Email Address" type="email" ng-model="user.email")
 				p.help-block(ng-show="errors.email == true") Email Address is Invalid
 				p.help-block(ng-show="taken.email == true") Email Address is already Registered
-			.form-group(style="margin-bottom:10px;" ng-class="{ 'has-error': errors.username == true }")
+			.form-group(style="margin-bottom:10px;" ng-class="{ 'has-error': errors.username == true || taken.username == true }")
 				input.form-control.input-lg.text-center(placeholder="Username" type="text" ng-model="user.username")
 				p.help-block(ng-show="errors.username == true") Username should be between 3 and 15 characters
+				p.help-block(ng-show="taken.username == true") Username is already Registered
 			.form-group(ng-class="{ 'has-error': errors.password == true }")
 				input.form-control.input-lg.text-center(placeholder="Password" type="password" ng-model="user.password")
 				p.help-block(ng-show="errors.password == true") Password should be more than 8 characters
