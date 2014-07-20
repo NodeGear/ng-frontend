@@ -18,11 +18,9 @@ define([
 				app.processes[i].stat = {
 					monitor: {
 						cpu_percent: 0,
-						cpu_stime: 0,
-						cpu_time: 0,
-						cpu_utime: 0,
-						mem_total: 0,
+						cpu_percent_max: 100,
 						rss: 0,
+						rss_max: 262144,
 						rssString: 'N/A'
 					}
 				}
@@ -264,7 +262,7 @@ define([
 						scope.$watch('process.stat', function (newStat) {
 							if (typeof newStat == 'undefined') return;
 
-							proc[0].value = (newStat.monitor[attributes.type] / parseInt(attributes.max)) * 100;
+							proc[0].value = (newStat.monitor[attributes.type] / newStat.monitor[attributes.type+'_max']) * 100;
 							proc[1].value = 100 - proc[0].value;
 
 							path

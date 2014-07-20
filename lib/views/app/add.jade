@@ -19,7 +19,7 @@
 						.col-xs-12
 							select.form-control(ng-model="template")
 								option(value="ghost") Ghost.js
-								option(value="docker") Docker
+								//-option(value="docker") Docker
 								option(value="custom") Custom
 
 					.form-group
@@ -35,13 +35,13 @@
 						.col-xs-12
 							input.form-control(type="text" placeholder="Git Branch (e.g. 'master')" ng-init="custom_branch='master'" ng-model="custom_branch" ng-required="template=='custom'")
 
-					.form-group(ng-show="template=='docker'")
-						.col-xs-12
-							input.form-control(type="text" placeholder="Docker Image (e.g. centos)" ng-model="docker.image" ng-required="template=='docker'")
+					//-.form-group(ng-show="template=='docker'")
+					//-	.col-xs-12
+					//-		input.form-control(type="text" placeholder="Docker Image (e.g. centos)" ng-model="docker.image" ng-required="template=='docker'")
 
-					.form-group(ng-show="template=='docker'")
-						.col-xs-12
-							input.form-control(type="text" placeholder="Docker Command (e.g. echo 'Hello World!')" ng-model="docker.command" ng-required="template=='docker'")
+					//-.form-group(ng-show="template=='docker'")
+					//-	.col-xs-12
+					//-		input.form-control(type="text" placeholder="Docker Command (e.g. echo 'Hello World!')" ng-model="docker.command" ng-required="template=='docker'")
 					
 					.form-group
 						.col-xs-12
