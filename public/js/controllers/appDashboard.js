@@ -99,6 +99,8 @@ define([
 				if (process.stat.monitor.rss > 1024 * 1024) {
 					process.stat.monitor.rssString = Math.round(process.stat.monitor.rss / 1024 / 1024) + 'GB';
 				}
+
+				process.stat.monitor.cpuString = (Math.round(process.stat.monitor.cpu_percent * 100) / 100).toFixed(2);
 			}
 
 			if (!$scope.$$phase) {

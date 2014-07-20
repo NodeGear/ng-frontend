@@ -33,12 +33,12 @@
 							.row(ng-hide="process.showInfo")
 								.col-xs-6
 									.thumbnail.svg-thumbnail
-										svg.rtm(process-graph process="process" type="cpu_percent" max="100" thickness="18")
-										h1 {{ process.stat.monitor.cpu_percent }}%
+										svg.rtm(process-graph process="process" type="cpu_percent" thickness="18")
+										h1 {{ process.stat.monitor.cpuString }}%
 										span CPU Usage
 								.col-xs-6
 									.thumbnail.svg-thumbnail
-										svg.rtm(process-graph process="process" type="rss" max="262144" thickness="18")
+										svg.rtm(process-graph process="process" type="rss" thickness="18")
 										h1 {{ process.stat.monitor.rssString }}
 										span RAM Used
 							.row(ng-show="process.showInfo")
@@ -54,12 +54,12 @@
 										span ??
 								.col-xs-4
 									.thumbnail.svg-thumbnail.thumbnail-small.pull-right
-										svg.rtm(process-graph process="process" type="cpu_percent" max="100" small thickness="10")
-										h1 {{ process.stat.monitor.cpu_percent }}%
+										svg.rtm(process-graph process="process" type="cpu_percent" small thickness="10")
+										h1 {{ process.stat.monitor.cpuString }}%
 										span CPU Usage
 									.clearfix
 									.thumbnail.svg-thumbnail.thumbnail-small.pull-right
-										svg.rtm(process-graph process="process" type="rss" max="262144" small thickness="10")
+										svg.rtm(process-graph process="process" type="rss" small thickness="10")
 										h1 {{ process.stat.monitor.rssString }}
 										span RAM Used
 									.clearfix
@@ -81,7 +81,7 @@
 						| {{ process.status }}
 				td
 					div(ng-show="process.running")
-						| {{ process.stat.monitor.cpu_percent }}%
+						| {{ process.stat.monitor.cpuString }}%
 						br
 						| {{ process.stat.monitor.rssString }}
 					div(ng-hide="process.running")
