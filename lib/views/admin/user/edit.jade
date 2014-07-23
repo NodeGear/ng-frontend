@@ -36,6 +36,8 @@ block content
 					+form_item()(type="text", placeholder="Change Password", required=false, id="password", model="user.password")
 					
 					+form_item()(type="number", placeholder="Balance (GBP)", required=true, id="balance", model="user.balance")
+					+form_item()(type="number", placeholder="App Limit", required=true, id="app_limit", model="user.appLimit")
+					
 					+form_item()(type="text", placeholder="Stripe ID", required=false, id="stripe_customer", model="user.stripe_customer")
 					//- default payment method & TFA
 

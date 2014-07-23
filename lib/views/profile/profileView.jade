@@ -37,6 +37,12 @@
 					label.col-sm-4.control-label(for="password") Current Password
 					.col-sm-7
 						input#password.form-control(type="password" placeholder="Current Password" ng-model="user.password" ng-required="changePassword" ng-disabled="formDisabled")
+
+				.form-group
+					label.col-sm-4.control-label App Limit
+					.col-sm-7
+						small(title="Contact us to raise the limit") {{ user.appLimit }}
+				
 				.form-group
 					.col-sm-6.col-sm-offset-4
 						button.btn.btn-success(ng-disabled="accountSettings.$invalid || formDisabled" ng-click="saveUser()") Save
@@ -64,3 +70,6 @@
 					.col-sm-6.col-sm-offset-4
 						button.btn.btn-success(ng-click="confirmTFA('#{token}')" href="" ng-disabled="tfa.hide || confirm.$invalid") Confirm Token
 						button.btn.btn-link(ng-click="disableTFA('#{token}')" href="" ng-disabled="tfa.hide") Cancel
+	blockquote
+		strong App Limit: 
+		| Adding credit will raise your application limit. Contact us if you want to raise your limit.
