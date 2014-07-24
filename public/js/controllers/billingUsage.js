@@ -63,6 +63,7 @@ define([
 			for (var i = 0; i < $scope.usages.length; i++) {
 				var minutes = $scope.usages[i].minutes;
 				var hours = $scope.usages[i].minutes / 60;
+				$scope.usages[i].hours = hours;
 
 				var start = $scope.usages[i].start;
 				$scope.usages[i].startFormatted = moment(start).format('DD/MM/YY hh:mm:ss');
