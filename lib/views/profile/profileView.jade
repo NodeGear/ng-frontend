@@ -41,7 +41,7 @@
 				.form-group
 					label.col-sm-4.control-label App Limit
 					.col-sm-7
-						small(title="Contact us to raise the limit") {{ user.appLimit }}
+						input.form-control(type="text" readonly ng-model="user.appLimit" title="Contact us to raise the limit")
 				
 				.form-group
 					.col-sm-6.col-sm-offset-4
