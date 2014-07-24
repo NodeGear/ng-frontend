@@ -63,7 +63,7 @@ define([
 			for (var i = 0; i < $scope.usages.length; i++) {
 				var minutes = $scope.usages[i].minutes;
 				var hours = $scope.usages[i].minutes / 60;
-				$scope.usages[i].hours = hours;
+				$scope.usages[i].hours = (Math.round(hours * 100) / 100).toFixed(0);
 
 				var start = $scope.usages[i].start;
 				$scope.usages[i].startFormatted = moment(start).format('DD/MM/YY hh:mm:ss');
@@ -76,7 +76,7 @@ define([
 					minutes = ((new Date(end)).getTime() - (new Date(start)).getTime()) / 1000 / 60;
 					hours = minutes / 60;
 					$scope.usages[i].minutes = Math.round(minutes);
-					$scope.usages[i].hours = Math.round(hours);
+					$scope.usages[i].hours = (Math.round(hours * 100) / 100).toFixed(0);
 				} else {
 					$scope.usages[i].endFormatted = moment(end).format('DD/MM/YY hh:mm:ss');
 				}
