@@ -62,6 +62,7 @@ define([
 
 			for (var i = 0; i < $scope.usages.length; i++) {
 				var minutes = $scope.usages[i].minutes;
+				var hours = $scope.usages[i].minutes / 60;
 
 				var start = $scope.usages[i].start;
 				$scope.usages[i].startFormatted = moment(start).format('DD/MM/YY hh:mm:ss');
@@ -72,13 +73,14 @@ define([
 
 					$scope.usages[i].endFormatted = 'Now';
 					minutes = ((new Date(end)).getTime() - (new Date(start)).getTime()) / 1000 / 60;
+					hours = minutes / 60;
 					$scope.usages[i].minutes = Math.round(minutes);
-					$scope.usages[i].timeString = moment(start).fromNow(false);
+					$scope.usages[i].hours = Math.round(hours);
 				} else {
 					$scope.usages[i].endFormatted = moment(end).format('DD/MM/YY hh:mm:ss');
 				}
 
-				var total = ((minutes / 60) * $scope.usages[i].price_per_hour);
+				var total = (hours * $scope.usages[i].price_per_hour);
 				$scope.usages[i].totalPrice = (Math.round(total * 100) / 100).toFixed(2);
 			}
 

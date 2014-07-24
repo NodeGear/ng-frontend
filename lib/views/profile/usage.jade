@@ -3,7 +3,7 @@ table.table.table-striped
 		th App
 		th Process
 		th Server
-		th Time
+		th Hours
 		th Cost
 		th Period
 		th Transacted
@@ -12,7 +12,7 @@ table.table.table-striped
 			td {{ usage.app.name }}
 			td {{ usage.process.name }}
 			td {{ usage.server.name }}
-			td {{ usage.timeString }}
+			td {{ usage.hours }} hrs
 			td £{{ usage.totalPrice }}
 			td {{ usage.startFormatted }} - {{ usage.endFormatted }}
 			td {{ usage.paid }}
