@@ -61,7 +61,7 @@ describe('Tickets', function() {
 
 	it('fails malformed request', function (done) {
 		request
-			.post('/ticket/add')
+			.post('/tickets/add')
 			.accept('json')
 			.expect(400)
 			.end(done);
@@ -69,7 +69,7 @@ describe('Tickets', function() {
 
 	it('fails missing subject', function (done) {
 		request
-			.post('/ticket/add')
+			.post('/tickets/add')
 			.send({
 				message: 'hello',
 				urgent: false
@@ -81,7 +81,7 @@ describe('Tickets', function() {
 
 	it('fails missing message', function (done) {
 		request
-			.post('/ticket/add')
+			.post('/tickets/add')
 			.send({
 				subject: 'hello',
 				urgent: false
@@ -93,7 +93,7 @@ describe('Tickets', function() {
 
 	it('fails malformed app object id', function (done) {
 		request
-			.post('/ticket/add')
+			.post('/tickets/add')
 			.send({
 				subject: 'hello',
 				message: 'hello',
@@ -107,7 +107,7 @@ describe('Tickets', function() {
 
 	it('fails nonexisting app id', function (done) {
 		request
-			.post('/ticket/add')
+			.post('/tickets/add')
 			.send({
 				subject: 'hello',
 				message: 'hello',
@@ -121,7 +121,7 @@ describe('Tickets', function() {
 
 	it('fails existing app from different user', function (done) {
 		request
-			.post('/ticket/add')
+			.post('/tickets/add')
 			.send({
 				subject: 'hello',
 				message: 'hello',
