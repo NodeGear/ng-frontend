@@ -11,7 +11,7 @@
   "dependencies": {
     "ansi-to-html": "latest",
     "async": "latest",
-    "body-parser": "latest",
+    "body-parser": "1.4.3",
     "bugsnag": "latest",
     "connect-mongo": "latest",
     "connect-redis": "latest",
@@ -29,7 +29,7 @@
     "mysql": "latest",
     "newrelic": "latest",
     "ng-models": "git+ssh://git@beta.castawaylabs.com/nodegear/ng-models.git",
-    "nodemailer": "latest",
+    "nodemailer": "~0.7",
     "passport": "latest",
     "passport.socketio": "latest",
     "ratelimiter": "^1.0.1",
