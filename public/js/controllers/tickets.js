@@ -1,74 +1,116 @@
 define([
-	'angular',
-	'app'
-], function(angular, app) {
-	app.registerController('TicketsController', function ($scope, data, $http) {
+	'app',
+	'moment'
+], function(app, moment) {
+	app.registerController('TicketsController', ['$scope', 'data', function ($scope, data) {
 		$scope.tickets = data.tickets || [];
-	})
 
-	.registerController('TicketController', function ($scope, data, $http, $rootScope, $state) {
+		$scope.compileTime = function () {
+			for (var i = 0; i < $scope.tickets.length; i++) {
+				$scope.tickets[i].createdString = moment($scope.tickets[i].created).fromNow();
+			}
+		}
+
+		$scope.compileTime();
+		var compileTimeInterval = setInterval($scope.compileTime, 1000 * 60);
+		$scope.$on('$destroy', function () {
+			clearInterval(compileTimeInterval);
+		});
+	}])
+
+	.registerController('TicketController', ['$scope', 'data', '$http', '$rootScope', '$state', function ($scope, data, $http, $rootScope, $state) {
 		$scope.ticket = data.ticket || {}
 		$scope.csrf = "";
 		$scope.status = "";
 		$scope.disableSend = false;
-	
-		$scope.setCsrf = function (csrf) {
-			$scope.csrf = csrf;
+
+		var limit = 1024;
+
+		$scope.compileTime = function () {
+			$scope.ticket.createdString = moment($scope.ticket.created).fromNow();
+
+			var msgs = $scope.ticket.messages;
+			if (!msgs) return;
+
+			for (var i = 0; i < msgs.length; i++) {
+				msgs[i].createdString = moment(msgs[i].created).fromNow();
+			}
 		}
 	
 		$scope.createTicket = function () {
+			if ($scope.ticket.message.length > limit) {
+				$scope.status = "Message Too long.";
+				return;
+			}
+
 			$scope.disableSend = true;
 			$scope.status = "Sending...";
+
 			$http.post('/tickets/add', {
-				_csrf: $scope.csrf,
 				ticket: $scope.ticket
 			}).success(function(data, status) {
-				if (data.status == 200) {
-					$scope.status = "Done.";
-					$state.transitionTo('tickets.ticket', {
-						id: data._id
-					})
+				$scope.status = "Done.";
+				$state.transitionTo('tickets.ticket', {
+					id: data._id
+				});
+			}).error(function(data, status) {
+				if (status >= 500) {
+					$scope.status = "Server Error";
 				} else {
 					$scope.status = data.message;
-					$scope.disableSend = false;
 				}
-			
-				if (!$scope.$$phase) {
-					$scope.$digest();
-				}
-			}).error(function(data) {
+
 				$scope.disableSend = false;
-				$scope.status = "Server Error"
 			})
 		}
 	
 		$scope.submitReply = function () {
 			var text = $scope.reply;
+
+			if (text.length > limit) {
+				$scope.status = "Message Too long.";
+				return;
+			}
+
 			$scope.disableSend = true;
 			$scope.status = "Sending...";
-		
+			
 			$http.put('/tickets/'+$scope.ticket._id, {
 				_csrf: $scope.csrf,
 				message: text
 			}).success(function(data, status) {
-				if (data.status == 200) {
-					$scope.ticket.messages.push({
-						created: (new Date()).toString(),
-						message: text,
-						user: $scope.ticket.user
-					})
-				
-					$scope.reply = "";
-					$scope.disableSend = false;
-					$scope.status = "Reply Sent";
+				$scope.ticket.messages.push({
+					created: (new Date()).toString(),
+					message: text,
+					user: $scope.ticket.user
+				})
+			
+				$scope.reply = "";
+				$scope.disableSend = false;
+				$scope.status = "Reply Sent";
+			}).error(function(data, status) {
+				if (status >= 500) {
+					$scope.status = "Server Error";
 				} else {
 					$scope.status = data.message;
-					$scope.disableSend = false;
 				}
-			}).error(function(data) {
+
 				$scope.disableSend = false;
-				$scope.status = "Server Error."
 			})
 		}
-	})
+
+		$scope.closeTicket = function () {
+			$http.get('/tickets/'+$scope.ticket._id+'/close')
+			.success(function (data) {
+				$scope.ticket.closed = true;
+				$scope.status = "Ticket Closed";
+			})
+		}
+
+		$scope.compileTime();
+		var compileTimeInterval = setInterval($scope.compileTime, 1000 * 60);
+		$scope.$on('$destroy', function () {
+			clearInterval(compileTimeInterval);
+		});
+	}]);
 });

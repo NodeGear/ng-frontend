@@ -1,6 +1,6 @@
 .pagestyle
 	.row
-		.col-md-12.col-sm-12.col-lg-12.col-xs-12
+		.col-xs-12
 			h4
 				i.fa.fa-question.fa-fw
 				|  Support Tickets
@@ -8,7 +8,7 @@
 					i.fa.fa-ticket.fa-fw
 					|  New Ticket
 	.row
-		.col-md-12.col-sm-12.col-lg-12.col-xs-12
+		.col-xs-12
 			table.table
 				thead
 					tr
@@ -17,10 +17,10 @@
 						th &nbsp;
 				tbody
 					tr(ng-repeat="ticket in tickets")
-						td {{ ticket.subject }}
-						td {{ ticket.created }}
+						td: a(ui-sref="tickets.ticket({ id: ticket._id })") {{ ticket.subject }}
+						td(title="{{ ticket.created }}") {{ ticket.createdString }}
 						td 
-							.btn-group.pull-right
+							.btn-group.pull-right(ng-hide="ticket.closed")
 								a.btn.btn-xs.btn-default(ui-sref="tickets.ticket({ id: ticket._id })")
 									i.fa.fa-reply.fa-fw
 									|  Reply

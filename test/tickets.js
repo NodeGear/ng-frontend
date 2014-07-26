@@ -71,8 +71,10 @@ describe('Tickets', function() {
 		request
 			.post('/tickets/add')
 			.send({
-				message: 'hello',
-				urgent: false
+				ticket: {
+					message: 'hello',
+					urgent: false
+				}
 			})
 			.accept('json')
 			.expect(400)
@@ -83,8 +85,10 @@ describe('Tickets', function() {
 		request
 			.post('/tickets/add')
 			.send({
-				subject: 'hello',
-				urgent: false
+				ticket: {
+					subject: 'hello',
+					urgent: false
+				}
 			})
 			.accept('json')
 			.expect(400)
@@ -95,10 +99,12 @@ describe('Tickets', function() {
 		request
 			.post('/tickets/add')
 			.send({
-				subject: 'hello',
-				message: 'hello',
-				app: 'lol',
-				urgent: false
+				ticket: {
+					subject: 'hello',
+					message: 'hello',
+					app: 'lol',
+					urgent: false
+				}
 			})
 			.accept('json')
 			.expect(400)
@@ -109,24 +115,12 @@ describe('Tickets', function() {
 		request
 			.post('/tickets/add')
 			.send({
-				subject: 'hello',
-				message: 'hello',
-				app: 'needtoputanidheremate',
-				urgent: false
-			})
-			.accept('json')
-			.expect(400)
-			.end(done);
-	});
-
-	it('fails existing app from different user', function (done) {
-		request
-			.post('/tickets/add')
-			.send({
-				subject: 'hello',
-				message: 'hello',
-				app: 'needtoputanidheremate',
-				urgent: false
+				ticket: {
+					subject: 'hello',
+					message: 'hello',
+					app: '53af49703975335c0192eeaa',
+					urgent: false
+				}
 			})
 			.accept('json')
 			.expect(400)
@@ -134,14 +128,18 @@ describe('Tickets', function() {
 	});
 	
 	it('should create a ticket', function(done) {
+		var subject = 'Hello World';
+		var message = 'A Message';
+		var urgent = true;
+
 		request
 			.post('/tickets/add')
 			.send({
 				ticket: {
-					subject: 'Hello World',
-					message: 'A Message',
+					subject: subject,
+					message: message,
 					app: '',
-					urgent: true
+					urgent: urgent
 				}
 			})
 			.accept('json')
@@ -150,18 +148,25 @@ describe('Tickets', function() {
 				should(err).be.equal(null);
 				
 				var body = req.res.body;
-				body.status.should.be.equal(200)
 				
 				body._id.should.be.String;
+				
+				request
+					.get('/tickets/'+body._id)
+					.accept('json')
+					.expect(200)
+					.end(function (err, req) {
+						should(err).be.equal(null);
 
-				models.Ticket.findById(body._id, function (err, ticket) {
-					ticket.urgent.should.be.true;
-					ticket.subject.should.be.equal(subject);
-					ticket.message.should.be.equal(message);
-					ticket.app.should.be.null;
+						var ticket = req.res.body.ticket;
 
-					done();
-				});
+						should(ticket.urgent).be.equal(urgent);
+						should(ticket.subject).be.equal(subject);
+						should(ticket.message).be.equal(message);
+						should(ticket.app).not.exist;
+
+						done();
+					})
 			});
 	});
 })
