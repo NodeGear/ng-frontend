@@ -15,13 +15,14 @@ define([
 			}
 		})
 	})
-	.registerController('AppDomainController', function ($scope, $http, csrf, app, domain, $state) {
+	.registerController('AppDomainController', function ($scope, $http, csrf, user, app, domain, $state) {
 		$scope.domain = domain.domain;
 		$scope.addDomain = $scope.domain._id == null;
 		$scope.checking = false;
 
 		if ($scope.addDomain) {
 			$scope.domain.is_subdomain = true;
+			$scope.domain.domain = app.app.name+'-'+user.user.username+'.ngapp.io';
 		}
 
 		$("#domainModal").modal('show')
@@ -30,10 +31,6 @@ define([
 				id: app.app.nameUrl
 			});
 		});
-
-		$scope.toggleSubdomain = function () {
-			$scope.domain.is_subdomain = true;
-		}
 
 		$scope.deleteDomain = function() {
 			$scope.status = "Deleting Domain... ";
@@ -68,6 +65,7 @@ define([
 				_csrf: csrf.csrf,
 				domain: $scope.domain
 			};
+
 			var url = app.appRoute+'/domain';
 
 			var promise = null;

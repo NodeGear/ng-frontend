@@ -8,17 +8,16 @@
 	table.table
 		thead
 			th Domain
-			th Is Subdomain
+			th SSL
 			th Endpoint
 		tbody
 			tr(ng-repeat="domain in _app.domains")
 				td: a(ui-sref="app.domains.editDomain({ id: app.nameUrl, did: domain._id })") {{ domain.domain }}
-				td {{ domain.is_subdomain }}
 				td
-					span(ng-show="domain.is_subdomain")
-						strong {{ domain.domain }}
-						small .ngapp.io
-					span(ng-hide="domain.is_subdomain")
-						strong {{ domain.domain }}
+					span(ng-if="domain.ssl && domain.ssl_only") SSL Enforced
+					span(ng-if="domain.ssl && !domain.ssl_only") SSL Enabled
+					span(ng-if="!domain.ssl") SSL OFF
+				td
+					strong {{ domain.domain }}
 
 	ui-view(autoscroll="off")
