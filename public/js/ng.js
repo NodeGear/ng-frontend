@@ -7,7 +7,8 @@ require.config({
 		moment: 'vendor/moment',
 		bootstrap: 'vendor/bootstrap',
 		couchPotato: 'vendor/angular-couch-potato',
-		socketio: '/socket.io/socket.io.js'
+		socketio: '/socket.io/socket.io.js',
+		async: '../vendor/async/lib/async'
 	},
 	shim: {
 		angular: {

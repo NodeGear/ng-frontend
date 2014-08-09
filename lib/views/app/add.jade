@@ -1,62 +1,79 @@
 .pagestyle
 	.row
-		.col-lg-12.col-sm-12.col-md-12.col-xs-12
+		.col-sm-12
 			h4 Add Gear
 				small  {{ status }}
 	.row
-		div(ng-hide="creating")
-			.col-lg-6.col-sm-6.col-md-6
-				p.lead Create a new <code>node.js</code> application from a template.
-				p.lead To create a custom application, please select 'custom' from template list and provide a git url.<br/>Alternatively, you can push your code to: 
-					small git://git@nodegear.io:{{ user.username }}/app-name.git
-			.col-lg-6.col-sm-6.col-md-6
-				form.form-horizontal(name="addApp" ng-init="template = 'ghost';")
-					.form-group
-						.col-xs-12
-							input.form-control(type="text" placeholder="App Name" ng-model="name" required autofocus="")
-					
-					.form-group
-						.col-xs-12
-							select.form-control(ng-model="template")
-								option(value="ghost") Ghost.js
-								//-option(value="docker") Docker
-								option(value="custom") Custom
+		.col-sm-12
+			div(ng-controller="CreateAppStepCtrl")
+				.row
+					.col-sm-8.col-sm-offset-2
+						div(ng-if="step == 0" ng-controller="CreateAppStep1Ctrl")
+							form.form-horizontal(name="addApp")
+								.form-group
+									label.control-label.col-sm-3 App Name
+									.col-sm-9
+										input.form-control(type="text" placeholder="Application Name" ng-model="app.name" required autofocus)
 
-					.form-group
-						.col-xs-12
-							select.form-control(ng-options="server._id as server.name for server in servers" ng-model="server" required)
-								option(value="") -- Pick a Server --
+								.form-group
+									label.control-label.col-sm-3 App Type
+									.col-sm-9
+										select.form-control(ng-model="app.template" ng-init="app.template = 'ghost';")
+											option(value="ghost") Ghost.js Blog
+											option(value="custom") Custom Node.js Application (Advanced)
 
-					.form-group(ng-show="template=='custom'")
-						.col-xs-12
-							input.form-control(type="text" placeholder="Publicly Accessible Git URL" ng-init="custom_location='git://github.com/NodeGear/node-js-sample.git'" ng-model="custom_location" ng-required="template=='custom'")
+								.form-group
+									label.control-label.col-sm-3 Server
+									.col-sm-9
+										select.form-control(ng-options="server._id as server.name for server in servers" ng-model="app.server" required)
+										option(value="") -- Pick a Server --
 
-					.form-group(ng-show="template=='custom'")
-						.col-xs-12
-							input.form-control(type="text" placeholder="Git Branch (e.g. 'master')" ng-init="custom_branch='master'" ng-model="custom_branch" ng-required="template=='custom'")
+								.form-group(ng-if="app.template=='custom'")
+									label.control-label.col-sm-3 Git SSH URL
+									.col-sm-9
+										input.form-control(type="text" placeholder="Git SSH URL" ng-init="app.custom_location='git://github.com/NodeGear/node-js-sample.git'" ng-model="app.custom_location" required)
+										small.help-text Note: For Private git hosts, use <code>ssh://</code> format.
+										br
+										small.help-text Don't forget to add the 
+											a(ui-sref="ssh.keys" target="_blank") System SSH Key
+											|  to your Private Repository!
 
-					//-.form-group(ng-show="template=='docker'")
-					//-	.col-xs-12
-					//-		input.form-control(type="text" placeholder="Docker Image (e.g. centos)" ng-model="docker.image" ng-required="template=='docker'")
+								.form-group(ng-if="app.template=='custom'")
+									label.control-label.col-sm-3 Git Branch
+									.col-sm-9
+										input.form-control(type="text" placeholder="Git Branch (e.g. 'master')" ng-init="app.custom_branch='master'" ng-model="app.custom_branch")
 
-					//-.form-group(ng-show="template=='docker'")
-					//-	.col-xs-12
-					//-		input.form-control(type="text" placeholder="Docker Command (e.g. echo 'Hello World!')" ng-model="docker.command" ng-required="template=='docker'")
-					
-					.form-group
-						.col-xs-12
-							button.btn.btn-success(ng-disabled="addApp.$invalid" ng-click="create('#{token}')") Next
-		
-		div(ng-show="creating")
-			.col-lg-6.col-sm-6.col-md-6
-				p.lead Created <strong>{{ name }}</strong>, your new <strong>{{ template }}</strong> application
-				p.lead Watch the install log on the right 
-					i.fa.fa-hand-o-right.fa-fw
-				button.btn(ng-class="{ 'btn-success': is_running, 'btn-default': !is_running }" ui-sref="app.processes({ id: app_url })" title="Click to continue to app.")
-					span(ng-show="is_running") App is Running. Continue!
-					span(ng-hide="is_running") .. waiting ..
-				p(ng-show="is_running") Go to your app: 
-					a(href="{{ app_domain }}" target="_blank") {{ app_domain }}
-			.col-lg-6.col-sm-6.col-md-6
-				pre
-					span(ng-repeat="log in logs track by $index") {{ log }}
+								.form-group
+									.col-sm-9.col-sm-offset-3
+										button.btn.btn-success(ng-disabled="addApp.$invalid" ng-click="create()") Create
+
+						div(ng-if="step == 1" ng-controller="CreateAppStep2Ctrl")
+							br
+							p.text-center.lead {{ app.name }}
+								br
+								small(ng-if="app.template == 'ghost'") Look at that, a Brand new Ghost.js Blog!
+								small(ng-if="app.template == 'custom'") The best application in the world.
+
+							p.text-center.lead
+								i.fa.fa-cog.fa-fw.fa-spin
+								|  {{ status }}
+
+							p.lead
+								ul.list-unstyled
+									li(ng-repeat="property in properties")
+										i.fa.fa-fw(ng-class="property.class")
+										|  {{ property.name }}
+			
+			div(ng-show="creating")
+				.col-lg-6.col-sm-6.col-md-6
+					p.lead Created <strong>{{ name }}</strong>, your new <strong>{{ template }}</strong> application
+					p.lead Watch the install log on the right 
+						i.fa.fa-hand-o-right.fa-fw
+					button.btn(ng-class="{ 'btn-success': is_running, 'btn-default': !is_running }" ui-sref="app.processes({ id: app_url })" title="Click to continue to app.")
+						span(ng-show="is_running") App is Running. Continue!
+						span(ng-hide="is_running") .. waiting ..
+					p(ng-show="is_running") Go to your app: 
+						a(href="{{ app_domain }}" target="_blank") {{ app_domain }}
+				.col-lg-6.col-sm-6.col-md-6
+					pre
+						span(ng-repeat="log in logs track by $index") {{ log }}

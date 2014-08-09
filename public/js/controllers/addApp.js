@@ -3,11 +3,179 @@ define([
 	'app',
 	'moment',
 	'socketio',
-	'../services/csrf',
+	'async',
 	'../services/servers',
 	'../services/user'
-], function(angular, app, moment, io) {
-	app.registerController('AddAppController', function ($scope, $http, $rootScope, csrf, servers, user, $sce) {
+], function(angular, app, moment, io, async) {
+	app.registerController('CreateAppStepCtrl', function ($scope, servers) {
+		$scope.step = 0;
+
+		$scope.app = {};
+		$scope.servers = [];
+		
+		servers.getServers(function(servers) {
+			$scope.servers = servers;
+			try {
+				if (!$scope.app.server) $scope.app.server = $scope.servers[0]._id;
+			} catch (e) {}
+		});
+
+		$scope.getServer = function (id) {
+			for (var i = 0; i < $scope.servers.length; i++) {
+				if ($scope.servers[i]._id == id) {
+					return $scope.servers[i];
+				}
+			}
+		}
+	});
+
+	app.registerController('CreateAppStep1Ctrl', function ($scope) {
+		$scope.create = function () {
+			$scope.$parent.$parent.step = 1;
+		}
+	});
+
+	app.registerController('CreateAppStep2Ctrl', function ($scope, $http, $rootScope, user) {
+		$scope.properties = [];
+
+		$scope.setProperty = function (id, property) {
+			var found = -1;
+
+			for (var i = 0; i < $scope.properties.length; i++) {
+				if ($scope.properties[i].id == id) {
+					found = i;
+				}
+			}
+
+			property.id = id;
+			if (found >= 0) {
+				$scope.properties[found] = property;
+			} else {
+				$scope.properties.push(property);
+			}
+		}
+
+		$scope.createApplicationStep = function (callback) {
+			$scope.status = "Creating Application..";
+			$scope.setProperty('application-created', {
+				name: $scope.status,
+				class: "fa-circle-o-notch fa-spin"
+			});
+
+			$http.post('/apps/add', $scope.app)
+			.success(function(data, status) {
+				callback(null, data);
+
+				$http.get('/apps').success(function(data, status) {
+					$rootScope.apps = data.apps;
+				});
+			}).error(function(data, status) {
+				if (status == 400) {
+					$scope.setProperty('application-created', {
+						name: data.message,
+						class: "fa-times"
+					});
+					return callback("");
+				}
+
+				$scope.setProperty('application-created', {
+					name: "The Request has failed.",
+					class: "fa-times"
+				});
+
+				$scope.status = "Could not Create Process";
+				callback("");
+			});
+		}
+
+		$scope.finishApplicationStep = function (application, callback) {
+			$scope.setProperty('application-created', {
+				name: "Application Created.",
+				class: "fa-check"
+			});
+
+			callback(null, application);
+		}
+
+		$scope.createDomainStep = function (application, callback) {
+			$scope.status = "Creating Domain..";
+			$scope.setProperty('application-domain', {
+				name: $scope.status,
+				class: "fa-circle-o-notch fa-spin"
+			});
+
+			var data = {
+				domain: {
+					domain: application.app_url+'-'+user.user.username+'.ngapp.io',
+					ssl: true,
+					ssl_only: false
+				}
+			};
+
+			var url = '/app/'+application.app_url+'/domain';
+
+			$http.post(url, data).success(function(data, status) {
+				if (data.status == 200) {
+					callback(null, application, data.domain);
+				} else {
+					$scope.status = data.message;
+					$scope.setProperty('application-domain', {
+						name: data.message,
+						class: "fa-times"
+					});
+
+					return callback("");
+				}
+			}).error(function() {
+				$scope.status = "Domain Failed to Create due to an Unknown Issue.";
+				$scope.setProperty('application-domain', {
+					name: $scope.status,
+					class: "fa-times"
+				});
+			})
+		}
+
+		$scope.finishDomainStep = function (application, domain, callback) {
+			$scope.status = "Application Domain Created ("+domain+")";
+			$scope.setProperty('application-domain', {
+				name: $scope.status,
+				class: "fa-check"
+			});
+
+			callback(null, application);
+		}
+
+		var steps = [
+			$scope.createApplicationStep,
+			$scope.finishApplicationStep,
+			$scope.createDomainStep,
+			$scope.finishDomainStep
+		];
+
+		if ($scope.app.template == 'ghost') {
+			// Create a database..
+			steps.push($scope.createDatabaseStep, $scope.finishDatabaseStep);
+		}
+
+		// Environment variables
+		steps.push($scope.createEnvironmentStep, $scope.finishEnvironmentStep);
+		// Create process
+		steps.push($scope.createProcessStep, $scope.finishProcessStep);
+
+		// Boot process
+		steps.push($scope.bootProcessStep, $scope.finishBootStep);
+
+		steps.push($scope.doneStep);
+
+		async.waterfall(steps, function () {
+			$scope.setProperty('finished', {
+				name: "All Done :)",
+				class: "fa-check"
+			});
+		})
+	});
+
+	app.registerController('AddAppController', function ($scope, $http, $rootScope, servers, user, $sce) {
 		$scope.creating = false;
 		$scope.status = "";
 		$scope.running = true;
@@ -36,39 +204,6 @@ define([
 		})
 		
 		$scope.create = function () {
-			$scope.status = "Creating Application...";
-
-			$http.post('/apps/add', {
-				_csrf: csrf.csrf,
-				name: $scope.name,
-				template: $scope.template,
-				custom_location: $scope.custom_location,
-				custom_branch: $scope.custom_branch,
-				docker: $scope.docker
-			}).success(function(data, status) {
-				if (data.status == 200) {
-					$scope.app_id = data.id;
-					$scope.app_url = data.nameUrl;
-
-					$scope.createDomain();
-
-					$http.get('/apps').success(function(data, status) {
-						$rootScope.apps = data.apps;
-					})
-				} else {
-					$scope.status = data.message;
-				}
-
-				if (!$scope.$$phase) {
-					$scope.$digest();
-				}
-			}).error(function() {
-				$scope.status = "The Request has failed.";
-				
-				if (!$scope.$$phase) {
-					$scope.$digest();
-				}
-			})
 		}
 
 		$scope.createDatabase = function (type, cb) {
@@ -123,39 +258,6 @@ define([
 		}
 
 		$scope.createDomain = function() {
-			$scope.status = "Creating Domain..";
-
-			var data = {
-				_csrf: csrf.csrf,
-				domain: {
-					domain: $scope.app_url,
-					is_subdomain: true
-				}
-			};
-			var url = '/app/'+$scope.app_url+'/domain';
-
-			$http.post(url, data).success(function(data, status) {
-				if (data.status == 200) {
-					$scope.status = "Domain Added";
-
-					var domain = $scope.app_url+'.'+user.user.username+'.ngapp.io';
-					$scope.app_domain = $sce.trustAsUrl('http://'+domain);
-					
-					$scope.addProcess();
-				} else {
-					$scope.status = data.message;
-				}
-
-				if (!$scope.$$phase) {
-					$scope.$digest();
-				}
-			}).error(function() {
-				$scope.status = "The Request has failed.";
-
-				if (!$scope.$$phase) {
-					$scope.$digest();
-				}
-			})
 		}
 
 		$scope.addProcess = function() {

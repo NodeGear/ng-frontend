@@ -7,7 +7,6 @@ define([
 			url: '/apps/add',
 			pageTitle: "Add Application",
 			templateUrl: "/view/app/add",
-			controller: "AddAppController",
 			resolve: {
 				dummy: $couchPotatoProvider.resolveDependencies(['controllers/addApp'])
 			}

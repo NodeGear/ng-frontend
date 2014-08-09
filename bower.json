@@ -8,6 +8,7 @@
     "jquery": "latest",
     "bootstrap": "latest",
     "moment": "latest",
-    "d3": "latest"
+    "d3": "latest",
+    "async": "latest"
   }
 }

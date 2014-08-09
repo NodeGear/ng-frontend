@@ -16,11 +16,18 @@
 			h3.text-center(style="color:#d9534f;" ng-bind="appsOff") 0
 			h4.text-center Offline Gears
 	br
-	.row
+	.row(ng-if="apps.length == 0")
+		.col-sm-12
+			br
+			p.text-center.lead Uh, oh. You have no apps :/
+				br
+				br
+				button.btn.btn-lg.text-center.btn-info(ui-sref="add") Add an Application
+	.row(ng-show="apps.length")
 		.col-sm-12
 			div(apps-graph style="height: 400px;")
 			.clearfix
-	.row
+	.row(ng-show="apps.length")
 		.col-xs-12
 			table.table
 				thead
