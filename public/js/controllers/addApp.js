@@ -245,7 +245,7 @@ define([
 			var data = {
 				process: {
 					name: $scope.app.name,
-					server: $scope.server
+					server: $scope.app.server
 				}
 			};
 			var url = '/app/'+ application.nameUrl +'/process';
