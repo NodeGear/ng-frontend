@@ -63,6 +63,11 @@
 									li(ng-repeat="property in properties")
 										i.fa.fa-fw(ng-class="property.class")
 										|  {{ property.name }}
+
+							p.lead(ng-if="isCreated")
+								a(ui-sref="app.processes({ id: app.nameUrl })")
+									i.fa.fa-fw.fa-trophy
+									|  Go to the Dashboard
 			
 			div(ng-show="creating")
 				.col-lg-6.col-sm-6.col-md-6
