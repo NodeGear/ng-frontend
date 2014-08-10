@@ -3,7 +3,7 @@
   "version": "0.9.0",
   "private": true,
   "scripts": {
-    "start": "node app.js",
+    "start": "node lib/app.js",
     "test": "istanbul cover _mocha -- -u exports -R spec"
   },
   "author": "Matej Kramny <matej@matej.me>",
