@@ -1,4 +1,4 @@
-var config = require('./config')
+var config = require('./lib/config')
 
 exports.config = {
   app_name : ['NodeGear Frontend'],
