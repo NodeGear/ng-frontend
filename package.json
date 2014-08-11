@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "start": "node lib/app.js",
-    "test": "istanbul cover _mocha -- -u exports -R spec"
+    "test": "istanbul cover _mocha -- -u exports -R spec",
+    "postinstall" : "node_modules/.bin/bower --allow-root install && node_modules/.bin/grunt build"
   },
   "author": "Matej Kramny <matej@matej.me>",
   "homepage": "https://nodegear.io",
@@ -45,7 +46,9 @@
   "devDependencies": {
     "should": "latest",
     "supertest": "latest",
+    "bower": "latest",
     "grunt": "latest",
+    "grunt-cli": "latest",
     "grunt-concurrent": "latest",
     "grunt-contrib-clean": "latest",
     "grunt-contrib-concat": "latest",
