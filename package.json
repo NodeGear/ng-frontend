@@ -62,6 +62,6 @@
   },
   "devDependencies": {
     "should": "latest",
-    "supertest": "latest",
+    "supertest": "latest"
   }
 }
