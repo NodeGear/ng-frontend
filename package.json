@@ -5,7 +5,7 @@
   "scripts": {
     "start": "node lib/app.js",
     "test": "istanbul cover _mocha -- -u exports -R spec",
-    "prepublish" : "node_modules/.bin/bower --allow-root install && node_modules/.bin/grunt build"
+    "prepublish" : "./node_modules/.bin/bower --allow-root install && ./node_modules/.bin/grunt build"
   },
   "author": "Matej Kramny <matej@matej.me>",
   "homepage": "https://nodegear.io",
