@@ -147,8 +147,7 @@ module.exports = function(grunt) {
 	grunt.registerTask('build', [
 		'clean:clean',
 		'concurrent:server',
-		'less:production',
-		'uglify'
+		'less:production'
 	]);
 
 	grunt.registerTask('default', [
