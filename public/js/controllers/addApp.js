@@ -177,6 +177,8 @@ define([
 				name: $scope.status,
 				class: "fa-check"
 			});
+
+			callback(null, application, domain, database);
 		}
 
 		$scope.createEnvironmentStep = function (application, domain, database, callback) {
