@@ -205,7 +205,7 @@ define([
 					}
 				};
 
-				$http.post('/app/'+$scope.app_url+'/environment', data)
+				$http.post('/app/'+application.nameUrl$scope+'/environment', data)
 				.success(function () {
 					done();
 				})
