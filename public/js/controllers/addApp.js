@@ -61,6 +61,8 @@ define([
 
 			$http.post('/apps/add', $scope.app)
 			.success(function(data, status) {
+				$scope.app.nameUrl = data.nameUrl;
+				
 				callback(null, data);
 
 				$http.get('/apps').success(function(data, status) {
