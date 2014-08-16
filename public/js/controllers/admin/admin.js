@@ -37,7 +37,8 @@ angular.module('nodegear', ['ngTable'])
 			if ($scope.servers[i].identifier == data.identifier) {
 				$scope.servers[i].stats = data;
 
-				$scope.servers[i].stats._mem = Math.round($scope.servers[i].stats.mem * 100)
+				$scope.servers[i].stats._mem = Math.round($scope.servers[i].stats.mem * 100);
+				$scope.servers[i].stats._memUsed = Math.round(($scope.servers[i].stats.memTotal - $scope.servers[i].stats.memFree) / 1024 / 1024);
 				$scope.servers[i].stats._free = Math.round((1 - $scope.servers[i].stats.free) * 100)
 				$scope.servers[i].stats._user = Math.round(100 * ($scope.servers[i].stats.user / $scope.servers[i].stats.total))
 				$scope.servers[i].stats._sys = Math.round(100 * ($scope.servers[i].stats.sys / $scope.servers[i].stats.total))

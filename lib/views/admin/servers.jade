@@ -12,22 +12,26 @@ block content
 						th Name
 						th Location
 						th Identifier
-						th Price Per Hour
+						th Per Hour
 						th RAM
+						th Used RAM
 						th Free RAM
 						th CPU Cores
 						th CPU Load
 						th CPU User
 						th CPU Sys
+						th Processes
 					tbody
 						tr(ng-repeat="server in servers")
 							td {{ server.name }}
 							td {{ server.location }}
 							td {{ server.identifier }}
-							td {{ server.price_per_hour }}
+							td £{{ server.price_per_hour }}
 							td {{ server.stats._ram }}GB
+							td {{ server.stats._memUsed }}MB
 							td {{ server.stats._mem }}%
 							td {{ server.stats.cores }}
 							td {{ server.stats._free }}%
 							td {{ server.stats._user }}%
 							td {{ server.stats._sys }}%
+							td {{ server.stats.Processes }}
