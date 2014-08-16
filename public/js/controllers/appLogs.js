@@ -94,7 +94,7 @@ define([
 		});
 
 		$scope.processLog = function(data) {
-			if (data.pid != $scope.$parent.process) {
+			if (data.pid != $state.params.pid) {
 				return;
 			}
 
@@ -110,13 +110,13 @@ define([
 				socket.removeListener('process_log', $scope.processLog);
 				socket.emit('unsubscribe_log', {
 					id: app.app._id,
-					pid: $scope.$parent.process
+					pid: $state.params.pid
 				});
 			} else {
 				socket.on('process_log', $scope.processLog);
 				socket.emit('subscribe_log', {
 					id: app.app._id,
-					pid: $scope.$parent.process
+					pid: $state.params.pid
 				});
 			}
 		}
@@ -127,7 +127,7 @@ define([
 
 		$scope.entries = [];
 
-		$http.get(app.appRoute+'/logs/'+$scope.$parent.process+'/'+log).success(function(data) {
+		$http.get(app.appRoute+'/logs/'+$state.params.pid+'/'+log).success(function(data) {
 			$scope.entries = data.entries;
 
 			if (!$scope.$$phase) {

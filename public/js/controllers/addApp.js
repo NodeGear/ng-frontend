@@ -334,6 +334,7 @@ define([
 				name: $scope.status,
 				class: "fa-check"
 			});
+			$scope.isCreated = true;
 
 			callback(null);
 		}
