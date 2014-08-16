@@ -1,8 +1,9 @@
 define([
 	'angular',
 	'app',
-	'moment'
-], function(angular, app, moment) {
+	'moment',
+	'socketio'
+], function(angular, app, moment, io) {
 	app.registerController('AppLogsController', function ($scope, $http, $rootScope, app, $state) {
 		$scope._app = app;
 		$scope.app = app.app;
@@ -93,6 +94,8 @@ define([
 			$scope.watchLog(false);
 		});
 
+		var process_log = io('/process_log');
+
 		$scope.processLog = function(data) {
 			if (data.pid != $state.params.pid) {
 				return;
@@ -107,14 +110,14 @@ define([
 
 		$scope.watchLog = function(watch) {
 			if (!watch) {
-				socket.removeListener('process_log', $scope.processLog);
-				socket.emit('unsubscribe_log', {
+				process_log.removeListener('process_log', $scope.processLog);
+				process_log.emit('unsubscribe_log', {
 					id: app.app._id,
 					pid: $state.params.pid
 				});
 			} else {
-				socket.on('process_log', $scope.processLog);
-				socket.emit('subscribe_log', {
+				process_log.on('process_log', $scope.processLog);
+				process_log.emit('subscribe_log', {
 					id: app.app._id,
 					pid: $state.params.pid
 				});
