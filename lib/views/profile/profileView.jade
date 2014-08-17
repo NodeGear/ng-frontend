@@ -1,75 +1,78 @@
-.pagestyle
-	.row
-		.col-xs-12
-			h4
-				i.fa.fa-user.fa-fw
-				|  Account Settings
-				a.btn.btn-default.pull-right(ui-sref="profile.security") Security
+.row
+	.col-xs-12
+		h2(style="margin-top: 0;")
+			i.fa.fa-user.fa-fw
+			|  Account Settings
+			a.btn.btn-default.pull-right(ui-sref="profile.security")
+				i.fa.fa-lock.fa-fw
+				|  Security
 
-	.row
-		.col-md-6(ng-controller="AccountSettingsController" ng-init="init('#{token}')")
-			form.form-horizontal(name="accountSettings" autocomplete="off")
-				.form-group(ng-show="status.length")
-					.col-sm-7.col-sm-offset-4
-						p {{ status }}
-				.form-group
-					label.col-sm-4.control-label(for="name") Full Name
-					.col-sm-7
-						input#name.form-control(required type="text" placeholder="Full Name" ng-model="user.name" ng-disabled="formDisabled")
-				.form-group
-					label.col-sm-4.control-label(for="username") Username
-					.col-sm-7
-						input#username.form-control(required type="text" placeholder="Username" ng-model="user.username" ng-disabled="formDisabled")
-				.form-group
-					label.col-sm-4.control-label(for="email") Email
-					.col-sm-7
-						input#email.form-control(required type="email" placeholder="Email" ng-model="user.email" ng-disabled="formDisabled")
-				.form-group(ng-hide="changePassword")
-					label.col-sm-4.control-label
-					.col-sm-7
-						a.btn.btn-link(ng-click="changePassword = true")
-							| Change Password
-				.form-group(ng-show="changePassword")
-					label.col-sm-4.control-label(for="new_password") New Password
-					.col-sm-7
-						input#new_password.form-control(type="password" ng-model="user.newPassword" placeholder="Enter New Password" ng-required="changePassword" ng-disabled="formDisabled")
-				.form-group(ng-show="changePassword")
-					label.col-sm-4.control-label(for="password") Current Password
-					.col-sm-7
-						input#password.form-control(type="password" placeholder="Current Password" ng-model="user.password" ng-required="changePassword" ng-disabled="formDisabled")
+br
 
-				.form-group
-					label.col-sm-4.control-label App Limit
-					.col-sm-7
-						input.form-control(type="text" readonly ng-model="user.appLimit" title="Contact us to raise the limit")
-				
-				.form-group
-					.col-sm-6.col-sm-offset-4
-						button.btn.btn-success(ng-disabled="accountSettings.$invalid || formDisabled" ng-click="saveUser()") Save
-						button.btn.btn-link(ng-show="changePassword" ng-click="setChangePassword(false)" title="Cancel Changing Password" ng-disabled="formDisabled") Cancel
+.row
+	.col-md-6(ng-controller="AccountSettingsController" ng-init="init('#{token}')")
+		form.form-horizontal(name="accountSettings" autocomplete="off")
+			.form-group(ng-show="status.length")
+				.col-sm-7.col-sm-offset-4
+					p {{ status }}
+			.form-group
+				label.col-sm-4.control-label(for="name") Full Name
+				.col-sm-7
+					input#name.form-control(required type="text" placeholder="Full Name" ng-model="user.name" ng-disabled="formDisabled")
+			.form-group
+				label.col-sm-4.control-label(for="username") Username
+				.col-sm-7
+					input#username.form-control(required type="text" placeholder="Username" ng-model="user.username" ng-disabled="formDisabled")
+			.form-group
+				label.col-sm-4.control-label(for="email") Email
+				.col-sm-7
+					input#email.form-control(required type="email" placeholder="Email" ng-model="user.email" ng-disabled="formDisabled")
+			.form-group(ng-hide="changePassword")
+				label.col-sm-4.control-label
+				.col-sm-7
+					a.btn.btn-link(ng-click="changePassword = true")
+						| Change Password
+			.form-group(ng-show="changePassword")
+				label.col-sm-4.control-label(for="new_password") New Password
+				.col-sm-7
+					input#new_password.form-control(type="password" ng-model="user.newPassword" placeholder="Enter New Password" ng-required="changePassword" ng-disabled="formDisabled")
+			.form-group(ng-show="changePassword")
+				label.col-sm-4.control-label(for="password") Current Password
+				.col-sm-7
+					input#password.form-control(type="password" placeholder="Current Password" ng-model="user.password" ng-required="changePassword" ng-disabled="formDisabled")
 
-		.col-md-6(ng-controller="TFAController" ng-init="init()")
-			h6: abbr(title="TFA adds additional security measures preventing anyone but yourself from accessing the account. Supported apps: Authy or Google Authenticator.") Two Factor Authentication
-			p(ng-show="tfa.status.length > 0") {{tfa.status}}
-			a.btn.btn-success(ng-click="enableTFA('#{token}')" href="" ng-hide="tfa.hide || tfa.enabled || tfa.showConfirm")
-				i.fa.fa-key.fa-fw
-				|  Enable TFA
-			a.btn.btn-danger(ng-click="disableTFA('#{token}')" href="" ng-hide="tfa.hide || !tfa.enabled || tfa.showConfirm")
-				i.fa.fa-key.fa-fw
-				|  Disable TFA
+			.form-group
+				label.col-sm-4.control-label App Limit
+				.col-sm-7
+					input.form-control(type="text" readonly ng-model="user.appLimit" title="Contact us to raise the limit")
 			
-			form.form-horizontal(ng-show="tfa.showConfirm" name="confirm")
-				.form-group(ng-show="tfa.qr.length > 0")
-					.col-sm-6.col-sm-offset-4
-						img.img-thumbnail(ng-src="{{tfa.qr}}")
-				.form-group
-					label.col-sm-4.control-label(for="confirm") Confirm Token
-					.col-sm-6
-						input#confirm.form-control(type="text" placeholder="6 Digit Code from Authy" required ng-model="tfa.token")
-				.form-group
-					.col-sm-6.col-sm-offset-4
-						button.btn.btn-success(ng-click="confirmTFA('#{token}')" href="" ng-disabled="tfa.hide || confirm.$invalid") Confirm Token
-						button.btn.btn-link(ng-click="disableTFA('#{token}')" href="" ng-disabled="tfa.hide") Cancel
-	blockquote
-		strong App Limit: 
-		| Adding credit will raise your application limit. Contact us if you want to raise your limit.
+			.form-group
+				.col-sm-6.col-sm-offset-4
+					button.btn.btn-primary(ng-disabled="accountSettings.$invalid || formDisabled" ng-click="saveUser()") Save
+					button.btn.btn-link(ng-show="changePassword" ng-click="setChangePassword(false)" title="Cancel Changing Password" ng-disabled="formDisabled") Cancel
+
+	.col-md-6(ng-controller="TFAController" ng-init="init()")
+		h6: abbr(title="TFA adds additional security measures preventing anyone but yourself from accessing the account. Supported apps: Authy or Google Authenticator.") Two Factor Authentication
+		p(ng-show="tfa.status.length > 0") {{tfa.status}}
+		a.btn.btn-success(ng-click="enableTFA('#{token}')" href="" ng-hide="tfa.hide || tfa.enabled || tfa.showConfirm")
+			i.fa.fa-key.fa-fw
+			|  Enable TFA
+		a.btn.btn-danger(ng-click="disableTFA('#{token}')" href="" ng-hide="tfa.hide || !tfa.enabled || tfa.showConfirm")
+			i.fa.fa-key.fa-fw
+			|  Disable TFA
+		
+		form.form-horizontal(ng-show="tfa.showConfirm" name="confirm")
+			.form-group(ng-show="tfa.qr.length > 0")
+				.col-sm-6.col-sm-offset-4
+					img.img-thumbnail(ng-src="{{tfa.qr}}")
+			.form-group
+				label.col-sm-4.control-label(for="confirm") Confirm Token
+				.col-sm-6
+					input#confirm.form-control(type="text" placeholder="6 Digit Code from Authy" required ng-model="tfa.token")
+			.form-group
+				.col-sm-6.col-sm-offset-4
+					button.btn.btn-success(ng-click="confirmTFA('#{token}')" href="" ng-disabled="tfa.hide || confirm.$invalid") Confirm Token
+					button.btn.btn-link(ng-click="disableTFA('#{token}')" href="" ng-disabled="tfa.hide") Cancel
+blockquote
+	strong App Limit: 
+	| Adding credits will raise your application limit. Contact us if you want to raise your limit.

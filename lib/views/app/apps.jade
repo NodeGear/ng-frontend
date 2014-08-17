@@ -1,34 +1,31 @@
-.pagestyle
-	.row
-		.col-xs-12
-			h4
-				i.fa.fa-gears.fa-fw
-				|  Gears
-				.pull-right
-					button.btn.btn-success(ui-sref="add") Add Gear
+.row
+	.col-xs-12
+		h2(style="margin-top: 0;")
+			i.fa.fa-gears.fa-fw
+			|  Gears
+			.pull-right
+				button.btn.btn-success(ui-sref="add") Add Gear
 
-	.row
-		.col-sm-6
-			h3.text-center(style="color:#5cb85c;" ng-bind="appsOn") 0
-				| {{ appsOn }}
-			h4.text-center Online Gears
-		.col-sm-6
-			h3.text-center(style="color:#d9534f;" ng-bind="appsOff") 0
-			h4.text-center Offline Gears
-	br
-	.row(ng-if="apps.length == 0")
-		.col-sm-12
+.row
+	.col-sm-6
+		h2.text-center(style="color:#5cb85c;" ng-bind="appsOn") 0
+			| {{ appsOn }}
+		h3.text-center Online
+	.col-sm-6
+		h2.text-center(style="color:#d9534f;" ng-bind="appsOff") 0
+		h3.text-center Offline
+br
+.row(ng-if="apps.length == 0")
+	.col-sm-12
+		br
+		p.text-center.lead Uh, oh. You have no apps :/
 			br
-			p.text-center.lead Uh, oh. You have no apps :/
-				br
-				br
-				button.btn.btn-lg.text-center.btn-info(ui-sref="add") Add an Application
-	.row(ng-show="apps.length")
-		.col-sm-12
-			div(apps-graph style="height: 400px;")
-			.clearfix
-	.row(ng-show="apps.length")
-		.col-xs-12
+			br
+			button.btn.btn-lg.text-center.btn-info(ui-sref="add") Add an Application
+
+.row(ng-if="apps.length > 0")
+	.col-xs-12
+		.table-responsive
 			table.table
 				thead
 					tr
@@ -36,12 +33,14 @@
 				tbody
 					tr(ng-repeat="app in apps | filter:{ isRunning: true }")
 						td
-							span.link-larger.label.label-success(title="Processes Online") {{ app.running }}
+							span(title="Processes Online" style="color:#5cb85c;") {{ app.running }}
+								i.fa.fa-fw.fa-arrow-up
 							| &nbsp;
-							span.link-larger.label.label-danger(title="Processes Offline") {{ app.stopped }}
+							span(title="Processes Offline" style="color:#d9534f;") {{ app.stopped }}
+								i.fa.fa-fw.fa-arrow-down
 							| &nbsp;&nbsp;
 							a.link-larger(ui-sref="app.processes({ id: app.nameUrl })") {{ app.name }}
-							span.link-larger {{ app.server }}
+							span {{ app.server }}
 							span.pull-right(ng-repeat="stat in app.stat_processes" style="padding: 10px;")
 								| CPU: {{ stat.monitor.cpu_percent }}%
 								| RAM: {{ stat.monitor.rssString }}
@@ -51,12 +50,14 @@
 				tbody
 					tr(ng-repeat="app in apps | filter:{ isRunning: false }")
 						td
-							span.link-larger.label.label-success(title="Processes Online") {{ app.running }}
+							span(title="Processes Online" style="color:#5cb85c;") {{ app.running }}
+								i.fa.fa-fw.fa-arrow-up
 							| &nbsp;
-							span.link-larger.label.label-danger(title="Processes Offline") {{ app.stopped }}
+							span(title="Processes Offline" style="color:#d9534f;") {{ app.stopped }}
+								i.fa.fa-fw.fa-arrow-down
 							| &nbsp;&nbsp;
-							a.link-larger(ui-sref="app.processes({ id: app.nameUrl })") {{ app.name }}
-							span.link-larger {{ app.server }}
+							a(ui-sref="app.processes({ id: app.nameUrl })") {{ app.name }}
+							span {{ app.server }}
 							span.pull-right(ng-repeat="stat in app.stat_processes" style="padding: 10px;")
 								| CPU: {{ stat.monitor.cpu_percent }}%
 								| RAM: {{ stat.monitor.rssString }}

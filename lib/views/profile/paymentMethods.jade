@@ -2,7 +2,9 @@ hr
 div(ng-controller="PaymentMethodsController" ng-init="init('#{token}')" ng-cloak)
 	.row
 		.col-sm-12
-			h4 Payment Methods
+			h3
+				i.fa.fa-fw.fa-credit-card
+				|  Payment Methods
 				button.btn.btn-success.pull-right(ui-sref="profile.billing.paymentMethods.add") New Payment Method
 	
 	.row

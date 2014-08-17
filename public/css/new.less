@@ -7,15 +7,26 @@
 
 @font-family-sans-serif: Roboto, Arial, sans-serif;
 @font-family-monospace: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
-@font-size-base: 15px;
+@font-size-base: 14px;
 @font-family-base: @font-family-sans-serif;
 
+@headings-font-weight: 300;
+@alert-link-font-weight: 400;
+@badge-font-weight: 400;
+@close-font-weight: 400;
+
 @ng-background: darken(#bfe2ca, 25%);
+
+@brand-primary: darken(desaturate(#4184F3, 10%), 10%);
+@text-color: #222;
 
 @border-radius-base: 2px;
 @border-radius-large: @border-radius-base;
 @border-radius-small: @border-radius-base;
 //@input-border-focus: lighten(@ng-header-background, 20%);
+
+@modal-backdrop-bg: #FFF;
+@modal-backdrop-opacity: .5;
 
 @import '../vendor/bootstrap/less/bootstrap.less';
 @import '../vendor/fontawesome/less/font-awesome.less';
@@ -103,7 +114,124 @@ body {
   .form-control-validation-custom(@state-danger-text; @state-danger-text; @state-danger-bg);
 }
 
+// Make the .btn.btn-danger button white, but red on hover.
+.btn.btn-danger {
+	color: darken(@btn-danger-bg, 10%);
+	background-color: @btn-danger-color;
+	border-color: @btn-danger-border;
 
+	&:hover,
+	&:focus,
+	&:active,
+	&.active,
+	.open > .dropdown-toggle& {
+	 color: @btn-danger-color;
+	 background-color: darken(@btn-danger-bg, 10%);
+	     border-color: darken(@btn-danger-border, 12%);
+	}
+	&:active,
+	&.active,
+	.open > .dropdown-toggle& {
+	 background-image: none;
+	}
+	&.disabled,
+	&[disabled],
+	fieldset[disabled] & {
+	 &,
+	 &:hover,
+	 &:focus,
+	 &:active,
+	 &.active {
+	   background-color: @btn-danger-bg;
+	       border-color: @btn-danger-border;
+	 }
+	}
+}
+
+.btn {
+	-webkit-transition: background-color 100ms linear, color 100ms linear;
+	-moz-transition: background-color 100ms linear, color 100ms linear;
+	-o-transition: background-color 100ms linear, color 100ms linear;
+	-ms-transition: background-color 100ms linear, color 100ms linear;
+	transition: background-color 100ms linear, color 100ms linear;
+}
+
+label, strong, blockquote {
+	font-weight: 400;
+}
+
+blockquote {
+	font-weight: 300;
+}
+
+// Modals
+
+.modal-content {
+	color: #000;
+	// padding: 30px 42px;
+	-webkit-box-shadow: 0 4px 16px rgba(0,0,0,.2);
+	-moz-box-shadow: 0 4px 16px rgba(0,0,0,.2);
+	box-shadow: 0 4px 16px rgba(0,0,0,.2);
+}
+
+// Navbar
+
+.nodegear-topbar {
+	background-color: #FFF;
+	box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
+	height: 55px;
+
+	a.navbar-brand {
+		font-weight: 100;
+		font-size: 22px;
+	}
+
+	a.navbar-brand, ul li a {
+		padding-top: 17px;
+	}
+}
+
+// Sidebar
+
+.nodegear-sidebar {
+	position: fixed;
+	height: ~"calc(100vh - 55px)";
+	overflow-y: auto;
+	background-color: #fafafa;
+
+	padding-left: 0;
+	padding-right: 0;
+
+	ul li {
+		a {
+			color: #222;
+			padding: 7px 15px;
+
+			-webkit-transition: background-color 100ms linear, color 100ms linear;
+			-moz-transition: background-color 100ms linear, color 100ms linear;
+			-o-transition: background-color 100ms linear, color 100ms linear;
+			-ms-transition: background-color 100ms linear, color 100ms linear;
+			transition: background-color 100ms linear, color 100ms linear;
+		}
+
+		&.active a {
+			color: @brand-primary;
+			background-color: rgba(0, 0, 0, 0.0313726);
+		}
+	}
+}
+
+// Container
+
+.nodegear-container {
+	height: ~"calc(100vh - 55px)";
+	overflow-y: auto;
+	margin-top: 55px;
+}
+
+.nodegear-content, .nodegear-sidebar {
+	padding-top: 20px;
+}
 
 // Keep this down the bottom so it is parsed last.
 @import 'animations.less';

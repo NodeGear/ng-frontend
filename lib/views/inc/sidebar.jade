@@ -1,23 +1,35 @@
 
 ul.nav.sidenav(role="navigation")
-	li: h4.text-center: a(ui-sref="apps") NodeGear
-
 	li(ng-class="{ active: $state.includes('gettingStarted') }")
 		a(ui-sref="gettingStarted")
-			i.fa.fa-thumb-tack.fa-fw
+			//-i.fa.fa-thumb-tack.fa-fw
 			|  Getting Started
-	li(ng-class="{ active: $state.includes('apps') || $state.includes('app') }"): a(ui-sref="apps") Gears
-	li(ng-class="{ active: $state.includes('databases') || $state.includes('database_add') || $state.includes('database_edit') }"): a(ui-sref="databases") Databases
+	li(ng-class="{ active: $state.includes('apps') || $state.includes('app') }"): a(ui-sref="apps")
+		//-i.fa.fa-gears.fa-fw
+		|  Gears
+	li(ng-class="{ active: $state.includes('databases') || $state.includes('database_add') || $state.includes('database_edit') }"): a(ui-sref="databases")
+		//-i.fa.fa-database.fa-fw
+		|  Databases
 	li(ng-class="{ active: $state.includes('profile.view') || $state.includes('profile.security') }")
-		a(ui-sref="profile.view") Account Settings
+		a(ui-sref="profile.view")
+			//-i.fa.fa-fw.fa-user
+			|  Account Settings
 	li(ng-class="{ active: $state.includes('profile.billing') && !$state.includes('profile.billing.paymentMethods') }")
-		a(ui-sref="profile.billing.history") Billing
+		a(ui-sref="profile.billing.history")
+			//-i.fa.fa-fw.fa-money
+			|  Billing
 	li(ng-class="{ active: $state.includes('profile.billing.paymentMethods') }")
-		a(ui-sref="profile.billing.paymentMethods") Payment Methods
+		a(ui-sref="profile.billing.paymentMethods")
+			//-i.fa.fa-fw.fa-credit-card
+			|  Payment Methods
 	li(ng-class="{ active: $state.includes('ssh.keys') }")
-		a(ui-sref="ssh.keys") SSH Keys
+		a(ui-sref="ssh.keys")
+			//-i.fa.fa-fw.fa-key
+			|  SSH Keys
 	li(ng-class="{ active: $state.includes('tickets') }")
-		a(ui-sref="tickets.tickets") Support Tickets
+		a(ui-sref="tickets.tickets")
+			//-i.fa.fa-fw.fa-question
+			|  Support Tickets
 
 	li(ng-show="user.admin" ng-cloak style="margin-top: 20px;"): a(href="/admin" target="_blank")
 		i.fa.fa-external-link.fa-fw
@@ -30,6 +42,6 @@ ul.nav.sidenav(role="navigation")
 	p.text-center.hidden-xs(style="margin-top: 20px;")
 		small.text-muted v#{version}-##{versionHash}
 
-	.kiosk-toggle
-		a(ng-click="toggleKiosk()")
-			span.caret
+	//-.btn.btn-block.btn-default(ng-click="toggleKiosk()")
+		i.fa.fa-angle-double-left(ng-if="!kiosk_enabled")
+		i.fa.fa-angle-double-right(ng-if="kiosk_enabled")

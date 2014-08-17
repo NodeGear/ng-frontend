@@ -1,22 +1,21 @@
-.pagestyle
+.row
+	.col-xs-12
+		h2(style="margin-top: 0;")
+			i.fa.fa-money.fa-fw
+			|  Balance &amp; Usage
+			button.btn.btn-success.pull-right(ui-sref="profile.billing.addCredits")
+				i.fa.fa-fw.fa-plus
+				|  Add Funds
+
+div(ng-controller="CurrentUsageController" ng-init="init()")
 	.row
-		.col-xs-12
-			h4
-				i.fa.fa-money.fa-fw
-				|  Balance &amp; Usage
-				button.btn.btn-success.pull-right(ui-sref="profile.billing.addCredits")
-					i.fa.fa-fw.fa-plus
-					|  Add Funds
+		.col-sm-6
+			h2.text-center(ng-style="balanceStyle")
+				| £{{ balance }}
+			h3.text-center {{ balanceStatus }}
+		.col-md-6.col-sm-6.col-lg-6
+			h2.text-center(ng-style="usageStyle")
+				| £{{ used }}
+			h3.text-center: a(ui-sref="profile.billing.usage") Current Period Charges
 
-	div(ng-controller="CurrentUsageController" ng-init="init()")
-		.row
-			.col-sm-6
-				h6.text-center(ng-style="balanceStyle")
-					| £{{ balance }}
-				h6.text-center {{ balanceStatus }}
-			.col-md-6.col-sm-6.col-lg-6
-				h6.text-center(ng-style="usageStyle")
-					| £{{ used }}
-				h6.text-center: a(ui-sref="profile.billing.usage") Current Period Charges
-
-	ui-view(autoscroll="false")
+ui-view(autoscroll="false")

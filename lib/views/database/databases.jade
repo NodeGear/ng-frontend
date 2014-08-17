@@ -1,28 +1,27 @@
-.pagestyle
-	.row
-		.col-xs-12
-			h4
-				i.fa.fa-database.fa-fw
-				|  Databases
-				.pull-right
-					button.btn.btn-success(ui-sref="database_add") Add Database
-	br
-	.row
-		.col-xs-12
-			table.table
-				thead
-					tr
-						th Name
-						th DB Type
-						th &nbsp;
-				tbody
-					tr(ng-repeat="database in databases")
-						td
-							a(ui-sref="database_edit({ database_id: database._id })") {{ database.name }}
-						td {{ database.database_type }}
-						td
-							.btn-group.pull-right
-								a.btn.btn-success.btn-xs(ng-if="database.database_type == 'mongolab'" href="#" ng-click="openSSO(database)")
-									i.fa.fa-fw.fa-sign-in
-									|  Login to MongoLab
-								a.btn.btn-default.btn-xs(ui-sref="database_edit({ database_id: database._id })") Show
+.row
+	.col-xs-12
+		h2(style="margin-top: 0;")
+			i.fa.fa-database.fa-fw
+			|  Databases
+			.pull-right
+				button.btn.btn-success(ui-sref="database_add") Add Database
+br
+.row
+	.col-xs-12
+		table.table
+			thead
+				tr
+					th Name
+					th DB Type
+					th &nbsp;
+			tbody
+				tr(ng-repeat="database in databases")
+					td
+						a(ui-sref="database_edit({ database_id: database._id })") {{ database.name }}
+					td {{ database.database_type }}
+					td
+						.btn-group.pull-right
+							a.btn.btn-success.btn-xs(ng-if="database.database_type == 'mongolab'" href="#" ng-click="openSSO(database)")
+								i.fa.fa-fw.fa-sign-in
+								|  Login to MongoLab
+							a.btn.btn-default.btn-xs(ui-sref="database_edit({ database_id: database._id })") Show
