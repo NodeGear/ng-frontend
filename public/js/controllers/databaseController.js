@@ -5,6 +5,12 @@ define([
 	app.registerController('DatabasesController', function ($scope, $http, csrf) {
 		$http.get('/databases').success(function(data) {
 			$scope.databases = data.databases;
+
+			$scope.openSSO = function (database) {
+				if (database.database_type != 'mongolab') return;
+
+				window.open(window.location.protocol + '//' + window.location.host + '/database/' + database._id + '/sso', '_blank');
+			}
 		})
 	})
 

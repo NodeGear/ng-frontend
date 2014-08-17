@@ -14,14 +14,15 @@
 					tr
 						th Name
 						th DB Type
-						th DB Host
-						th DB Name
-						th DB User
+						th &nbsp;
 				tbody
 					tr(ng-repeat="database in databases")
 						td
 							a(ui-sref="database_edit({ database_id: database._id })") {{ database.name }}
 						td {{ database.database_type }}
-						td {{ database.db_host }}
-						td {{ database.db_name }}
-						td {{ database.db_user }}
+						td
+							.btn-group.pull-right
+								a.btn.btn-success.btn-xs(ng-if="database.database_type == 'mongolab'" href="#" ng-click="openSSO(database)")
+									i.fa.fa-fw.fa-sign-in
+									|  Login to MongoLab
+								a.btn.btn-default.btn-xs(ui-sref="database_edit({ database_id: database._id })") Show
