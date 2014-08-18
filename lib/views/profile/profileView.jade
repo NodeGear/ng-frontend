@@ -48,7 +48,7 @@ br
 			
 			.form-group
 				.col-sm-6.col-sm-offset-4
-					button.btn.btn-primary(ng-disabled="accountSettings.$invalid || formDisabled" ng-click="saveUser()") Save
+					button.btn.btn-success(ng-disabled="accountSettings.$invalid || formDisabled" ng-click="saveUser()") Save
 					button.btn.btn-link(ng-show="changePassword" ng-click="setChangePassword(false)" title="Cancel Changing Password" ng-disabled="formDisabled") Cancel
 
 	.col-md-6(ng-controller="TFAController" ng-init="init()")

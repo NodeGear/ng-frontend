@@ -1,44 +1,43 @@
-.pagestyle
-	.row
-		.col-sm-12.col-md-12.col-lg-12
-			h4 Support Ticket '{{ ticket.subject }}'
-			
-	.row
-		.col-sm-8.col-sm-offset-2
-			| You
-			em.pull-right(title="{{ ticket.created }}") {{ ticket.createdString }}
-			pre
-				code
-					| {{ ticket.message }}
-	
-	.row(ng-repeat="message in ticket.messages")
-		.col-sm-8.col-sm-offset-2
-			| {{ message.user.name }}
-			em.pull-right(title="{{ message.created }}") {{ message.createdString }}
-			pre
-				code
-					| {{ message.message }}
+.row
+	.col-sm-12.col-md-12.col-lg-12
+		h2(style="margin-top: 0;") Support Ticket '{{ ticket.subject }}'
+		
+.row
+	.col-sm-8.col-sm-offset-2
+		| You
+		em.pull-right(title="{{ ticket.created }}") {{ ticket.createdString }}
+		pre
+			code
+				| {{ ticket.message }}
 
-	.row(ng-show="ticket.closed")
-		.col-sm-8.col-sm-offset-2.text-center
-			i Ticket Closed.
-	
-	br
+.row(ng-repeat="message in ticket.messages")
+	.col-sm-8.col-sm-offset-2
+		| {{ message.user.name }}
+		em.pull-right(title="{{ message.created }}") {{ message.createdString }}
+		pre
+			code
+				| {{ message.message }}
 
-	.row(ng-hide="ticket.closed")
-		.col-sm-8.col-sm-offset-2
-			form.form-horizontal(name="ticketReply" ng-init="setCsrf('#{token}')")
-				.form-group
-					.col-sm-12
-						textarea.form-control(required ng-model="reply" placeholder="Reply to ticket {{ticket.subject}}")
-				.form-group
-					.col-sm-12
-						.btn-group
-							a.btn.btn-success(ng-disabled="ticketReply.$invalid || disableSend" ng-click="submitReply()")
-								i.fa.fa-reply.fa-fw
-								|  Submit Reply
-							a.btn.btn-default(ng-click="closeTicket()")
-								i.fa.fa-times.fa-fw
-								|  Close Ticket
-						| &nbsp;
-						em {{ status }}
+.row(ng-show="ticket.closed")
+	.col-sm-8.col-sm-offset-2.text-center
+		i Ticket Closed.
+
+br
+
+.row(ng-hide="ticket.closed")
+	.col-sm-8.col-sm-offset-2
+		form.form-horizontal(name="ticketReply" ng-init="setCsrf('#{token}')")
+			.form-group
+				.col-sm-12
+					textarea.form-control(required ng-model="reply" placeholder="Reply to ticket {{ticket.subject}}")
+			.form-group
+				.col-sm-12
+					.btn-group
+						a.btn.btn-success(ng-disabled="ticketReply.$invalid || disableSend" ng-click="submitReply()")
+							i.fa.fa-reply.fa-fw
+							|  Submit Reply
+						a.btn.btn-default(ng-click="closeTicket()")
+							i.fa.fa-times.fa-fw
+							|  Close Ticket
+					| &nbsp;
+					em {{ status }}

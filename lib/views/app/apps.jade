@@ -9,11 +9,12 @@
 .row
 	.col-sm-6
 		h2.text-center(style="color:#5cb85c;" ng-bind="appsOn") 0
-			| {{ appsOn }}
-		h3.text-center Online
+		h3.text-center
+			| Online
 	.col-sm-6
 		h2.text-center(style="color:#d9534f;" ng-bind="appsOff") 0
-		h3.text-center Offline
+		h3.text-center
+			| Offline
 br
 .row(ng-if="apps.length == 0")
 	.col-sm-12

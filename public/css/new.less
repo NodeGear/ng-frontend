@@ -31,6 +31,12 @@
 @import '../vendor/bootstrap/less/bootstrap.less';
 @import '../vendor/fontawesome/less/font-awesome.less';
 
+h1, h2, h3, h4, h5, h6 {
+	& > small {
+		font-weight: 200;
+	}
+}
+
 // Some bootstrap shiz.
 .form-control-focus-custom(@color: @input-border-focus) {
   @color-rgba: rgba(red(@color), green(@color), blue(@color), .6);
