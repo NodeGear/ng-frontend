@@ -12,10 +12,10 @@ div(ng-controller="CurrentUsageController" ng-init="init()")
 		.col-sm-6
 			h2.text-center(ng-style="balanceStyle")
 				| £{{ balance }}
-			h3.text-center {{ balanceStatus }}
+			h4.text-center {{ balanceStatus }}
 		.col-md-6.col-sm-6.col-lg-6
 			h2.text-center(ng-style="usageStyle")
 				| £{{ used }}
-			h3.text-center: a(ui-sref="profile.billing.usage") Current Period Charges
+			h4.text-center: a(ui-sref="profile.billing.usage") Current Period Charges
 
 ui-view(autoscroll="false")

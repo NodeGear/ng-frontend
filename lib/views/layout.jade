@@ -27,13 +27,39 @@ html
 							i(title="You have been warned.") Your actions 
 								strong are
 								|  recorded.
+
 		nav.navbar.navbar-default.navbar-fixed-top.nodegear-topbar
 			.container-fluid
 				.navbar-header
-					a.navbar-brand(ui-sref="apps") NodeGear
-				.collapse.navbar-collapse
-					ul.nav.navbar-nav.navbar-right
+					a.navbar-brand(ui-sref="apps") NodeGear 
+						small(ng-if="$state.includes('app')" ng-bind-template="/ {{ app.name }}")
+
+				.collapse.navbar-collapse(ng-cloak)
+					ul.nav.navbar-nav.pull-right
+						li(ng-class="{ 'active': $state.includes('app.processes') }" ng-if="$state.includes('app')")
+							a(ui-sref="app.processes({ id: app.nameUrl })")
+								| Processes
+						li(ng-class="{ 'active': $state.includes('app.domains') }" ng-if="$state.includes('app')")
+							a(ui-sref="app.domains({ id: app.nameUrl })")
+								| Domains
+						li(ng-class="{ 'active': $state.includes('app.environment') }" ng-if="$state.includes('app')")
+							a(ui-sref="app.environment({ id: app.nameUrl })")
+								| Environment
+						li(ng-class="{ 'active': $state.includes('app.logs') }" ng-if="$state.includes('app')")
+							a(ui-sref="app.logs({ id: app.nameUrl })")
+								| Logs
+						li(ng-class="{ 'active': $state.includes('app.traffic') }" ng-if="$state.includes('app')")
+							a(ui-sref="app.traffic({ id: app.nameUrl })")
+								| Traffic
+						li(ng-class="{ 'active': $state.includes('app.usage') }" ng-if="$state.includes('app')")
+							a(ui-sref="app.usage({ id: app.nameUrl })")
+								| Resources
+						li(ng-class="{ 'active': $state.includes('app.settings') }" ng-if="$state.includes('app')")
+							a(ui-sref="app.settings({ id: app.nameUrl })")
+								| Settings
+
 						li: a(ui-sref="profile.view" ng-bind="user.name")
+							| Awesome User
 		
 		.container-fluid.nodegear-container
 			.row

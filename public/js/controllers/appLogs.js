@@ -9,10 +9,16 @@ define([
 		$scope.app = app.app;
 
 		$scope.processes = [];
-		$scope.process = null
+		$scope.process = null;
+
+		$scope.hasNoProcesses = false;
 
 		$http.get(app.appRoute+'/processes?includeDeleted=true').success(function(data, status) {
 			$scope.processes = [];
+
+			if (data.processes.length == 0) {
+				$scope.hasNoProcesses = true;
+			}
 
 			for (var i = 0; i < data.processes.length; i++) {
 				var proc = data.processes[i];

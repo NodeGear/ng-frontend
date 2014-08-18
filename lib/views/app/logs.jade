@@ -1,20 +1,16 @@
-.pagestyle
-	.row
-		.col-xs-12
-			h4 Process Logs
-				.btn-group.pull-right
-					a.btn.btn-success.btn-md(ng-disabled="process.length == 0 || !log || log.length == 0" target="_blank" href="/app/{{ app.nameUrl }}/logs/{{ process }}/{{ log }}/download")
-						i.fa.fa-download.fa-fw
-						|  Download Log
+.btn-group.pull-right
+	a.btn.btn-success.btn-md(ng-disabled="process.length == 0 || !log || log.length == 0" target="_blank" href="/app/{{ app.nameUrl }}/logs/{{ process }}/{{ log }}/download")
+		i.fa.fa-download.fa-fw
+		|  Download Log
 
-	.row
-		.col-sm-4
-			strong 1. Select Process
-			select.form-control(ng-model="process" ng-options="proc._id as proc.name group by proc.deletedString for proc in processes")
-			br
-			strong 2. Select a Log File
-			select.form-control(ng-model="log" ng-options="log for log in logs")
-			br
-			strong 3. Filter
-		.col-sm-8
-			pre: ui-view(autoscroll="false")
+.row
+	.col-sm-4
+		strong 1. Select Process
+		select.form-control(ng-model="process" ng-options="proc._id as proc.name group by proc.deletedString for proc in processes")
+		br
+		strong 2. Select a Log File
+		select.form-control(ng-model="log" ng-options="log for log in logs")
+		br
+		strong 3. Filter
+	.col-sm-8
+		pre: ui-view(autoscroll="false")

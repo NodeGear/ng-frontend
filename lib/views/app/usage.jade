@@ -1,15 +1,19 @@
-.pagestyle
-	h4 Resource Usage
+h2(style="margin-top: 0;") Resource Usage
 
-	table.table(ng-init="getUsage()")
-		thead
-			tr
-				th Time
-				th CPU Usage %
-				th RAM Usage Mb
-		tbody
-			tr(ng-repeat="use in usage")
-				td {{ use.time.getDate() }}/{{ use.time.getMonth()+1 }}/{{ use.time.getFullYear() }}
-					| {{ use.time.getHours() }}:{{ use.time.getMinutes() }}
-				td {{ use.cpu }}
-				td {{ use.memory }}
+blockquote
+	| You can view 
+	a(ui-sref="app.processes({ id: app.nameUrl })") live data
+	| , but it is currently ephemeral, meaning it is discarded when the data is delivered to you. We are building an internal solution to easily browse the monitoring history.
+
+table.table(ng-init="getUsage()" ng-if="false")
+	thead
+		tr
+			th Time
+			th CPU Usage %
+			th RAM Usage Mb
+	tbody
+		tr(ng-repeat="use in usage")
+			td {{ use.time.getDate() }}/{{ use.time.getMonth()+1 }}/{{ use.time.getFullYear() }}
+				| {{ use.time.getHours() }}:{{ use.time.getMinutes() }}
+			td {{ use.cpu }}
+			td {{ use.memory }}

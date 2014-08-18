@@ -164,7 +164,7 @@ define([
 		.state('app.logs', {
 			url: '/logs',
 			pageTitle: "App Logs",
-			template: "<ui-view autoscroll='false'></ui-view>",
+			templateUrl: "/view/app/logsPlaceholder",
 			controller: "AppLogsController",
 			resolve: {
 				dummy: $couchPotatoProvider.resolveDependencies(['controllers/appLogs'])

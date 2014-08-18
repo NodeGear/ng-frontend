@@ -1,15 +1,22 @@
-.pagestyle
-	h4 App Environment
-		.btn-group.pull-right
-			button.btn.btn-success(ui-sref="app.environment.addEnv({ id: app.nameUrl })") Add Env Variable
+h2(style="margin-top: 0;") Environment Variables
+	.btn-group.pull-right
+		button.btn.btn-success(ui-sref="app.environment.addEnv({ id: app.nameUrl })") Add a Variable
 
-	table.table
-		thead
-			th Name
-			th Value
-		tbody
-			tr(ng-repeat="env in _app.environment")
-				td: a(ui-sref="app.environment.editEnv({ id: app.nameUrl, eid: env._id })") {{ env.name }}
-				td {{ env.value }}
+table.table(ng-if="_app.environment.length > 0")
+	thead
+		th Name
+		th Value
+	tbody
+		tr(ng-repeat="env in _app.environment")
+			td: a(ui-sref="app.environment.editEnv({ id: app.nameUrl, eid: env._id })") {{ env.name }}
+			td {{ env.value }}
 
-	ui-view(autoscroll="off")
+p.lead.text-center(ng-if="_app.environment.length == 0")
+	br
+	| Uh Oh, this app has no environment variables.
+
+blockquote
+	strong Pro Tip:
+	|  Environment Variables are passed to the running application and can help it describe what database it should use, which domains are being routed to the application etc.
+
+ui-view(autoscroll="off")

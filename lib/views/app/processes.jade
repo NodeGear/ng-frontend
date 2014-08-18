@@ -1,6 +1,6 @@
-.pagestyle(ng-controller="AppDashboardController" ng-init="setCsrf('#{token}'); showDashboard = true;")
+div(ng-controller="AppDashboardController" ng-init="setCsrf(); showDashboard = true;")
 	.pull-right
-		.btn-group
+		.btn-group(ng-if="_app.processes.length > 0")
 			button.btn.btn-md.btn-default(ng-click="showDashboard = !showDashboard" ng-class="{ 'btn-info': showDashboard, 'btn-default': !showDashboard }")
 				i.fa.fa-dashboard.fa-fw
 			button.btn.btn-md.btn-default(ng-click="showDashboard = !showDashboard" ng-class="{ 'btn-info': !showDashboard, 'btn-default': showDashboard }")
@@ -8,9 +8,13 @@
 		| &nbsp;
 		.btn-group
 			button.btn.btn-md.btn-success(ui-sref="app.processes.addProcess({ id: app.nameUrl })") Add Process
-	p.lead You have {{ _app.processes.length }} process
-		span(ng-show="_app.processes.length > 1") es
-	.row(ng-show="showDashboard")
+
+	h2(style="margin-top: 0;")
+		span.font-code {{ _app.processes.length }}
+		|  process
+		span(ng-if="_app.processes.length > 1 || _app.processes.length == 0") es
+	
+	.row(ng-if="showDashboard")
 		.col-md-6(ng-repeat="process in _app.processes")
 			.panel.panel-default.process-box(ng-class="{ 'panel-success': process.running && !process.startStopDisabled, 'panel-danger': !process.running && !process.startStopDisabled, 'panel-info': process.startStopDisabled }")
 				.panel-heading
@@ -112,7 +116,7 @@
 			li Add a 
 				a(ui-sref="app.domains.addDomain({ id: app.nameUrl })") Domain/Subdomain
 			li Add at least one 
-				a(ui-sref="app.dashboard.addProcess({ id: app.nameUrl })") Process
+				a(ui-sref="app.processes.addProcess({ id: app.nameUrl })") Process
 
 
 	ui-view(autoscroll="false")

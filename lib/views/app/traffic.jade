@@ -1,56 +1,59 @@
-.pagestyle
-	h4 Traffic Analysis
+h2(style="margin-top: 0;") Traffic Analysis
 
-	table.table
-		thead
+blockquote
+	strong We're not there yet.
+	|  Its not your fault. We recently upgraded our architecture and decided to build an in-house analytics module which would aggregate all incoming data. It will be ready soon :)
+
+table.table(ng-if="false")
+	thead
+		tr
+			th IP
+			th Start
+			th Time
+			th Down
+			th Up
+			th Hostname
+			th Request
+	tbody
+		//-for row in analytics
 			tr
-				th IP
-				th Start
-				th Time
-				th Down
-				th Up
-				th Hostname
-				th Request
-		tbody
-			//-for row in analytics
-				tr
-					td= row.ip
-					td
-						= row.start.getDate()
-						| /
-						= row.start.getMonth()+1
-						|  
-						= row.start.getHours()
-						| :
-						= row.start.getMinutes()
-						| :
-						= row.start.getSeconds()
-						| s
-					td= row.end - row.start
-						| ms
-					td
-						- size = row.resSize
+				td= row.ip
+				td
+					= row.start.getDate()
+					| /
+					= row.start.getMonth()+1
+					|  
+					= row.start.getHours()
+					| :
+					= row.start.getMinutes()
+					| :
+					= row.start.getSeconds()
+					| s
+				td= row.end - row.start
+					| ms
+				td
+					- size = row.resSize
+					if size < 1024
+						= size
+						| b
+					else
+						- size = size / 1024
 						if size < 1024
-							= size
-							| b
+							= size.toFixed(2)
+							| kb
 						else
 							- size = size / 1024
-							if size < 1024
-								= size.toFixed(2)
-								| kb
-							else
-								- size = size / 1024
-								= size.toFixed(2)
-								| mb
-					td= row.reqSize
-						| b
-					td= row.hostname
-					td= row.request
-						|  
-						= row.statusCode
-						|  
-						if row.url.length > 10
-							= row.url.substr(0,10-1)
-							| &hellip;
-						else
-							= row.url
+							= size.toFixed(2)
+							| mb
+				td= row.reqSize
+					| b
+				td= row.hostname
+				td= row.request
+					|  
+					= row.statusCode
+					|  
+					if row.url.length > 10
+						= row.url.substr(0,10-1)
+						| &hellip;
+					else
+						= row.url
