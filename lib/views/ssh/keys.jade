@@ -23,4 +23,6 @@
 							a(ui-sref="ssh.edit({ key_id: key._id })") {{ key.name }}
 						td {{ key.installed }}
 						td {{ key.installing }}
-			blockquote Add your public SSH key so you can push to your nodegear git repository. Generate &amp; Copy the "System Key" so that your apps can install private npm dependencies, pull private code etc.
+			blockquote
+				strong Pro tip:
+				|  Generate &amp; Copy the "System Key" to be able to pull your code from private repositories. NodeGear will use the same key to pull ssh npm dependencies. We recommend adding the public key as a read-only deploy key to your repository.

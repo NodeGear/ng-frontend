@@ -123,7 +123,7 @@ body {
   .form-control-validation-custom(@state-danger-text; @state-danger-text; @state-danger-bg);
 }
 
-// Make the .btn.btn-danger button white, but red on hover.
+/*// Make the .btn.btn-danger button white, but red on hover.
 .btn.btn-danger {
 	color: darken(@btn-danger-bg, 10%);
 	background-color: @btn-danger-color;
@@ -155,7 +155,7 @@ body {
 	       border-color: @btn-danger-border;
 	 }
 	}
-}
+}*/
 
 .btn {
 	-webkit-transition: background-color 100ms linear, color 100ms linear;
@@ -264,6 +264,81 @@ blockquote {
 .font-code {
 	font-family: @font-family-monospace;
 	font-weigth: 300;
+}
+
+// Thumbnails used in app processes
+.thumbnail {
+	height: 150px;
+	width: 150px;
+	border-radius: 150px;
+	margin: auto;
+	background-color: #fff;
+	border: 1px solid #ddd;
+	padding: 4px;
+}
+.thumbnail-small {
+	height: 74px;
+	width: 74px;
+	border-radius: 74px;
+	padding: 1px;
+}
+.thumbnail-small:nth-child(1) {
+	margin-bottom: 5px;
+}
+.thumbnail img, .thumbnail svg {
+	height: 140px;
+	width: 140px;
+	border-radius: inherit;
+	border: none;
+}
+.thumbnail-small img, .thumbnail-small svg {
+	height: 70px;
+	width: 70px;
+}
+.thumbnail svg {
+	margin: auto;
+}
+.svg-thumbnail {
+	position: relative;
+}
+.svg-thumbnail h1 {
+	font-weight: normal;
+	font-size: 25px;
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 150px;
+	height: 130px;
+	line-height: 130px;
+	padding: 0;
+	margin: 0;
+	vertical-align: middle;
+	text-align: center;
+}
+.svg-thumbnail span {
+	font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
+	font-weight: normal;
+	position: absolute;
+	font-size: 14px;
+	width: 150px;
+	height: 150px;
+	top: 0;
+	left: 0;
+	text-align: center;
+	line-height: 180px;
+	color: #999999;
+}
+.thumbnail-small h1 {
+	font-size: 13px;
+	width: 74px;
+	height: 74px;
+	line-height: 64px;
+}
+.thumbnail-small span {
+	font-size: 7px;
+	width: 74px;
+	height: 74px;
+	line-height: 90px;
 }
 
 // Keep this down the bottom so it is parsed last.

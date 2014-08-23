@@ -1,20 +1,18 @@
 div(ng-controller="AppDashboardController" ng-init="setCsrf(); showDashboard = true;")
 	.pull-right
 		.btn-group(ng-if="_app.processes.length > 0")
-			button.btn.btn-md.btn-default(ng-click="showDashboard = !showDashboard" ng-class="{ 'btn-info': showDashboard, 'btn-default': !showDashboard }")
+			button.btn.btn-md.btn-default(ng-click="setShowDashboard(true)" ng-class="{ 'active': showDashboard }")
 				i.fa.fa-dashboard.fa-fw
-			button.btn.btn-md.btn-default(ng-click="showDashboard = !showDashboard" ng-class="{ 'btn-info': !showDashboard, 'btn-default': showDashboard }")
+			button.btn.btn-md.btn-default(ng-click="setShowDashboard(false)" ng-class="{ 'active': !showDashboard }")
 				i.fa.fa-th-list.fa-fw
 		| &nbsp;
 		.btn-group
 			button.btn.btn-md.btn-success(ui-sref="app.processes.addProcess({ id: app.nameUrl })") Add Process
 
 	h2(style="margin-top: 0;")
-		span.font-code {{ _app.processes.length }}
-		|  process
-		span(ng-if="_app.processes.length > 1 || _app.processes.length == 0") es
+		| All Processes
 	
-	.row(ng-if="showDashboard")
+	.row(ng-if="showDashboard == true")
 		.col-md-6(ng-repeat="process in _app.processes")
 			.panel.panel-default.process-box(ng-class="{ 'panel-success': process.running && !process.startStopDisabled, 'panel-danger': !process.running && !process.startStopDisabled, 'panel-info': process.startStopDisabled }")
 				.panel-heading
@@ -67,7 +65,8 @@ div(ng-controller="AppDashboardController" ng-init="setCsrf(); showDashboard = t
 										h1 {{ process.stat.monitor.rssString }}
 										span RAM Used
 									.clearfix
-	table.table.table-striped(ng-hide="_app.processes.length == 0 || showDashboard")
+
+	table.table.table-striped(ng-if="showDashboard == false")
 		thead
 			tr
 				th.col-sm-2 Process Name

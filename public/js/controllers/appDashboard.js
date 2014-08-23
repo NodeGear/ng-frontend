@@ -202,6 +202,10 @@ define([
 				process.status = "Watching Process Log";
 			}
 		}
+
+		$scope.setShowDashboard = function (show) {
+			$scope.showDashboard = show;
+		}
 	});
 
 	app.registerDirective('processGraph', function () {

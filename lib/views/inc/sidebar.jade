@@ -1,5 +1,11 @@
 
 ul.nav.sidenav(role="navigation")
+	if pretending
+		p.text-center(style="padding: 15px; margin: 0; background: #f2dede; color: #a94442;")
+			| Hey #{pretender.name}, you are acting on behalf of 
+			i #{user.name}.
+		br
+
 	li(ng-class="{ active: $state.includes('gettingStarted') }")
 		a(ui-sref="gettingStarted")
 			//-i.fa.fa-thumb-tack.fa-fw
@@ -31,17 +37,16 @@ ul.nav.sidenav(role="navigation")
 			//-i.fa.fa-fw.fa-question
 			|  Support Tickets
 
-	li(ng-show="user.admin" ng-cloak style="margin-top: 20px;"): a(href="/admin" target="_blank")
-		i.fa.fa-external-link.fa-fw
-		|  Admin
-
-	li: a(href="/logout")
+	li(style="margin-top: 20px;"): a(href="/logout")
 		i.fa.fa-sign-out.fa-fw
-		|  Logout
+		if pretending
+			|  Back to Admin
+		else
+			|  Logout
 
+	if pretending
+		blockquote(style="margin-bottom:0; border-left: 0; margin-top: 10px;") With Great Power Comes Great Responsibility.
+				footer Stan Lee, the Spider Man movie
+	
 	p.text-center.hidden-xs(style="margin-top: 20px;")
 		small.text-muted v#{version}-##{versionHash}
-
-	//-.btn.btn-block.btn-default(ng-click="toggleKiosk()")
-		i.fa.fa-angle-double-left(ng-if="!kiosk_enabled")
-		i.fa.fa-angle-double-right(ng-if="kiosk_enabled")
