@@ -23,25 +23,25 @@ html
 
 				.collapse.navbar-collapse(ng-cloak)
 					ul.nav.navbar-nav.pull-right
-						li(ng-class="{ 'active': $state.includes('app.processes') }" ng-if="app")
+						li(ng-class="{ 'active': $state.includes('app.processes') }" ng-if="$state.includes('app')")
 							a(ui-sref="app.processes({ id: app.nameUrl })")
 								| Processes
-						li(ng-class="{ 'active': $state.includes('app.domains') }" ng-if="app")
+						li(ng-class="{ 'active': $state.includes('app.domains') }" ng-if="$state.includes('app')")
 							a(ui-sref="app.domains({ id: app.nameUrl })")
 								| Domains
-						li(ng-class="{ 'active': $state.includes('app.environment') }" ng-if="app")
+						li(ng-class="{ 'active': $state.includes('app.environment') }" ng-if="$state.includes('app')")
 							a(ui-sref="app.environment({ id: app.nameUrl })")
 								| Environment
-						li(ng-class="{ 'active': $state.includes('app.logs') }" ng-if="app")
+						li(ng-class="{ 'active': $state.includes('app.logs') }" ng-if="$state.includes('app')")
 							a(ui-sref="app.logs({ id: app.nameUrl })")
 								| Logs
-						li(ng-class="{ 'active': $state.includes('app.traffic') }" ng-if="app")
+						li(ng-class="{ 'active': $state.includes('app.traffic') }" ng-if="$state.includes('app')")
 							a(ui-sref="app.traffic({ id: app.nameUrl })")
 								| Traffic
-						li(ng-class="{ 'active': $state.includes('app.usage') }" ng-if="app")
+						li(ng-class="{ 'active': $state.includes('app.usage') }" ng-if="$state.includes('app')")
 							a(ui-sref="app.usage({ id: app.nameUrl })")
 								| Resources
-						li(ng-class="{ 'active': $state.includes('app.settings') }" ng-if="app")
+						li(ng-class="{ 'active': $state.includes('app.settings') }" ng-if="$state.includes('app')")
 							a(ui-sref="app.settings({ id: app.nameUrl })")
 								| Settings
 

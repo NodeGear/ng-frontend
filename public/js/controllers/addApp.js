@@ -196,7 +196,8 @@ define([
 				['DATABASE_USER', database.db_user],
 				['DATABASE_PASSWORD', database.db_pass],
 				['DATABASE_NAME', database.db_name],
-				['DOMAIN', domain]
+				['DOMAIN', domain],
+				['USE_HTTPS', '1']
 			];
 
 			async.each(envs, function (env, done) {

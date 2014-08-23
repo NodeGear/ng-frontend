@@ -17,6 +17,8 @@ table.table(ng-if="_app.domains.length > 0")
 				span(ng-if="domain.ssl && !domain.ssl_only") SSL Enabled
 				span(ng-if="!domain.ssl") SSL OFF
 			td
-				strong {{ domain.domain }}
+				strong: a(href="http://{{ domain.domain }}" target="_blank")
+					i.fa.fa-fw.fa-external-link
+					|  {{ domain.domain }}
 
 ui-view(autoscroll="off")
