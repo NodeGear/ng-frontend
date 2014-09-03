@@ -29,7 +29,7 @@
 									.col-sm-9
 										select.form-control(ng-options="server._id as server.name for server in servers" ng-model="app.server" ng-change="selectedServer()" required)
 										option(value="") -- Pick a Server --
-										small.help-text(ng-if="!getServer(app.server).overCapacity") Availability: {{ getServer(app.server).appsRunning - getServer(app.server).appLimit }} app spaces left
+										small.help-text(ng-if="!getServer(app.server).overCapacity") Availability: {{ getSpacesLeft(app.server) }} app spaces left
 										small.help-text(ng-if="getServer(app.server).overCapacity") Sorry, no space left on server!
 											br
 											a(href="mailto:support@nodegear.com") Contact Us

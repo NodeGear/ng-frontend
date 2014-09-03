@@ -44,6 +44,13 @@ define([
 				$scope.cannotStartReason = "";
 			}
 		}
+
+		$scope.getSpacesLeft = function (server) {
+			var spaces = getServer(app.server).appLimit - getServer(app.server).appsRunning;
+			if (spaces < 0) spaces = 0;
+			
+			return spaces;
+		}
 	});
 
 	app.registerController('CreateAppStep1Ctrl', function ($scope) {
