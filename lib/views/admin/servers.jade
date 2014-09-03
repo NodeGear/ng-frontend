@@ -34,4 +34,4 @@ block content
 							td {{ server.stats._free }}%
 							td {{ server.stats._user }}%
 							td {{ server.stats._sys }}%
-							td {{ server.stats.processes }}
+							td: a(ng-click="setLimit(server)" href="#") {{ server.stats.processes }} / {{ server.appLimit }}

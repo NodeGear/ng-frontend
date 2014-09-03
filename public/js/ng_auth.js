@@ -5,16 +5,13 @@ require.config({
 		jquery: '../vendor/jquery/dist/jquery.min',
 		moment: '../vendor/moment/moment',
 		bootstrap: '../vendor/bootstrap/dist/js/bootstrap.min',
-		couchPotato: '../vendor/angular-couch-potato/dist/angular-couch-potato'
-		ga: '//www.google-analytics.com/analytics',
-		bugsnag: '//d2wy8f7a9ursnm.cloudfront.net/bugsnag-2.min'
+		couchPotato: '../vendor/angular-couch-potato/dist/angular-couch-potato',
+		bugsnag: '//d2wy8f7a9ursnm.cloudfront.net/bugsnag-2.min',
+		'angular-sanitize': '../vendor/angular-sanitize/angular-sanitize.min'
 	},
 	shim: {
 		angular: {
 			exports: 'angular'
-		},
-		ga: {
-			exports: 'ga'
 		},
 		bugsnag: {
 			exports: 'Bugsnag'
@@ -23,8 +20,7 @@ require.config({
 			deps: ['angular']
 		},
 		bootstrap: ['jquery'],
-		'vendor/angular-sanitize': ['angular'],
-		'vendor/flat-ui.combined': ['jquery']
+		'angular-sanitize': ['angular']
 	}
 });
 
@@ -33,7 +29,7 @@ require([
 	'angular',
 	'couchPotato',
 	'uiRouter',
-	'vendor/angular-sanitize',
+	'angular-sanitize',
 	'app',
 	'routes/auth'
 ], function($, angular) {

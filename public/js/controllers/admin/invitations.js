@@ -54,4 +54,18 @@ angular.module('nodegear')
 			});
 		}
 	});
+
+	$scope.approveInvitation = function (invitation) {
+		$http.get('/admin/invitation/'+invitation._id+'/approve')
+		.success(function (data) {
+			$scope.pendingInvitesTable.reload();
+		})
+	}
+
+	$scope.rejectInvitation = function (invitation) {
+		$http.get('/admin/invitation/'+invitation._id+'/reject')
+		.success(function (data) {
+			$scope.pendingInvitesTable.reload();
+		})
+	}
 })

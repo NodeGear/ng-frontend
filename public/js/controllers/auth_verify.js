@@ -1,21 +1,21 @@
 define([
-	'angular',
-	'../app'
-], function(angular, app) {
+	'../app',
+	'bugsnag'
+], function(app, Bugsnag) {
 	app.registerController('VerifyEmailController', function($scope, $http, $state) {
 		$scope.status = "";
 		$scope.csrf = "";
 		$scope.codeTextTransform = "none";
 		$scope.code = "";
 
-		$scope.init = function (csrf) {
-			$scope.csrf = csrf;
+		$scope.init = function () {
+			$scope.status = "Loading Profile...";
 
-			$scope.status = "Loading...";
 			$http.get('/profile/profile').success(function(data, status) {
 				if (data.status != 200) {
 					return $state.transitionTo('login');
 				}
+
 				if (!data.user || !data.user.email) {
 					if (Bugsnag) {
 						Bugsnag.notify('Signup:Verify Loading /profile/profile email not present', data, 'warning');
@@ -24,7 +24,9 @@ define([
 
 				$scope.status = "We sent a token to "+data.user.email+".";
 			}).error(function(data, status) {
-				if (!Bugsnag) return;
+				$state.transitionTo('login');
+
+				if (typeof Bugsnag == 'undefined') return;
 				Bugsnag.notify('Signup:Verify Error Loading /profile/profile', {
 					data: data,
 					status: status
@@ -44,9 +46,8 @@ define([
 			$scope.status = "Authenticating TFA.."
 			
 			$http.post('/auth/verifyEmail', {
-				_csrf: $scope.csrf,
 				code: $scope.code.toUpperCase()
-			}).success(function(data, status) {
+			}).success(function (data, status) {
 				analytics.track('signup email verification', {
 					type: data.status == 200 ? 'success' : 'fail',
 					status: data.status,
@@ -62,7 +63,9 @@ define([
 				} else {
 					$scope.status = "Verification Successful"
 				}
-			});
+			}).error(function (data, status) {
+				$scope.status = "Sorry, That went wrong!. Try again or contact us."
+			})
 		}
 	});
 });

@@ -7,13 +7,32 @@ define([
 	'../directives/apps',
 	'./appDashboard'
 ], function(angular, app, moment, io) {
-	app.registerController('AppsController', function ($scope, $http, $rootScope) {
+	app.registerController('AppsController', ['$scope', '$http', '$rootScope', function ($scope, $http, $rootScope) {
 		$scope.appsOff = 0;
 		$scope.appsOn = 0;
 
 		var socket = io('/process_stats');
 
-		$scope.columns = {};
+		$scope.getApps = function () {
+			$http.get('/apps').success(function(data, status) {
+				$scope.apps = data.apps;
+
+				for (var i = 0; i < $scope.apps.length; i++) {
+					if ($scope.apps[i].stopped == 0 && $scope.apps[i].running > 0) {
+						$scope.appsOn++;
+					} else {
+						$scope.appsOff++;
+					}
+
+					if ($scope.apps[i].running > 0) {
+						$scope.apps[i].isRunning = true;
+					} else {
+						$scope.apps[i].isRunning = false;
+					}
+				}
+			});
+		}
+		$scope.getApps();
 
 		$scope.process_stats = function(data) {
 			if (!$scope.apps) return;
@@ -41,26 +60,6 @@ define([
 					found = data;
 				}
 
-				if (typeof $scope.columns[data._id] == 'undefined') {
-					var processnum = 1;
-					for (var p in $scope.columns) {
-						if (!$scope.columns.hasOwnProperty(p)) continue;
-						if ($scope.columns[p].app._id == app._id) {
-							// This app has > 1 processes running..
-							processnum++;
-						}
-					}
-					
-					$scope.columns[data._id] = {
-						column: -1, // to be set
-						processnum: processnum
-					}
-				}
-
-				$scope.columns[data._id].data = data;
-				$scope.columns[data._id].app = app;
-				$scope.columns[data._id].stale = false;
-
 				found.monitor.rssString = found.monitor.rss + ' KB';
 				if (found.monitor.rss > 1024) {
 					found.monitor.rssString = Math.round(found.monitor.rss / 1024) + ' MB';
@@ -75,100 +74,9 @@ define([
 			}
 		};
 
-		$scope.secondInterval = function () {
-			var newRow = [new Date()];
-			for (var o in $scope.columns) {
-				if (!$scope.columns.hasOwnProperty(o)) continue;
-
-				var col = $scope.columns[o];
-				if (col.column == -1) {
-					// Add to the table
-					var processnum = col.processnum
-					if (processnum == 1) {
-						processnum = "";
-					} else {
-						processnum = ":" + processnum;
-					}
-
-					col.column = $scope.chart.data.addColumn('number', col.app.name + processnum);
-				}
-				if (col.stale) {
-					newRow.push(0);
-					continue;
-				}
-
-				newRow.push(col.data.monitor.cpu_percent);
-				col.stale = true;
-			}
-
-			if (newRow.length == 1) {
-				// the graph doesn't have enough columns..
-				return;
-			}
-
-			if ($scope.chart.data.getNumberOfRows() > 30) {
-				$scope.chart.data.removeRow(0);
-			}
-			$scope.chart.data.insertRows($scope.chart.data.getNumberOfRows(), [newRow])
-			$scope.chart.chart.draw($scope.chart.data, $scope.chart.options);
-
-		}
-
-		var secondInterval = setInterval($scope.secondInterval, 1000);
-
 		socket.on('process_stats', $scope.process_stats);
 		$scope.$on('$destroy', function() {
 			socket.removeListener('process_stats', $scope.process_stats);
-			clearInterval(secondInterval);
 		});
-
-		if (!$scope.apps) return;
-
-		for (var i = 0; i < $scope.apps.length; i++) {
-			if ($scope.apps[i].stopped == 0 && $scope.apps[i].running > 0) {
-				$scope.appsOn++;
-			} else {
-				$scope.appsOff++;
-			}
-
-			if ($scope.apps[i].running > 0) {
-				$scope.apps[i].isRunning = true;
-			} else {
-				$scope.apps[i].isRunning = false;
-			}
-		}
-	});
-
-	app.registerDirective('appsGraph', function () {
-		return {
-			restrict: 'EA',
-			scope: '@',
-			link: function (scope, element, attrs) {
-				// Create and populate the data table.
-				var data = new google.visualization.DataTable();
-				data.addColumn('date', 'Time');
-				
-				// Create and draw the visualization.
-				var lineChart = new google.visualization.LineChart(element[0]);
-				var options = {
-					//curveType: "function",
-					width: element[0].clientWidth,
-					height: 400,
-					title: 'CPU Usage',
-					vAxis: {
-						minValue: 0,
-						maxValue: 100
-					}
-				};
-
-				//lineChart.draw(data, options);
-
-				scope.chart = {
-					data: data,
-					chart: lineChart,
-					options: options
-				};
-			}
-		}
-	})
+	}]);
 });

@@ -1,8 +1,10 @@
 .pagestyle
 	.row
-		.col-sm-12
-			h2(style="margin-top: 0;") Add Gear
-				small  {{ status }}
+		.col-sm-8.col-sm-offset-2
+			.row
+				.col-sm-9.col-sm-offset-3
+					h2(style="margin-top: 0;") Add Gear
+						small  {{ status }}
 	.row
 		.col-sm-12
 			div(ng-controller="CreateAppStepCtrl")
@@ -25,14 +27,19 @@
 								.form-group
 									label.control-label.col-sm-3 Server
 									.col-sm-9
-										select.form-control(ng-options="server._id as server.name for server in servers" ng-model="app.server" required)
+										select.form-control(ng-options="server._id as server.name for server in servers" ng-model="app.server" ng-change="selectedServer()" required)
 										option(value="") -- Pick a Server --
-
+										small.help-text(ng-if="!getServer(app.server).overCapacity") Availability: {{ getServer(app.server).appsRunning - getServer(app.server).appLimit }} app spaces left
+										small.help-text(ng-if="getServer(app.server).overCapacity") Sorry, no space left on server!
+											br
+											a(href="mailto:support@nodegear.com") Contact Us
 								.form-group(ng-if="app.template=='custom'")
 									label.control-label.col-sm-3 Git SSH URL
 									.col-sm-9
 										input.form-control(type="text" placeholder="Git SSH URL" ng-init="app.custom_location='git://github.com/NodeGear/node-js-sample.git'" ng-model="app.custom_location" required)
-										small.help-text Note: For Private git hosts, use <code>ssh://</code> format.
+										small.help-text Note: For Private git hosts, use <code title="Example: ssh://github.com:nodegear/node-js-sample.git">ssh://</code> format.
+											br
+											| For public git hosts, use <code title="Example: git://github.com/nodegear/node-js-sample.git">git://</code> format.
 										br
 										small.help-text Don't forget to add the 
 											a(ui-sref="ssh.keys" target="_blank") System SSH Key
@@ -42,10 +49,11 @@
 									label.control-label.col-sm-3 Git Branch
 									.col-sm-9
 										input.form-control(type="text" placeholder="Git Branch (e.g. 'master')" ng-init="app.custom_branch='master'" ng-model="app.custom_branch")
-
+										small.help-text Is your app runnable with <code>npm start</code>? If not, it won't work. See <a target="_blank" href="https://www.npmjs.org/doc/cli/npm-start.html">help section</a>.
 								.form-group
 									.col-sm-9.col-sm-offset-3
-										button.btn.btn-success(ng-disabled="addApp.$invalid" ng-click="create()") Create
+										button.btn.btn-success(ng-disabled="addApp.$invalid || cannotStart" ng-click="create()") Create
+										small.help-text(ng-bind="cannotStartReason")
 
 						div(ng-if="step == 1" ng-controller="CreateAppStep2Ctrl")
 							br

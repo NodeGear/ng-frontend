@@ -1,12 +1,16 @@
 define([
 	'angular',
 	'couchPotato'
-	], function(angular, couchPotato, ga) {
+	], function(angular, couchPotato) {
 		var app = angular.module('nodegear', ['scs.couch-potato', 'ui.router', 'ngSanitize']);
 
+		require(['bugsnag'], function (bugsnag) {
+			bugsnag.apiKey = window.bugsnag_key;
+		});
+		
 		couchPotato.configureApp(app);
 
-		app.run(function($rootScope, $window, $couchPotato) {
+		app.run(['$rootScope', '$window', '$couchPotato', function($rootScope, $window, $couchPotato) {
 			app.lazy = $couchPotato;
 			
 			$rootScope.kiosk_enabled = false;
@@ -42,7 +46,7 @@ define([
 					});
 				}, 100);
 			})
-		});
+		}]);
 		
 		return app;
 	})

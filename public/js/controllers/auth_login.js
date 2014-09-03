@@ -8,12 +8,10 @@ define([
 			auth: "",
 			password: ""
 		};
-		$scope.csrf = "";
 		$scope.loginFailed = false;
 		$scope.loginFailedReason = "";
 	
 		$scope.setCsrf = function (csrf) {
-			$scope.csrf = csrf;
 		}
 		
 		$scope.authenticate = function(user) {
@@ -66,6 +64,10 @@ define([
 				}
 				
 				$scope.status = "Login Successful";
+
+				setTimeout(function () {
+					window.location = "/";
+				}, 2000);
 				analytics.track('login', data, function () {
 					window.location = "/";
 				});

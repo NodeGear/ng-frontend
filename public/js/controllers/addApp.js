@@ -9,6 +9,8 @@ define([
 
 		$scope.app = {};
 		$scope.servers = [];
+		$scope.cannotStart = true;
+		$scope.cannotStartReason = "";
 		
 		servers.getServers(function(servers) {
 			$scope.servers = servers;
@@ -20,8 +22,26 @@ define([
 		$scope.getServer = function (id) {
 			for (var i = 0; i < $scope.servers.length; i++) {
 				if ($scope.servers[i]._id == id) {
+
+					$scope.servers[i].overCapacity = false;
+					if ($scope.servers[i].appsRunning > $scope.servers[i].appLimit) {
+						$scope.servers[i].overCapacity = true;
+					}
+
 					return $scope.servers[i];
 				}
+			}
+		}
+
+		$scope.selectedServer = function () {
+			var server = $scope.getServer($scope.app.server);
+
+			if (server.overCapacity) {
+				$scope.cannotStart = true;
+				$scope.cannotStartReason = "Server Over Capacity";
+			} else {
+				$scope.cannotStart = false;
+				$scope.cannotStartReason = "";
 			}
 		}
 	});

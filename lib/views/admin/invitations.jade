@@ -17,9 +17,10 @@ block content
 							td(data-title="'User Name'"): a(href="/admin/user/{{ invitation.user._id }}") {{ invitation.user.name }}
 							td(data-title="'User Email'") {{ invitation.user.email }}
 							td
-								.btn-group
-									a.btn.btn-default.btn-xs(href="/admin/invitation/{{ invitation._id }}/approve") Approve User
-
+								.btn-group.pull-right
+									a.btn.btn-default.btn-xs(ng-click="approveInvitation(invitation)") Approve User
+									a.btn.btn-danger.btn-xs(ng-click="rejectInvitation(invitation)") Reject
+				
 				table.table(ng-table="invitesTable" show-filter="true")
 					tbody
 						tr(ng-repeat="invitation in $data")

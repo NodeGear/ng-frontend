@@ -1,17 +1,23 @@
 h2(style="margin-top: 0;") Getting Started Guide
 p.lead This document is designed to get you started on NodeGear <small>PaaS</small>
+
 h3 Creating an Application
 p Click <a ui-sref="add">here</a> to create an application. To create an application which isn't on public git hosting, use the steps below.
+
 ol
 	li
 		a(ui-sref="ssh.keys") Add an SSH Key
 		|  to your profile
-	li Push to <code>git@nodegear.io:<span ng-bind="user.username">username</span>/project.git</code>
-		ul
-			li Replace <code>project</code> with the name of your project.
+	li Go to <a ui-sref="add">new Gear</a>, select Custom, and enter your git repository.
+
 h3#dns DNS Settings
-p You automatically receive a subdomain on <code>app.<span ng-bind="user.username">username</span>.ngapp.io</code>. However, it is recommended you have your own domain name routed to your application. To do that, create <code>CNAME</code> records in your DNS and set the following records:
+
+p You automatically receive a subdomain on <code>app-name-<span ng-bind="user.username">username</span>.ngapp.io</code>. It includes free SSL termination (on the ngapp.io domain).
+	br
+	| To host the content from your own domain, you should point your DNS to our servers. It is recommended that you use CNAME-type records in case our server IP changes.
+
 p: small <strong>Note:</strong> You can choose which server you deploy to for each process of your app. One app can run on multiple servers. It is advised you use a DNS provider that can determine the latency for the user to the host, and provide A records based on that.
+
 dl.dl-horizontal
 	dt Location
 	dd: abbr(title="") CNAME

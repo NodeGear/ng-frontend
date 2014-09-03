@@ -35,9 +35,5 @@ define([
 		$rootScope.$stateParams = $stateParams
 
 		user.getUser(function() {})
-	
-		$http.get('/apps').success(function(data, status) {
-			$rootScope.apps = data.apps;
-		})
 	})
 })

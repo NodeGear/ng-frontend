@@ -50,4 +50,15 @@ angular.module('nodegear', ['ngTable'])
 			$scope.$digest();
 		}
 	});
+
+	$scope.setLimit = function (server) {
+		var newMax = parseInt(prompt("New Maximum Number of Apps:"));
+		if (isNaN(newMax) || newMax <= 0) {
+			return;
+		}
+
+		$http.put('/admin/server/'+server._id+'/limit', {
+			limit: newMax
+		});
+	}
 })
