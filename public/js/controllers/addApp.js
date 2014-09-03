@@ -47,7 +47,8 @@ define([
 
 		$scope.getSpacesLeft = function (server_id) {
 			server = $scope.getServer(server_id);
-			
+			if (!server) return;
+
 			var spaces = server.appLimit - server.appsRunning;
 			if (spaces < 0) spaces = 0;
 			
