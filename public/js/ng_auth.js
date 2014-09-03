@@ -1,11 +1,11 @@
 require.config({
 	paths: {
 		angular: '../vendor/angular/angular.min',
-		uiRouter: 'vendor/angular-ui-router',
+		uiRouter: '../vendor/angular-ui-router/release/angular-ui-router.min',
 		jquery: '../vendor/jquery/dist/jquery.min',
 		moment: '../vendor/moment/moment',
 		bootstrap: '../vendor/bootstrap/dist/js/bootstrap.min',
-		couchPotato: 'vendor/angular-couch-potato',
+		couchPotato: '../vendor/angular-couch-potato/dist/angular-couch-potato'
 		ga: '//www.google-analytics.com/analytics',
 		bugsnag: '//d2wy8f7a9ursnm.cloudfront.net/bugsnag-2.min'
 	},
