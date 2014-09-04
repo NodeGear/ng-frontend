@@ -9,13 +9,16 @@ define([
 
 		$scope.app = {};
 		$scope.servers = [];
-		$scope.cannotStart = true;
+		$scope.cannotStart = false;
 		$scope.cannotStartReason = "";
 		
 		servers.getServers(function(servers) {
 			$scope.servers = servers;
 			try {
-				if (!$scope.app.server) $scope.app.server = $scope.servers[0]._id;
+				if (!$scope.app.server) {
+					$scope.app.server = $scope.servers[0]._id;
+					$scope.selectedServer();
+				}
 			} catch (e) {}
 		});
 
