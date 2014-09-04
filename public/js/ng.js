@@ -41,6 +41,7 @@ require([
 	'uiRouter',
 	'angular-sanitize',
 	'app',
+	'bootstrap',
 	'routes/routes'
 ], function($, angular) {
 	var $html = angular.element(document.getElementsByTagName('html')[0]);
