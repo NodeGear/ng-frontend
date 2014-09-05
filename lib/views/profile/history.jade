@@ -19,7 +19,7 @@ div(ng-controller="BillingHistoryController" ng-init="init()")
 					tr(ng-repeat="transaction in history")
 						td {{ transaction.created }}
 						td {{ transaction.details }}
-						td £{{ transaction.total }}
+						td ${{ transaction.total }}
 						td {{ transaction.status }}
 						td {{ transaction.type }}
 						td {{ transaction.card }}

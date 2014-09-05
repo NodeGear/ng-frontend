@@ -19,6 +19,6 @@ block content
 						tr
 							td: a(href="/admin/transaction/#{transaction._id}")= transaction.created
 							td= transaction.status
-							td £#{transaction.total}
+							td $#{transaction.total}
 							td: a(href="/admin/user/#{transaction.user._id}")= transaction.user.name
 							td= transaction.type

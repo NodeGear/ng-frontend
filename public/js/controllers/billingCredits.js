@@ -7,19 +7,19 @@ define([
 	app.registerController('BillingCreditsController', function ($scope, $http, $rootScope, csrf) {
 		$scope.cards = [];
 		$scope.paymentOptions = [{
-			name: "Pay £5 GBP",
+			name: "Pay $5 GBP",
 			value: 5
 		}, {
-			name: "Pay £10 GBP",
+			name: "Pay $10 GBP",
 			value: 10
 		}, {
-			name: "Pay £25 GBP",
+			name: "Pay $25 GBP",
 			value: 25
 		}, {
-			name: "Pay £50 GBP",
+			name: "Pay $50 GBP",
 			value: 50
 		}, {
-			name: "Pay £100 GBP",
+			name: "Pay $100 GBP",
 			value: 100
 		}];
 		$scope.selectedOption = $scope.paymentOptions[0].value;
