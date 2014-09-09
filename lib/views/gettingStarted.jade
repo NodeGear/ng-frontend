@@ -1,16 +1,25 @@
 h2(style="margin-top: 0;") Getting Started Guide
 p.lead This document is designed to get you started on NodeGear <small>PaaS</small>
 
-h3 Creating an Application
-p Click <a ui-sref="add">here</a> to create an application. To create an application which isn't on public git hosting, use the steps below.
-
 ol
-	li
-		a(ui-sref="ssh.keys") Add an SSH Key
-		|  to your profile
-	li Go to <a ui-sref="add">new Gear</a>, select Custom, and enter your git repository.
+	li: a(ui-sref="profile.view") Sign up for our newsletter (sent twice per month)
+	li: a(ui-sref="add") Try our one-click ghost.js blog
+	li: a(ui-sref="add") Add your own custom application. (see below)
 
-h3#dns DNS Settings
+h3 Creating an Application
+
+h4 Requirements
+
+ul
+	li App must be able to start using <code>npm start</code> command.
+	li Your <a ui-sref="ssh.keys">nodegear public key</a> must be added as a deploy key in your private git repository.
+	li Be a web application and respond to port 80
+
+blockquote
+	strong Note:
+	|  Storage is ephemeral. The app server will pull your app using git, and when the process stops, all files are deleted. Use AWS S3 or Mongodb GridFS to store permanent data.
+
+h3#dns Custom Domains
 
 p You automatically receive a subdomain on <code>app-name-<span ng-bind="user.username">username</span>.ngapp.io</code>. It includes free SSL termination (on the ngapp.io domain).
 	br

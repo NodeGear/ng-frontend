@@ -1,0 +1,17 @@
+extends layout
+
+block content
+	.row
+		.col-lg-12.col-md-12.col-sm-12
+			h1.page-header Tools
+	.row
+		.col-sm-12
+			.panel.panel-default
+				.panel-heading
+					h3.panel-title Export Users CSV
+				.panel-body
+					blockquote Respect the privacy of our users please.
+
+					p This is good for mailchimp import..
+					textarea.form-control(ng-model="query" placeholder="mongo query. e.g. { disabled: false, email_verified: true }")
+					a.btn.btn-default(target="_blank" href="/admin/tools/userExport?q={{ query }}") Export Users matching this query
