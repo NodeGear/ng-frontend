@@ -71,8 +71,20 @@ br
 					input#confirm.form-control(type="text" placeholder="6 Digit Code from Authy" required ng-model="tfa.token")
 			.form-group
 				.col-sm-6.col-sm-offset-4
-					button.btn.btn-success(ng-click="confirmTFA('#{token}')" href="" ng-disabled="tfa.hide || confirm.$invalid") Confirm Token
-					button.btn.btn-link(ng-click="disableTFA('#{token}')" href="" ng-disabled="tfa.hide") Cancel
+					button.btn.btn-success(ng-click="confirmTFA()" href="" ng-disabled="tfa.hide || confirm.$invalid") Confirm Token
+					button.btn.btn-link(ng-click="disableTFA()" href="" ng-disabled="tfa.hide") Cancel
+
+		hr
+
+		div(ng-controller="NewsletterCtrl")
+			h3 Newsletter 
+				small(ng-bind="status")
+
+			p Max two per month, maybe less. We will never send you spam or adverts. Just updates on our service.
+
+			button.btn.btn-default(ng-if="user.newsletter_active" ng-click="unsubscribe()") Unsubscribe
+			button.btn.btn-default(ng-if="!user.newsletter_active" ng-click="subscribe()") Subscribe
+
 blockquote
 	strong App Limit: 
 	| Adding credits will raise your application limit. Contact us if you want to raise your limit.

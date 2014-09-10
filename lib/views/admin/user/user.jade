@@ -6,7 +6,8 @@ block content
 			h1.page-header User #{aUser.name}
 				.btn-group.pull-right
 					a.btn.btn-default(href="/admin/user/#{aUser._id}/edit") Edit
-					a.btn.btn-default(href="/auth/takeover/#{aUser._id}") Login as this User
+					if !aUser.admin
+						a.btn.btn-default(href="/auth/takeover/#{aUser._id}") Login as this User
 	.row
 		.col-sm-6
 			h4.text-center User Details

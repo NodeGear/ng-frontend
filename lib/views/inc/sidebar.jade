@@ -10,7 +10,7 @@ ul.nav.sidenav(role="navigation")
 		a(ui-sref="gettingStarted")
 			//-i.fa.fa-thumb-tack.fa-fw
 			|  Getting Started
-	li(ng-class="{ active: $state.includes('apps') || $state.includes('app') }"): a(ui-sref="apps")
+	li(ng-class="{ active: $state.includes('apps') || $state.includes('app') || $state.includes('add') }"): a(ui-sref="apps")
 		//-i.fa.fa-gears.fa-fw
 		|  Gears
 	li(ng-class="{ active: $state.includes('databases') || $state.includes('database_add') || $state.includes('database_edit') }"): a(ui-sref="databases")

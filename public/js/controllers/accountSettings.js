@@ -1,15 +1,13 @@
 define([
 	'app',
-	'moment'
+	'moment',
+	'services/user'
 ], function(app, moment) {
-	app.registerController('AccountSettingsController', function ($scope, $http) {
+	app.registerController('AccountSettingsController', ['$scope', '$http', function ($scope, $http) {
 		$scope.user = {};
-		$scope.csrf = "";
 		$scope.formDisabled = true;
 
-		$scope.init = function (csrf) {
-			$scope.csrf = csrf;
-
+		$scope.init = function () {
 			$scope.reloadUser();
 		}
 
@@ -29,19 +27,12 @@ define([
 
 		$scope.saveUser = function() {
 			$http.put('/profile/profile', {
-				_csrf: $scope.csrf,
 				user: $scope.user
-			}).success(function(data, status) {
+			}).success(function (data, status) {
+				$scope.status = "Account Updated.";
+				$scope.changePassword = false;
+			}).error(function (data, status) {
 				$scope.status = data.message;
-
-				if (data.status == 200) {
-					$scope.status = "Account Updated.";
-					$scope.changePassword = false;
-				}
-
-				if (!$scope.$$phase) {
-					$scope.$digest();
-				}
 			})
 		};
 
@@ -53,5 +44,37 @@ define([
 				$scope.user.newPassword = "";
 			}
 		};
-	})
+	}]);
+
+	app.registerController('NewsletterCtrl', ['$scope', '$http', 'user', function ($scope, $http, user) {
+		$scope.status = "";
+
+		$scope.subscribe = function () {
+			$http.post('/profile/newsletter')
+			.success(function () {
+				user.getUser(function() {
+					if (!$scope.$$phase) $scope.$digest();
+				});
+				
+				$scope.status = "Subscribed!"
+			})
+			.error(function () {
+				$scope.status = "Subscription Request Failed!";
+			})
+		}
+
+		$scope.unsubscribe = function () {
+			$http.delete('/profile/newsletter')
+			.success(function () {
+				user.getUser(function() {
+					if (!$scope.$$phase) $scope.$digest();
+				});
+
+				$scope.status = "You've been Unsubscribed"
+			})
+			.error(function () {
+				$scope.status = "Unsubscription Failed!";
+			})
+		}
+	}])
 });
