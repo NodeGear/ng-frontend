@@ -135,7 +135,20 @@ module.exports = function(grunt) {
 					watch: ['lib/']
 				}
 			}
+		},
+
+		karma: {
+			test: {
+				configFile: 'karma.conf.js'
+			}
+		},
+
+		shell: {
+			mocha: {
+				command: 'TEST=1 ./node_modules/istanbul/lib/cli.js cover ./node_modules/mocha/bin/_mocha -- -R dot -t 5000 test/api'
+			}
 		}
+
 	});
 	
 	grunt.registerTask('serve', [
@@ -151,6 +164,14 @@ module.exports = function(grunt) {
 		'less:production'
 	]);
 
+	grunt.registerTask('test', [
+		'shell:mocha',
+		'karma:test'
+	]);
+
+	grunt.registerTask('mocha', ['shell:mocha']);
+	grunt.registerTask('karma', ['karma:test']);
+	
 	grunt.registerTask('default', [
 		'build'
 	]);

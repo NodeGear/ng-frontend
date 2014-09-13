@@ -1,74 +1,38 @@
-var app = require('../lib/app');
-var request = require('supertest').agent(app.app)
-
-var should = require('should')
+var app = require('../../lib/app')
+	, request = require('supertest').agent(app.app)
+	, config = require('../../lib/config')
+	, should = require('should')
 	, models = require('ng-models')
+	, async = require('async')
+	, login = require('./fixtures/login');
 
-if (!process.env.NG_TEST) {
-	console.log("\nNot in TEST environment. Please export NG_TEST variable\n");
+if (!process.env.TEST) {
+	console.log("\nNot in TEST environment. Please export TEST variable\n");
+	process.exit(-1);
 }
 
-should(process.env.NG_TEST).be.ok;
-
 describe('Account', function() {
-	var password, user;
+	var email, password, user;
+	email = 'hello@nodegear.com';
+	password = 'test-test';
 	
-	before(function () {
-		password = "password";
-		
-		models.User.remove({}, function (e) {});
+	before(function (done) {
+		login(request, function (err, _user) {
+			user = _user;
 
-		new models.User({
-			username: "taken",
-			usernameLowercase: 'taken',
-			name: "Taken User",
-			email: "taken@test.nodegear.com",
-			email_verified: true,
-			admin: false
-		}).save();
-
-		user = new models.User({
-			username: "account",
-			usernameLowercase: "account",
-			name: "Account Tester",
-			email: "account@test.nodegear.com",
-			email_verified: true,
-			disabled: false,
-			admin: false,
-			balance: 0,
-			tfa_enabled: false,
-			tfa: null,
-			is_new_pwd: true,
-			invitation_complete: true
+			done(err);
 		});
 	});
-
-	it('should log in', function(done) {
-		models.User.hashPassword(password, function (pwd) {
-			user.password = pwd;
-			user.save(function () {
-				request
-					.post('/auth/password')
-					.send({
-						auth: user.email,
-						password: password
-					})
-					.accept('json')
-					.expect(200)
-					.end(done)
-			});
-		});
-	})
 	
-	it('should fetch user profile', function(done) {
+	it('should fetch user profile', function (done) {
 		request
 			.get('/profile/profile')
 			.accept('json')
 			.expect(200)
-			.end(function(err, req) {
+			.end(function(err, res) {
 				should(err).be.equal(null);
 				
-				var body = req.res.body;
+				var body = res.body;
 				body.status.should.be.equal(200)
 				
 				body.user.should.be.Object;
@@ -81,7 +45,7 @@ describe('Account', function() {
 	})
 
 	describe('does update profile', function() {
-		it('should update user profile', function(done) {
+		it('should update user profile', function (done) {
 			request
 				.put('/profile/profile')
 				.accept('json')
@@ -96,7 +60,7 @@ describe('Account', function() {
 				.end(done)
 		})
 
-		it('should check user details have changed', function(done) {
+		it('should check user details have changed', function (done) {
 			models.User.findOne({
 				_id: user._id
 			}, function(err, u) {
@@ -105,18 +69,15 @@ describe('Account', function() {
 				u.name.should.be.equal("Hello Tester");
 				u.username.should.be.equal("free");
 				u.email.should.be.equal("free@test.nodegear.com");
-				u.comparePassword('password', function (same) {
-					should(same).be.true;
-					done();
-				});
 
 				user = u;
+				done();
 			})
 		})
 	})
 
 	describe('changes user password', function() {
-		it('should not update user profile (current password wrong)', function(done) {
+		it('should not update user profile (current password wrong)', function (done) {
 			request
 				.put('/profile/profile')
 				.accept('json')
@@ -125,22 +86,22 @@ describe('Account', function() {
 						name: "Hello Tester",
 						username: "free",
 						email: "free@test.nodegear.com",
-						password: "wrongpassword",
+						password: password+'sss',
 						newPassword: "newPassword"
 					}
 				})
 				.expect(400)
-				.end(function(err, req) {
-					should(err).be.equal(null);
+				.end(function(err, res) {
+					should(err).be.null;
 
-					var body = req.res.body;
+					var body = res.body;
 					body.message.should.not.be.empty;
 
 					done()
 				})
 		})
 
-		it('should not change user password (password length)', function(done) {
+		it('should not change user password (password length)', function (done) {
 			request
 				.put('/profile/profile')
 				.accept('json')
@@ -149,7 +110,7 @@ describe('Account', function() {
 						name: "Hello Tester",
 						username: "free",
 						email: "free@test.nodegear.com",
-						password: "password",
+						password: password,
 						newPassword: "short"
 					}
 				})
@@ -157,7 +118,7 @@ describe('Account', function() {
 				.end(done);
 		});
 
-		it('should check user password has not changed', function(done) {
+		it('should check user password has not changed', function (done) {
 			models.User.findOne({
 				_id: user._id
 			}, function(err, u) {
@@ -166,14 +127,14 @@ describe('Account', function() {
 				u.name.should.be.equal("Hello Tester");
 				u.username.should.be.equal("free");
 				u.email.should.be.equal("free@test.nodegear.com");
-				u.comparePassword('password', function (same) {
+				u.comparePassword(password, function (same) {
 					should(same).be.true;
 					done();
 				});
 			});
 		})
 
-		it('should change user password', function(done) {
+		it('should change user password', function (done) {
 			request
 				.put('/profile/profile')
 				.accept('json')
@@ -182,15 +143,16 @@ describe('Account', function() {
 						name: "Hello Tester",
 						username: "free",
 						email: "free@test.nodegear.com",
-						password: "password",
+						password: password,
 						newPassword: "newpassword"
 					}
 				})
 				.expect(200)
 				.end(done)
+			password = 'newpassword';
 		})
 
-		it('should check user password has changed', function(done) {
+		it('should check user password has changed', function (done) {
 			models.User.findOne({
 				_id: user._id
 			}, function(err, u) {
@@ -199,7 +161,7 @@ describe('Account', function() {
 				u.name.should.be.equal("Hello Tester");
 				u.username.should.be.equal("free");
 				u.email.should.be.equal("free@test.nodegear.com");
-				u.comparePassword('newpassword', function (same) {
+				u.comparePassword(password, function (same) {
 					should(same).be.true;
 					done();
 				});
@@ -208,29 +170,35 @@ describe('Account', function() {
 	})
 
 	describe('does not update profile', function() {
-		it('should not update user profile (taken email)', function(done) {
-			request
-				.put('/profile/profile')
-				.accept('json')
-				.send({
-					user: {
-						name: "Hello Tester",
-						username: "free",
-						email: "taken@test.nodegear.com"
-					}
-				})
-				.expect(400)
-				.end(function(err, req) {
-					should(err).be.equal(null);
+		it('should not update user profile (taken email)', function (done) {
+			(new models.User({
+				email: 'taken@test.nodegear.com',
+				username: 'taken',
+				usernameLowercase: 'taken'
+			})).save(function () {
+				request
+					.put('/profile/profile')
+					.accept('json')
+					.send({
+						user: {
+							name: "Hello Tester",
+							username: "free",
+							email: "taken@test.nodegear.com"
+						}
+					})
+					.expect(400)
+					.end(function(err, res) {
+						should(err).be.equal(null);
 
-					var body = req.res.body;
-					body.errs.should.be.instanceof(Array).and.have.lengthOf(1);
+						var body = res.body;
+						body.errs.should.be.instanceof(Array).and.have.lengthOf(1);
 
-					done()
-				})
+						done()
+					})
+			})
 		})
 
-		it('should not update user profile (username taken)', function(done) {
+		it('should not update user profile (username taken)', function (done) {
 			request
 				.put('/profile/profile')
 				.accept('json')
@@ -252,7 +220,7 @@ describe('Account', function() {
 				})
 		})
 
-		it('should verify no details have changed', function(done) {
+		it('should verify no details have changed', function (done) {
 			models.User.findOne({
 				_id: user._id
 			}, function(err, u) {
