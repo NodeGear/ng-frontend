@@ -4804,7 +4804,7 @@
     "ng-models": {
       "version": "0.6.0",
       "from": "ng-models@git+ssh://git@beta.castawaylabs.com/nodegear/ng-models.git",
-      "resolved": "git+ssh://git@beta.castawaylabs.com/nodegear/ng-models.git#2fe363877331b72ad3f28dffc70f257b90e1f311",
+      "resolved": "git+ssh://git@beta.castawaylabs.com/nodegear/ng-models.git#0b72beef39f32bdd6f3e9a5e84535d83fc2f52d6",
       "dependencies": {
         "bcrypt": {
           "version": "0.8.0",

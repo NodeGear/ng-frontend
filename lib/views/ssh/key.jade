@@ -14,7 +14,8 @@
 					.form-group
 						label.control-label.col-md-4.col-lg-3.col-sm-3 Public Key
 						.col-md-7.col-lg-8.col-sm-7
-							textarea.form-control(rows="12" ng-disabled="key.installed" ng-model="key.public_key")
+							textarea.form-control(rows="12" ng-if="!key.installed" ng-model="key.public_key")
+							pre(ng-if="key.installed"): code {{ key.public_key }}
 					p(ng-show="key.system_key") This is the system key. It is used to access git repositories during installation. If you want your nodegear user to access a private repository, install this public key (above) to the host.
 			.modal-footer
 				button.btn.btn-danger.pull-left(ng-hide="addKey" ng-click="deleteKey()") Delete Public Key
