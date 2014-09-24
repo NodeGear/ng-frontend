@@ -5,7 +5,7 @@
   "scripts": {
     "start": "node lib/app.js",
     "test": "istanbul cover _mocha -- -u exports -R spec",
-    "prepublish": "./node_modules/.bin/bower --allow-root install && ./node_modules/.bin/grunt build"
+    "prepublish": "./node_modules/.bin/bower --allow-root install && ./node_modules/.bin/grunt build && cd node_modules/ng-models && npm install"
   },
   "author": "Matej Kramny <matej@matej.me>",
   "homepage": "https://nodegear.io",
@@ -47,7 +47,6 @@
     "morgan": "^1.2.2",
     "mysql": "latest",
     "newrelic": "latest",
-    "ng-models": "git+ssh://git@beta.castawaylabs.com/nodegear/ng-models.git",
     "nodemailer": "~0.7",
     "passport": "latest",
     "passport.socketio": "latest",
