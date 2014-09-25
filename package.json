@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "start": "node lib/app.js",
-    "test": "istanbul cover _mocha -- -u exports -R spec",
-    "prepublish": "./node_modules/.bin/bower --allow-root install && ./node_modules/.bin/grunt build && cd node_modules/ng-models && npm install"
+    "test": "grunt test",
+    "prepublish": "./node_modules/.bin/bower --allow-root install && ./node_modules/.bin/grunt build"
   },
   "author": "Matej Kramny <matej@matej.me>",
   "homepage": "https://nodegear.io",
@@ -62,6 +62,18 @@
     "validator": "latest"
   },
   "devDependencies": {
+    "grunt-karma": "latest",
+    "grunt-shell": "^1.1.1",
+    "istanbul": "latest",
+    "karma": "latest",
+    "karma-chai": "latest",
+    "karma-chrome-launcher": "^0.1.4",
+    "karma-coverage": "latest",
+    "karma-firefox-launcher": "^0.1.3",
+    "karma-mocha": "latest",
+    "karma-ng-scenario": "latest",
+    "karma-requirejs": "latest",
+    "mocha": "latest",
     "should": "latest",
     "supertest": "latest"
   }

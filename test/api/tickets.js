@@ -1,62 +1,28 @@
-var app = require('../lib/app');
-var request = require('supertest').agent(app.app)
-
-var should = require('should')
+var app = require('../../lib/app')
+	, request = require('supertest').agent(app.app)
+	, config = require('../../lib/config')
+	, should = require('should')
 	, models = require('ng-models')
+	, async = require('async')
+	, login = require('./fixtures/login');
 
-if (!process.env.NG_TEST) {
-	console.log("\nNot in TEST environment. Please export NG_TEST variable\n");
+if (!process.env.TEST) {
+	console.log("\nNot in TEST environment. Please export TEST variable\n");
+	process.exit(-1);
 }
 
-should(process.env.NG_TEST).be.ok;
-
 describe('Tickets', function() {
-	before(function () {
-		models.User.remove({}, function(err) {
-			if (err) throw err;
-		});
-		models.Ticket.remove({}, function (err) {
-			if (err) throw err;
-		});
-	});
-
-	it('prepare', function(done) {
-		// Register user
-		request
-			.post('/auth/register')
-			.accept('json')
-			.send({
-				user: {
-					name: "NodeGear Mocha Tester",
-					email: 'hello@nodegear.com',
-					password: 'test-test',
-					username: 'hello-nodegear'
-				}
-			})
-			.expect(200)
-			.end(function (err, req) {
-				// Validate the user
-				models.User.update({
-					email: 'hello@nodegear.com'
-				}, {
-					$set: {
-						email_verified: true,
-						invitation_complete: true
-					}
-				}, function (err) {
-					if (err) throw err;
-
-					request
-						.post('/auth/password')
-						.accept('json')
-						.send({
-							auth: 'hello@nodegear.com',
-							password: 'test-test'
-						})
-						.expect(200)
-						.end(done);
-				});
-			});
+	before(function (done) {
+		async.parallel([
+			function (done) {
+				login(request, done);
+			},
+			function (done) {
+				async.each(['Ticket'], function (table, cb) {
+					models[table].remove({}, cb);
+				}, done);
+			}
+		], done);
 	});
 
 	it('fails malformed request', function (done) {

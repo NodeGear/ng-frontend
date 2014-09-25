@@ -1,57 +1,39 @@
-var app = require('../lib/app');
-var request = require('supertest').agent(app.app)
-
-var stripe = require('../lib/config').stripe
-
-var should = require('should')
+var app = require('../../lib/app')
+	, request = require('supertest').agent(app.app)
+	, config = require('../../lib/config')
+	, should = require('should')
 	, models = require('ng-models')
+	, async = require('async')
+	, login = require('./fixtures/login');
+
+if (!process.env.TEST) {
+	console.log("\nNot in TEST environment. Please export TEST variable\n");
+	process.exit(-1);
+}
+
+var stripe = require('../../lib/config').stripe
 
 describe('Stripe & Payment', function() {
-	var password, user;
-	
-	before(function () {
-		password = "password";
-		
-		user = new models.User({
-			username: "stripe-tester",
-			name: "Stripe Tester",
-			email: "stripe@test.nodegear.com",
-			email_verified: true,
-			disabled: false,
-			admin: false,
-			balance: 0,
-			tfa_enabled: false,
-			tfa: null,
-			is_new_pwd: true,
-			invitation_complete: true
-		});
+	before(function (done) {
+		async.parallel([
+			function (done) {
+				login(request, done);
+			},
+			function (done) {
+				async.each(['Ticket'], function (table, cb) {
+					models[table].remove({}, cb);
+				}, done);
+			}
+		], done);
 	});
-
-	it('should log in', function(done) {
-		models.User.hashPassword(password, function (pwd) {
-			user.password = pwd;
-			user.save(function () {
-		
-				request
-					.post('/auth/password')
-					.send({
-						auth: user.email,
-						password: password
-					})
-					.accept('json')
-					.expect(200)
-					.end(done);
-			});
-		});
-	})
 
 	var card_token = null, invalid_card_token = null;
 	var card_id = null;
 
 	describe('generate Stripe tokens', function() {
-		this.timeout(0);
+		it('should add a card to Stripe', function (done) {
+			this.timeout(0);
 
-		it('should add a card to Stripe', function(done) {
 			stripe.tokens.create({
 				card: {
 					name: "Mocha Tester",
@@ -69,7 +51,9 @@ describe('Stripe & Payment', function() {
 			})
 		})
 
-		it('should add an invalid card to Stripe', function(done) {
+		it('should add an invalid card to Stripe', function (done) {
+			this.timeout(0);
+			
 			stripe.tokens.create({
 				card: {
 					name: "Mocha Invalid Tester",
@@ -88,10 +72,10 @@ describe('Stripe & Payment', function() {
 		})
 	});
 
-	describe('manipulating payment methods', function() {
+	describe('manipulating payment methods', function () {
 		this.timeout(10000);
 
-		it('should reject adding the card (charge fails)', function(done) {
+		it('should reject adding the card (charge fails)', function (done) {
 			request
 				.post('/profile/card')
 				.accept('json')
@@ -112,7 +96,7 @@ describe('Stripe & Payment', function() {
 				})
 		})
 
-		it('should add a new payment method', function(done) {
+		it('should add a new payment method', function (done) {
 			request
 				.post('/profile/card')
 				.accept('json')
@@ -132,7 +116,7 @@ describe('Stripe & Payment', function() {
 				})
 		})
 
-		it('should retrieve 1 payment method, which is a default payment method', function(done) {
+		it('should retrieve 1 payment method, which is a default payment method', function (done) {
 			request
 				.get('/profile/cards')
 				.accept('json')
@@ -158,8 +142,8 @@ describe('Stripe & Payment', function() {
 				})
 		})
 
-		describe('modify card details', function(done) {
-			it('shouldn\'t update card due to name', function(done) {
+		describe('modify card details', function (done) {
+			it('shouldn\'t update card due to name', function (done) {
 				request
 					.put('/profile/card')
 					.accept('json')
@@ -181,7 +165,7 @@ describe('Stripe & Payment', function() {
 					})
 			})
 
-			it('shouldn\'t update card due to cardholder', function(done) {
+			it('shouldn\'t update card due to cardholder', function (done) {
 				request
 					.put('/profile/card')
 					.accept('json')
@@ -203,7 +187,7 @@ describe('Stripe & Payment', function() {
 					})
 			})
 
-			it('shouldn\'t update card due to invalid card id', function(done) {
+			it('shouldn\'t update card due to invalid card id', function (done) {
 				request
 					.put('/profile/card')
 					.accept('json')
@@ -224,7 +208,7 @@ describe('Stripe & Payment', function() {
 					})
 			})
 
-			it('should verify integrity of card details', function(done) {
+			it('should verify integrity of card details', function (done) {
 				request
 					.get('/profile/cards')
 					.accept('json')
@@ -251,7 +235,7 @@ describe('Stripe & Payment', function() {
 					})
 			})
 
-			it('should update the card', function(done) {
+			it('should update the card', function (done) {
 				request
 					.put('/profile/card')
 					.accept('json')
@@ -272,7 +256,7 @@ describe('Stripe & Payment', function() {
 					})
 			})
 
-			it('should verify card details', function(done) {
+			it('should verify card details', function (done) {
 				request
 					.get('/profile/cards')
 					.accept('json')
@@ -306,7 +290,7 @@ describe('Stripe & Payment', function() {
 		this.timeout(10000);
 		var transaction_id = null;
 
-		it('should charge nothing (malformed value)', function(done) {
+		it('should charge nothing (malformed value)', function (done) {
 			request
 				.post('/profile/billing/addCredits')
 				.accept('json')
@@ -325,7 +309,7 @@ describe('Stripe & Payment', function() {
 				})
 		})
 
-		it('should charge nothing (invalid value)', function(done) {
+		it('should charge nothing (invalid value)', function (done) {
 			request
 				.post('/profile/billing/addCredits')
 				.accept('json')
@@ -344,7 +328,7 @@ describe('Stripe & Payment', function() {
 				})
 		})
 
-		it('should charge £5', function(done) {
+		it('should charge £5', function (done) {
 			request
 				.post('/profile/billing/addCredits')
 				.accept('json')
@@ -362,7 +346,7 @@ describe('Stripe & Payment', function() {
 				})
 		})
 
-		it('should verify user has payment history', function(done) {
+		it('should verify user has payment history', function (done) {
 			request
 				.get('/profile/billing/history')
 				.accept('json')
@@ -387,7 +371,7 @@ describe('Stripe & Payment', function() {
 				})
 		})
 
-		it('should retrieve transaction', function(done) {
+		it('should retrieve transaction', function (done) {
 			request
 				.get('/profile/billing/transaction/'+transaction_id)
 				.accept('json')
@@ -414,7 +398,7 @@ describe('Stripe & Payment', function() {
 				})
 		})
 
-		it('should verify balance', function(done) {
+		it('should verify balance', function (done) {
 			request
 				.get('/profile/balance')
 				.accept('json')
@@ -433,7 +417,7 @@ describe('Stripe & Payment', function() {
 	describe('removing a card', function() {
 		this.timeout(10000);
 
-		it('shouldn\'t delete a card', function(done) {
+		it('shouldn\'t delete a card', function (done) {
 			request
 				.del('/profile/card')
 				.accept('json')
@@ -452,7 +436,7 @@ describe('Stripe & Payment', function() {
 				})
 		})
 
-		it('should delete the card', function(done) {
+		it('should delete the card', function (done) {
 			request
 				.del('/profile/card')
 				.accept('json')
@@ -470,7 +454,7 @@ describe('Stripe & Payment', function() {
 				})
 		})
 
-		it('should find 0 cards', function(done) {
+		it('should find 0 cards', function (done) {
 			request
 				.get('/profile/cards')
 				.accept('json')
