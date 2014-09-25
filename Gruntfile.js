@@ -82,7 +82,10 @@ module.exports = function(grunt) {
 					expand: true,
 					cwd: 'public/vendor',
 					dest: 'dist/vendor',
-					src: ['**/*.js', '**/*.css', '**/*.png', '**/*.jpg', '**/*.jpeg', '**/*.woff', '**/*.ttf', '**/*.svg', '**/*.eot']
+					src: [
+						'**/*.js', '**/*.css', '**/*.png', '**/*.jpg', '**/*.jpeg',
+						'**/*.woff', '**/*.ttf', '**/*.svg', '**/*.eot'
+					]
 				}]
 			},
 			fonts: {
@@ -113,6 +116,13 @@ module.exports = function(grunt) {
 					logConcurrentOutput: true
 				}
 			}
+		},
+
+		jshint: {
+			options: {
+				jshintrc: '.jshintrc'
+			},
+			lib: ['lib/**/*.js']
 		},
 
 		uglify: {
@@ -150,7 +160,7 @@ module.exports = function(grunt) {
 		}
 
 	});
-	
+
 	grunt.registerTask('serve', [
 		'clean:clean',
 		'concurrent:server',
