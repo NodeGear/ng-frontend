@@ -10,9 +10,12 @@
     "moment": "latest",
     "d3": "latest",
     "async": "latest",
-    "angular-couch-potato": "~0.1.1",
-    "angular-sanitize": "~1.2.23",
-    "angular-ui-router": "~0.2.11",
-    "angular-mocks": "~1.2.24"
+    "angular-couch-potato": "latest",
+    "angular-sanitize": "latest",
+    "angular-ui-router": "latest",
+    "angular-mocks": "latest"
+  },
+  "resolutions": {
+    "angular": "1.2.25"
   }
 }
