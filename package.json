@@ -5,7 +5,7 @@
   "scripts": {
     "start": "node lib/app.js",
     "test": "grunt test",
-    "prepublish": "./node_modules/.bin/bower --allow-root install && ./node_modules/.bin/grunt build"
+    "prepublish": "./node_modules/.bin/bower --allow-root install && ./node_modules/.bin/grunt build && rm -rf node_modules/ng-models && ln -s ../deps/ng-models node_modules/ng-models && cd deps/ng-models && npm install"
   },
   "author": "Matej Kramny <matej@matej.me>",
   "homepage": "https://nodegear.io",
