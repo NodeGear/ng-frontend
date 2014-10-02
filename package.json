@@ -40,6 +40,7 @@
     "hiredis": "latest",
     "jade": "latest",
     "load-grunt-tasks": "latest",
+    "lynx": "^0.2.0",
     "mailchimp-api": "^2.0.6",
     "moment": "latest",
     "mongodb": "latest",
