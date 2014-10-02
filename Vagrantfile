@@ -29,10 +29,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 		d.pull_images "castawaylabs/node-docker"
 		d.pull_images "castawaylabs/mongodb-docker"
 		d.pull_images "castawaylabs/redis-docker"
-		d.pull_images "hopsoft/graphite-statsd"
+		d.pull_images "castawaylabs/graphite-statsd"
 
 		d.run "graphite_statsd",
-			image: "hopsoft/graphite-statsd",
+			image: "castawaylabs/graphite-statsd",
 			args: "-p 8080:80 -p 2003:2003 -p 8125:8125/udp",
 			cmd: "/opt/hopsoft/graphite-statsd/start"
 
