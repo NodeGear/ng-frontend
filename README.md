@@ -28,21 +28,18 @@ Ip address scheme for `development.yml`
 
 Provisioned by Vagrant
 
------------------------------
 | Hostname     | IP         |
------------------------------
+| ------------ | ---------- |
 | dev_services | `10.0.3.2` |
 | dev_frontend | `10.0.3.4` |
------------------------------
 
 Services
 --------
 
 They're deployed by ansible
 
---------------------------------------------
 | Service        | Host         | Port     |
---------------------------------------------
+| -------------- | ------------ | -------- |
 | client_mongodb | dev_services | 27017    |
 | client_mysql   |              | 3306     |
 | ng_mongodb     |              | 2017     |
@@ -53,7 +50,6 @@ They're deployed by ansible
 | carbon         |              | 2003     |
 | statsd         |              | 8125/udp |
 | ng_frontend    | dev_frontend | 80       |
---------------------------------------------
 
 Graphite
 --------
@@ -62,12 +58,12 @@ Graphite
 
 Graphs metrics, access on dev_services box port 8080. The HTTP Auth login is
 
----------------------------
+| Username | Password     |
+| -------- | ------------ |
 | castaway | AnsibleRocks |
----------------------------
 
 To get into admin, use
 
----------------
-| root | root |
----------------
+| Username | Password     |
+| -------- | ------------ |
+| root     | root         |
