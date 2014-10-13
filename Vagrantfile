@@ -25,7 +25,7 @@ Vagrant.configure("2") do |config|
 		services.vm.provider "virtualbox" do |v|
 			v.memory = 2048
 			v.cpus = 2
-			v.name = "ng-Frontend"
+			v.name = "ng-Services"
 		end
 		
 		services.vm.provision :ansible do |ansible|
@@ -48,6 +48,7 @@ Vagrant.configure("2") do |config|
 		frontend.vm.provider "virtualbox" do |v|
 			v.memory = 1024
 			v.cpus = 1
+			v.name = "ng-Frontend"
 		end
 
 		frontend.vm.provision :ansible do |ansible|
