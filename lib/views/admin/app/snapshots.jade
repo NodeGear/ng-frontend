@@ -1,0 +1,30 @@
+extends ../layout
+
+append js
+	script(src="#{cdn}/js/controllers/admin/app.js" defer)
+
+block content
+	div(ng-controller="AppController" ng-init="init('#{app._id}')")
+		.row
+			.col-sm-12
+				h1.page-header {{ app.name }} App
+		.row
+			.col-sm-12
+				.table-responsive
+					table.table
+						thead
+							tr
+								th Created
+								th Snapshot ID
+								th Server Name
+								th Process Name
+								th Snapshot Size
+						tbody
+							for snapshot in snapshots
+								tr
+									td= snapshot.created
+									td= snapshot._id
+									td= snapshot.originServer.name
+									td= snapshot.originProcess.name
+									td= snapshot.contentSize / 1024 / 1024
+										| mb
