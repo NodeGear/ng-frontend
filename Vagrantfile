@@ -1,56 +1,63 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-VAGRANTFILE_API_VERSION = "2"
+Vagrant.configure("2") do |config|
 
-Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
-	config.vm.define "ng-frontend"
-	config.vm.box = "hashicorp/precise64"
+	config.vm.provision :ansible do |ansible|
+		ansible.groups = {
+			"services" => ["dev_services"],
+			"frontend" => ["dev_frontend"],
+			"development:children" => ["frontend", "services"]
+		}
 
-	config.vm.network "private_network", ip: "10.0.3.2"
+		ansible.playbook = "../ng-infrastructure/infrastructure.yml"
 
-	config.vm.synced_folder ".", "/var/lib/frontend", type: "rsync", rsync__exclude: [".git/", "node_modules/"]
-	config.vm.synced_folder "../ng-git", "/var/lib/ng-git", type: "rsync", rsync__exclude: [".git/", "node_modules/"]
-
-	config.vm.provider "virtualbox" do |v|
-		v.memory = 4086
-		v.cpus = 2
+		ansible.limit = 'all'
 	end
 
-	config.vm.provision :shell do |s|
-		s.inline = <<-EOT
-			apt-get update
-			apt-get install -y curl
-			curl -sSL https://get.docker.io/ubuntu/ | sudo sh
-		EOT
+	config.vm.define :dev_services do |services|
+		services.vm.box = "hashicorp/precise64"
+		services.vm.network "private_network", ip: "10.0.3.2"
+		services.vm.hostname = "dev-services"
+
+		services.vm.synced_folder "../ng-git", "/var/lib/git", type: "rsync", rsync__exclude: [".git/", "node_modules/", "lib/credentials.json"]
+
+		services.vm.provider "virtualbox" do |v|
+			v.memory = 2048
+			v.cpus = 2
+			v.name = "ng-Services"
+		end
+		
+		services.vm.provision :ansible do |ansible|
+			ansible.groups = {
+				"services" => ["dev_services"],
+				"development:children" => ["services"]
+			}
+
+			ansible.playbook = "../ng-infrastructure/services.yml"
+		end
 	end
 
-	config.vm.provision :docker do |d|
-		d.pull_images "castawaylabs/node-docker"
-		d.pull_images "castawaylabs/mongodb-docker"
-		d.pull_images "castawaylabs/redis-docker"
-		d.pull_images "castawaylabs/graphite-statsd"
+	config.vm.define :dev_frontend do |frontend|
+		frontend.vm.box = "hashicorp/precise64"
+		frontend.vm.network "private_network", ip: "10.0.3.4"
+		frontend.vm.hostname = "dev-frontend"
 
-		d.run "graphite_statsd",
-			image: "castawaylabs/graphite-statsd",
-			args: "-p 8080:80 -p 2003:2003 -p 8125:8125/udp",
-			cmd: "/opt/hopsoft/graphite-statsd/start"
+		frontend.vm.synced_folder ".", "/var/lib/frontend", type: "rsync", rsync__exclude: [".git/", "node_modules/", "lib/credentials.json"]
 
-		d.run "ng_mongodb",
-			image: "castawaylabs/mongodb-docker",
-			args: "-p 2017:27017 -v /var/lib/mongodb:/var/lib/mongodb",
-			cmd: "mongod --config /etc/mongod.conf --smallfiles --noauth"
+		frontend.vm.provider "virtualbox" do |v|
+			v.memory = 1024
+			v.cpus = 1
+			v.name = "ng-Frontend"
+		end
 
-		d.run "ng_redis",
-			image: "castawaylabs/redis-docker",
-			args: "-p 6379:6379 -v /var/lib/redis:/var/lib/redis"
+		frontend.vm.provision :ansible do |ansible|
+			ansible.groups = {
+				"frontend" => ["dev_frontend"],
+				"development:children" => ["frontend"]
+			}
 
-		d.run "ng_git",
-			image: "castawaylabs/node-docker",
-			args: "-v /var/lib/ng-git:/srv/app --link ng_redis:redis --link ng_mongodb:mongodb"
-
-		d.run "ng_frontend",
-			image: "castawaylabs/node-docker",
-			args: "-e PORT=80 -e NODEMON=y -p 80:80 -v /var/lib/frontend:/srv/app --link ng_redis:redis --link ng_mongodb:mongodb"
+			ansible.playbook = "../ng-infrastructure/frontend.yml"
+		end
 	end
 end
