@@ -6,10 +6,10 @@ append js
 block content
 	div(ng-controller="InvitationsController")
 		.row
-			.col-lg-12.col-md-12.col-sm-12
-				h1.page-header Invitations
+			.col-sm-12
+				h1.page-header(style="margin-top: 0;") Invitations
 		.row
-			.col-lg-12.col-md-12.col-sm-12
+			.col-sm-12
 				table.table(ng-table="pendingInvitesTable" show-filter="true")
 					tbody
 						tr(ng-repeat="invitation in $data")

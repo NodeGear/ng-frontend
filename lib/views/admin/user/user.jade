@@ -2,8 +2,8 @@ extends ../layout
 
 block content
 	.row
-		.col-lg-12.col-md-12.col-sm-12
-			h1.page-header User #{aUser.name}
+		.col-sm-12
+			h1.page-header(style="margin-top: 0;") User #{aUser.name}
 				.btn-group.pull-right
 					a.btn.btn-default(href="/admin/user/#{aUser._id}/edit") Edit
 					if !aUser.admin
