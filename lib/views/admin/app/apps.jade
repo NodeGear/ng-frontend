@@ -6,10 +6,10 @@ append js
 block content
 	div(ng-controller="AppsController")
 		.row
-			.col-lg-12.col-md-12.col-sm-12
-				h1.page-header Applications
+			.col-sm-12
+				h1.page-header(style="margin-top: 0;") Applications
 		.row
-			.col-lg-12.col-md-12.col-sm-12
+			.col-sm-12
 				table.table(ng-table="applicationsTable" show-filter="true")
 					tbody
 						tr(ng-repeat="app in $data")

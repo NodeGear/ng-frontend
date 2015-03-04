@@ -6,10 +6,10 @@ append js
 block content
 	div(ng-controller="SecLogCtrl")
 		.row
-			.col-lg-12.col-md-12.col-sm-12
-				h1.page-header Security Logs
+			.col-sm-12
+				h1.page-header(style="margin-top: 0;") Security Logs
 		.row
-			.col-lg-12.col-md-12.col-sm-12
+			.col-sm-12
 				table.table(ng-table="tableParams" show-filter="true")
 					tbody
 						tr(ng-repeat="log in $data")

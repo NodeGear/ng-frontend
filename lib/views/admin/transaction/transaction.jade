@@ -2,10 +2,10 @@ extends ../layout
 
 block content
 	.row
-		.col-lg-12.col-md-12.col-sm-12
-			h1.page-header Transaction on <small>#{transaction.created}</small>
+		.col-sm-12
+			h1.page-header(style="margin-top: 0;") Transaction on <small>#{transaction.created}</small>
 	.row
-		.col-lg-6.col-md-6.col-sm-6
+		.col-sm-6
 			dl.dl-horizontal
 				dt Paid
 				dd= transaction.paid
@@ -33,7 +33,7 @@ block content
 				dt New_balance
 				dd= transaction.new_balance
 	.row
-		.col-lg-12.col-md-12.col-sm-12
+		.col-sm-12
 			table.table.table-responsive
 				thead
 					tr

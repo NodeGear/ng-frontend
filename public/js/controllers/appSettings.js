@@ -1,9 +1,5 @@
-define([
-	'angular',
-	'app',
-	'moment'
-], function(angular, app, moment) {
-	app.registerController('AppSettingsController', function ($scope, $http, $state, app, csrf) {
+define(['app'], function (app) {
+	app.registerController('AppSettingsController', ['$scope', '$http', '$state', 'app', function ($scope, $http, $state, app) {
 		$scope.app = app.app;
 		$scope._app = app;
 		$scope.canDelete = false;
@@ -23,11 +19,11 @@ define([
 
 		$scope.saveSettings = function() {
 			$http.put(app.appRoute, {
-				_csrf: csrf.csrf,
 				name: app.app.name,
 				location: app.app.location,
 				script: app.app.script,
-				branch: app.app.branch
+				branch: app.app.branch,
+				useSnapshots: app.app.useSnapshots
 			}).success(function(data) {
 				$scope.status = data.message;
 				app.app.nameUrl = data.nameUrl;
@@ -47,7 +43,7 @@ define([
 			$scope.canDelete = false;
 			$scope.deleteText = "Deleting...";
 
-			$http.delete(app.appRoute+'?_csrf='+csrf.csrf)
+			$http.delete(app.appRoute)
 			.success(function(data) {
 				if (data.status == 200) {
 					$scope.deleteText = "App Deleted.";
@@ -65,5 +61,5 @@ define([
 				$scope.reloadScope();
 			})
 		}
-	})
+	}])
 });

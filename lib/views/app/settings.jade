@@ -2,22 +2,32 @@ h2(style="margin-top: 0;") Settings
 
 form.form-horizontal(autocomplete="off" ng-init="setCsrf('#{token}')")
 	.form-group(ng-hide="status.length == 0")
-		.col-lg-9.col-md-9.col-sm-9.col-lg-offset-3.col-md-offset-3.col-sm-offset-3
+		.col-sm-9.col-sm-offset-3
 			p(ng-bind="status")
 	.form-group
-		label.col-md-3.col-lg-3.col-sm-3.control-label(for="name") Name
-		.col-lg-6.col-md-6.col-sm-6
+		label.col-sm-3.control-label(for="name") Name
+		.col-sm-6
 			input#name.form-control(type="text" required ng-model="app.name" placeholder="What's your app called")
 	.form-group
-		label.col-md-3.col-lg-3.col-sm-3.control-label App Location (git)
-		.col-lg-6.col-md-6.col-sm-6
-			input.form-control(type="text" required ng-model="app.location" placeholder="Git Location of your app")
+		label.col-sm-3.control-label(for="location") App Location (git)
+		.col-sm-6
+			input#location.form-control(type="text" required ng-model="app.location" placeholder="Git Location of your app")
 	.form-group
-		label.col-md-3.col-lg-3.col-sm-3.control-label Git Branch
-		.col-lg-6.col-md-6.col-sm-6
-			input.form-control(type="text" required ng-model="app.branch" placeholder="Git Branch (e.g. master)")
+		label.col-sm-3.control-label(for="branch") Git Branch
+		.col-sm-6
+			input#branch.form-control(type="text" required ng-model="app.branch" placeholder="Git Branch (e.g. master)")
 	.form-group
-		.col-lg-9.col-md-9.col-sm-9.col-lg-offset-3.col-md-offset-3.col-sm-offset-3
+		.col-sm-6.col-sm-offset-3
+			.checkbox
+				label
+					input(type="checkbox" ng-model="app.useSnapshots")
+					|  Use Snapshots
+			p.help-text If enabled, we will save the difference of your repository when the process stops. You can then download the changes. The snapshot will be automatically applied before the process starts.
+				br
+				br
+				| Please note that you will be limited to one process if enabled.
+	.form-group
+		.col-sm-9.col-sm-offset-3
 			button.btn.btn-success(ng-click="saveSettings()") Save
 
 hr
@@ -32,4 +42,5 @@ hr
 			li Release Registered Domains
 			li Delete all analytics captured
 		button.btn.btn-danger(ng-click="deleteApp()" ng-disabled="!canDelete") {{ deleteText }}
+br
 .clearfix
