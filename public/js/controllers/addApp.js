@@ -11,7 +11,7 @@ define([
 		$scope.servers = [];
 		$scope.cannotStart = false;
 		$scope.cannotStartReason = "";
-		
+
 		servers.getServers(function(servers) {
 			$scope.servers = servers;
 			try {
@@ -54,7 +54,7 @@ define([
 
 			var spaces = server.appLimit - server.appsRunning;
 			if (spaces < 0) spaces = 0;
-			
+
 			return spaces;
 		}
 	});
@@ -95,7 +95,7 @@ define([
 			$http.post('/apps/add', $scope.app)
 			.success(function(data, status) {
 				$scope.app.nameUrl = data.nameUrl;
-				
+
 				callback(null, data);
 
 				$http.get('/apps').success(function(data, status) {
@@ -230,7 +230,8 @@ define([
 				['DATABASE_PASSWORD', database.db_pass],
 				['DATABASE_NAME', database.db_name],
 				['DOMAIN', domain],
-				['USE_HTTPS', '1']
+				['USE_HTTPS', '1'],
+				['NODE_ENV', 'production']
 			];
 
 			async.each(envs, function (env, done) {

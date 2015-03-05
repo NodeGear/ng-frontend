@@ -16,7 +16,7 @@ Vagrant.configure("2") do |config|
 	end
 
 	config.vm.define :dev_services do |services|
-		services.vm.box = "hashicorp/precise64"
+		services.vm.box = "ubuntu/trusty64"
 		services.vm.network "private_network", ip: "10.0.3.2"
 		services.vm.hostname = "dev-services"
 
@@ -27,7 +27,7 @@ Vagrant.configure("2") do |config|
 			v.cpus = 2
 			v.name = "ng-Services"
 		end
-		
+
 		services.vm.provision :ansible do |ansible|
 			ansible.groups = {
 				"services" => ["dev_services"],
@@ -39,7 +39,7 @@ Vagrant.configure("2") do |config|
 	end
 
 	config.vm.define :dev_frontend do |frontend|
-		frontend.vm.box = "hashicorp/precise64"
+		frontend.vm.box = "ubuntu/trusty64"
 		frontend.vm.network "private_network", ip: "10.0.3.4"
 		frontend.vm.hostname = "dev-frontend"
 

@@ -6,7 +6,7 @@
 				h4.modal-title(ng-show="addDatabase") Add new Database
 				h4.modal-title(ng-hide="addDatabase") Edit Database - {{ database.name }}
 			.modal-body
-				form.form-horizontal
+				form.form-horizontal(name="dbForm")
 					.form-group
 						label.control-label.col-md-4.col-lg-3.col-sm-3 Name
 						.col-md-7.col-lg-8.col-sm-7
@@ -15,10 +15,12 @@
 						label.control-label.col-md-4.col-lg-3.col-sm-3 Type
 						.col-md-7.col-lg-8.col-sm-7
 							select.form-control(ng-model="database.database_type" ng-disabled="!addDatabase")
-								option(value="mongolab") MongoLab Sandbox
+								//- option(value="mongolab") MongoLab Sandbox
 								option(value="mongodb") mongodb
 								option(value="mysql") mysql
-					
+					.form-group
+						.col-md-7.col-lg-8.col-sm-7.col-md-offset-4.col-lg-offset-3.col-sm-offset-3
+							button.btn.btn-success(ng-click="saveDatabase()" ng-disabled="!database.name" ng-if="database._id.length && dbForm.$dirty") Update
 					fieldset(ng-if="!addDatabase && database.database_type == 'mysql'")
 						legend Connection Details
 
@@ -42,17 +44,19 @@
 							label.control-label.col-md-4.col-lg-3.col-sm-3 DB Name
 							.col-md-7.col-lg-8.col-sm-7
 								pre: code {{ database.db_name }}
-					
+
 					fieldset(ng-if="!addDatabase && database.database_type != 'mysql'")
 						legend Connection Details
 						.form-group
 							.col-sm-12
 								pre: code {{ database.url }}
-						
+				//- .help-text.text-muted
+					b MongoLab Support:
+					span &nbsp; We are currently integrating with mongolab.
 			.modal-footer
 				button.btn.btn-danger.pull-left(ng-hide="addDatabase" ng-click="deleteDatabase()") Delete Database
-				span.text-muted(ng-class="{ 'pull-left': addDatabase }" ng-bind="status") Loading..
-				button.btn.btn-default(data-dismiss="modal") Close
-				button.btn.btn-success(ng-click="saveDatabase()" ng-disabled="!database.name")
-					span(ng-show="addDatabase") Create
-					span(ng-hide="addDatabase") Save
+				span.text-muted(ng-class="{ 'pull-left': addDatabase }" style="margin-right: 10px;" ng-bind="status") Loading..
+				button.btn.btn-default(data-dismiss="modal")
+					span(ng-if="database._id.length > 0") Done
+					span(ng-if="!database._id.length") Close
+				button.btn.btn-success(ng-click="saveDatabase()" ng-disabled="!database.name" ng-if="!database._id.length") Create
